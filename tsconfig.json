@@ -1,0 +1,9 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "preserveSymlinks": false,
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true
+  }
+}

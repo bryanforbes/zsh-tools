@@ -1,0 +1,6 @@
+[settings]
+python.uv_venv_auto = true
+
+[env]
+_.python.venv = { path = ".venv", create = true }
+CXXFLAGS = '--std=c++20'

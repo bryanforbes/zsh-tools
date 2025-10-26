@@ -1,0 +1,49 @@
+# macOS artifacts
+.DS_Store
+
+# Rust artifacts
+target/
+
+# Node artifacts
+build/
+prebuilds/
+node_modules/
+
+# Python artifacts
+*.pyc
+__pycache__/
+.venv/
+dist/
+*.egg-info
+*.whl
+.ruff_cache/
+.mypy_cache/
+.pytest_cache/
+
+# Vim artifacts
+## Swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+
+## Session
+Session.vim
+Sessionx.vim
+
+## Temporary
+.netrwhist
+*~
+## Auto-generated tag files
+tags
+## Persistent undo
+[._]*.un~
+
+# local files
+.mise.*.local.toml
+.mise.local.toml
+mise.*.local.toml
+mise.local.toml
+.mise/*.local.toml
+mise/*.local.toml

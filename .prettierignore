@@ -1,0 +1,13 @@
+# pnpm, npm, yarn
+pnpm-lock.yaml
+pnpm-workspace.yaml
+package-lock.json
+yarn.lock
+
+# 3rd party libraries
+/vendor/
+
+# OpenCode
+.opencode/
+
+# tree-sitter

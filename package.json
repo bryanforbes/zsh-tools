@@ -1,0 +1,23 @@
+{
+  "name": "zsh-tools",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "https://github.com/bryanforbes/zsh-tools",
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "9.38.0",
+    "eslint": "9.38.0",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-config-treesitter": "1.0.2",
+    "globals": "16.4.0",
+    "prebuildify": "6.0.1",
+    "prettier": "3.6.2",
+    "tree-sitter": "0.25.0",
+    "tree-sitter-cli": "0.25.10"
+  },
+  "packageManager": "pnpm@10.18.0",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "pnpm -r run test"
+  }
+}
