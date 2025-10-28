@@ -12,7 +12,7 @@ classifiers = [
 ]
 dependencies = [
   'tree-sitter-zsh',
-  'grammar'
+  'zsh-grammar'
 ]
 
 [dependency-groups]
@@ -26,17 +26,23 @@ dev = [
 package = false
 
 [tool.uv.sources]
-grammar = { workspace = true }
+zsh-grammar = { workspace = true }
 tree-sitter-zsh = { workspace = true }
 
 [tool.uv.workspace]
-members = ["grammar", "tree-sitter-zsh"]
+members = ["zsh-grammar", "tree-sitter-zsh"]
 
 [tool.pyright]
-venvPath = "."
-venv = ".venv"
+stubPath = './typings'
+exclude = [
+  "**/node_modules",
+  "**/__pycache__",
+  "**/.*",
+  "tree-sitter-zsh/bindings/python/**",
+  "tree-sitter-zsh/setup.py"
+]
 
-pythonVersion = "3.13"
+pythonVersion = "3.14"
 strictListInference = true
 strictDictionaryInference = true
 strictSetInference = true
@@ -59,10 +65,18 @@ reportImplicitAbstractClass = "error"
 reportIncompatibleUnannotatedOverride = "error"
 reportInvalidAbstractMethod = "error"
 
+executionEnvironments = [
+  { root = "typings", reportImplicitOverride = "none", reportIncompatibleVariableOverride = "none" }
+]
+
 [tool.ruff]
-extend-exclude = [".venv*"]
+extend-exclude = [
+  ".venv*",
+  "tree-sitter-zsh/bindings/python/**",
+  "tree-sitter-zsh/setup.py"
+]
 line-length = 88
-target-version = "py313"
+target-version = "py314"
 
 [tool.ruff.format]
 quote-style = "single"
@@ -76,7 +90,7 @@ select = [
 ignore = ["PLR0913", "PLR2004", "TRY003", "T201"]
 
 [tool.ruff.lint.per-file-ignores]
-"*.pyi" = ["ANN401", "E501", "E701", "E741", "F401", "F403", "F405", "F811", "FBT001", "FBT002", "PGH003"]
+"*.pyi" = ["ANN401", "E501", "E701", "E741", "F401", "F403", "F405", "F811", "FBT001", "FBT002", "PGH003", "PYI001", "PYI042", "PLC0105", "UP046", "UP047"]
 
 [tool.ruff.lint.isort]
 extra-standard-library = ["typing_extensions", "_typeshed"]

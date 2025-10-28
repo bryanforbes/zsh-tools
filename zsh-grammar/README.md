@@ -14,7 +14,7 @@ The canonical grammar is JSON-based and located at `./canonical_grammar.json`. B
 - Globbing / pattern matching
 - Strings / quoting
 
-At this time, the schema for the grammar is defined in `./scripts/_types.py`.
+At this time, the schema for the grammar is defined in `./src/zsh_grammar/_types.py`.
 
 ### Example
 
@@ -65,7 +65,3 @@ git clean -Xdf
 ./configure
 make -C Src headers
 ```
-
-## Workflow
-
-1. 

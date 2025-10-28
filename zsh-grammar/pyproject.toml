@@ -1,5 +1,5 @@
 [project]
-name = "grammar"
+name = "zsh-grammar"
 version = "0.0.0"
 description = "A collection of tools to help develop Zsh scripts and plugins"
 authors = [
@@ -11,15 +11,15 @@ classifiers = [
   "Private :: Do Not Upload",
 ]
 
+[project.scripts]
+extract_zsh_raw = 'zsh_grammar.extract_zsh_raw:main'
+
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
 build-backend = "uv_build"
 
-[tool.uv.build-backend]
-module-name = "scripts"
-module-root = ""
-
 [tool.pyright]
+stubPath = '../typings'
 extends = '../pyproject.toml'
 
 [tool.ruff]

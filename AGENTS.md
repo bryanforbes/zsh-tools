@@ -12,7 +12,7 @@
 - Build C lib: `make -C tree-sitter-zsh`; WASM: `pnpm exec tree-sitter build --wasm`; Rust: `(cd tree-sitter-zsh && cargo build)`.
 - EditorConfig: UTF-8/LF; default 2 spaces; C/Rust/Python/Swift 4; Go/Makefile tabs.
 - JS/TS: ESM; `checkJs` enabled; JSDoc for types; Prettier single quotes; ESLint flat (`@eslint/js` + treesitter for `grammar.js`).
-- Python: Strict Pyright 3.13 target; always `from __future__ import annotations` first; 88 cols; single quotes.
+- Python: Strict Pyright 3.13 target; always `from __future__ import annotations` first except stub files (.pyi); 88 cols; single quotes.
 - Imports: absolute only (no implicit relatives); sorted/stabilized by Ruff isort; combine `as` imports.
 - Types/naming: JS camelCase, classes PascalCase; Python snake_case, classes PascalCase; C/Rust constants UPPER_SNAKE.
 - Errors: be specific; avoid broad except; prefer explicit error paths and tests asserting failures.
