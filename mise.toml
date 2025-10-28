@@ -4,3 +4,35 @@ python.uv_venv_auto = true
 [env]
 _.python.venv = { path = ".venv", create = true }
 CXXFLAGS = '--std=c++20'
+
+[tasks.clean-zsh-source]
+description = "Clean the Zsh source directory"
+run = 'git clean -Xdf'
+dir = "{{ config_root }}/vendor/zsh"
+
+[tasks.prepare-zsh-preconfigure]
+description = "Prepare the Zsh source directory for configuration"
+sources = ["vendor/zsh/configure.ac"]
+outputs = ["vendor/zsh/configure"]
+run = './Util/preconfig'
+dir = "{{ config_root }}/vendor/zsh"
+
+[tasks.prepare-zsh-configure]
+description = "Prepare the Zsh source directory for configuration"
+depends = 'prepare-zsh-preconfigure'
+sources = ["vendor/zsh/**/Makefile.in"]
+outputs = ["vendor/zsh/**/Makefile"]
+run = './configure'
+dir = "{{ config_root }}/vendor/zsh"
+
+[tasks.prepare-zsh-source]
+description = "Prepare the Zsh source directory for extraction"
+depends = 'prepare-zsh-configure'
+sources = ["vendor/zsh/**/*.mdd"]
+outputs = ["vendor/zsh/**/*.mdh"]
+run = 'make -C Src headers'
+dir = "{{ config_root }}/vendor/zsh"
+
+[tasks.extract-zsh-raw]
+description = "Extract raw Zsh grammar"
+run = 'uv run extract_zsh_raw'

@@ -303,10 +303,10 @@ Example (abridged)
 }
 ```
 
-Script
+Module
 
 - Path: `zsh-grammar/src/zsh_grammar/extract_zsh_raw.py`
-- Usage: `uv run extract_zsh_raw --src vendor/zsh/Src --out zsh-grammar/zsh_raw_extraction.json --clang /opt/homebrew/opt/llvm/lib/libclang.dylib`
+- Usage: mise run extract-zsh-raw --src vendor/zsh/Src --out zsh-grammar/zsh_raw_extraction.json --clang /opt/homebrew/opt/llvm/lib/libclang.dylib`
 - Options: `--zsh-version 5.9`, `--verbose`
 
 Notes

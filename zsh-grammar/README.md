@@ -60,8 +60,10 @@ At this time, the schema for the grammar is defined in `./src/zsh_grammar/_types
 Run the following commands in `vendor/zsh`:
 
 ```sh
-git clean -Xdf
-./Util/preconfig
-./configure
-make -C Src headers
+mise clean-zsh-source
+mise prepare-zsh-source
 ```
+
+## Workflow
+
+1. Run `mise extract-zsh-raw` to extract the raw grammar from the Zsh source code.
