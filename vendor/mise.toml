@@ -1,0 +1,30 @@
+[task_config]
+dir = "{{ config_root }}/zsh"
+
+[tasks.clean]
+description = "Clean the Zsh source directory"
+run = 'git clean -Xdf'
+
+[tasks."prepare:preconfigure"]
+description = "Run the preconfig script for Zsh"
+sources = ["configure.ac"]
+outputs = ["configure"]
+run = './Util/preconfig'
+
+[tasks."prepare:configure"]
+description = "Run configure for Zsh"
+depends = ':prepare:preconfigure'
+sources = ["configure", "config.h.in"]
+outputs = ["config.h"]
+run = './configure'
+
+[tasks."prepare:source"]
+description = "Prepare the Zsh source directory for extraction"
+depends = ':prepare:configure'
+sources = ["**/*.mdd"]
+outputs = ["Src/zsh.mdh"]
+run = 'make -C Src headers'
+
+[tasks.prepare]
+description = "Prepare the Zsh source"
+depends = ':prepare:*'

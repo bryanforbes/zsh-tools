@@ -306,7 +306,7 @@ Example (abridged)
 Module
 
 - Path: `zsh-grammar/src/zsh_grammar/extract_zsh_raw.py`
-- Usage: mise run extract-zsh-raw --src vendor/zsh/Src --out zsh-grammar/zsh_raw_extraction.json --clang /opt/homebrew/opt/llvm/lib/libclang.dylib`
+- Usage: `mise //zsh-grammar:extract-raw-grammar`
 - Options: `--zsh-version 5.9`, `--verbose`
 
 Notes
@@ -317,6 +317,5 @@ Notes
 
 ## Next Steps
 
-- Commit the plan; create skeletons for generator scripts under `zsh-grammar/src/zsh_grammar/`.
-- Decide libclang path strategy (env var or config file) and document it.
 - Start on CGD schema file and adjust current extractor to emit it.
+- Create skeletons for generator scripts under `zsh-grammar/src/zsh_grammar/`.

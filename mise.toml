@@ -1,37 +1,27 @@
+experimental_monorepo_root = true
+
 [settings]
 python.uv_venv_auto = true
+task.monorepo_exclude_dirs = [
+  '.*',
+  'node_modules',
+  'target',
+  'dist',
+  'build',
+  'vendor/zsh',
+]
 
 [env]
 _.python.venv = { path = ".venv", create = true }
 
-[tasks.clean-zsh-source]
-description = "Clean the Zsh source directory"
-run = 'git clean -Xdf'
-dir = "{{ config_root }}/vendor/zsh"
+[tasks.init-dev]
+description = "Initialize development environment"
+depends = ['//:init-dev:*']
 
-[tasks.prepare-zsh-preconfigure]
-description = "Prepare the Zsh source directory for configuration"
-sources = ["vendor/zsh/configure.ac"]
-outputs = ["vendor/zsh/configure"]
-run = './Util/preconfig'
-dir = "{{ config_root }}/vendor/zsh"
+[tasks."init-dev:pnpm"]
+description = "Initialize node modules"
+run = 'pnpm install'
 
-[tasks.prepare-zsh-configure]
-description = "Prepare the Zsh source directory for configuration"
-depends = 'prepare-zsh-preconfigure'
-sources = ["vendor/zsh/**/Makefile.in"]
-outputs = ["vendor/zsh/**/Makefile"]
-run = './configure'
-dir = "{{ config_root }}/vendor/zsh"
-
-[tasks.prepare-zsh-source]
-description = "Prepare the Zsh source directory for extraction"
-depends = 'prepare-zsh-configure'
-sources = ["vendor/zsh/**/*.mdd"]
-outputs = ["vendor/zsh/**/*.mdh"]
-run = 'make -C Src headers'
-dir = "{{ config_root }}/vendor/zsh"
-
-[tasks.extract-zsh-raw]
-description = "Extract raw Zsh grammar"
-run = 'uv run extract_zsh_raw'
+[tasks."init-dev:uv"]
+description = "Initialize uv"
+run = 'uv sync --all-extras'

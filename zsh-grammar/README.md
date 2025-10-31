@@ -57,13 +57,12 @@ At this time, the schema for the grammar is defined in `./src/zsh_grammar/_types
 
 ### Preparing the Zsh source for parsing
 
-Run the following commands in `vendor/zsh`:
+Run the following commands:
 
 ```sh
-mise clean-zsh-source
-mise prepare-zsh-source
+mise //vendor:prepare
 ```
 
 ## Workflow
 
-1. Run `mise extract-zsh-raw` to extract the raw grammar from the Zsh source code.
+1. Run `mise //zsh-grammar:extract-raw-grammar` to extract the raw grammar from the Zsh source code.

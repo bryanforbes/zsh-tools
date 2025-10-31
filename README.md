@@ -8,17 +8,6 @@ This project uses [mise](https://mise.jdx.dev/) to manage tools and environment 
 
 ```sh
 if (( ${+commands[mise]} )); then
-    cache_file="${ZCACHEDIR}/shellenv/mise.zsh"
-
-    if [[ "$commands[mise]:A" -nt "$cache_file" || ! -s "$cache_file" ]]; then
-        mkdir -p "$cache_file:h"
-        # Cache the result.
-        mise activate zsh >! "$cache_file" 2> /dev/null
-    fi
-
-    source "$cache_file"
-    unset cache_file
-
     # Ties MISE_ENV and mise_env together like PATH and path
     typeset -xTU MISE_ENV mise_env ','
 
@@ -27,6 +16,9 @@ if (( ${+commands[mise]} )); then
     elif [[ "$OSTYPE" == linux* ]]; then
         mise_env+=('linux')
     fi
+
+    # For monorepo tasks
+    export MISE_EXPERIMENTAL=1
 fi
 
 ```

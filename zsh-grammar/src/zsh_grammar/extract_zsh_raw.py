@@ -266,6 +266,7 @@ def paths_match(tu: TranslationUnit, child: Cursor, /) -> bool:
 class ZshParser:
     src_dir: Path
     clang_args: list[str]
+    libclang_path: Path | None
     version: str
     verbose: bool
 
@@ -402,6 +403,9 @@ class ZshParser:
                 'zsh_version': self.version,
                 'source_dir': str(relpath(self.src_dir, out_path.parent)),
                 'clang_args': self.clang_args,
+                'libclang_path': str(self.libclang_path)
+                if self.libclang_path
+                else None,
                 'generated_at': datetime.now(UTC).isoformat(),
             },
             'files': [asdict(file) for file in self.files],
@@ -471,6 +475,7 @@ class ZshParser:
                 '-std=c99',
                 '-DZSH_VERSION="5.9"',
             ],
+            args.clang,
             args.zsh_version,
             args.verbose,
         )
@@ -486,7 +491,7 @@ def main() -> None:
     )
     parser.add_argument(
         '--clang',
-        type=str,
+        type=Path,
         default=os.environ.get('LIBCLANG_PATH'),
         help='Path to libclang',
     )
