@@ -1,6 +1,6 @@
-[tasks.extract-raw-grammar]
+[tasks.extract-raw-syntax]
 depends = ['//vendor:prepare']
-sources = ['//vendor/zsh/Src/*.c', '//vendor/zsh/Src/zsh.h', 'src/zsh_grammar/extract_zsh_raw.py']
-outputs = ['zsh_raw_extraction.json']
-description = "Extract raw Zsh grammar"
-run = 'uv run extract_zsh_raw'
+sources = ['//vendor/zsh/Src/*.c', '//vendor/zsh/Src/zsh.h', 'src/zsh_grammar/extract_raw_syntax.py']
+outputs = ['raw-syntax.json']
+description = "Extract raw Zsh syntax"
+run = 'uv run extract_raw_syntax'

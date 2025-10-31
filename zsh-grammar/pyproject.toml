@@ -12,7 +12,7 @@ classifiers = [
 ]
 
 [project.scripts]
-extract_zsh_raw = 'zsh_grammar.extract_zsh_raw:main'
+extract_raw_syntax = 'zsh_grammar.extract_raw_syntax:main'
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]

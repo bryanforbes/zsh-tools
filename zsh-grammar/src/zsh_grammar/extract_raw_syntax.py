@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 # Defaults
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
 DEFAULT_SRC: Final = PROJECT_ROOT / 'vendor' / 'zsh' / 'Src'
-DEFAULT_OUT: Final = PROJECT_ROOT / 'zsh-grammar' / 'zsh_raw_extraction.json'
+DEFAULT_OUT: Final = PROJECT_ROOT / 'zsh-grammar' / 'raw-syntax.json'
 
 # The option names in Zsh source code do not have underscores
 TRACKED_OPTIONS: Final = {
@@ -397,7 +397,7 @@ class ZshParser:
         if self.verbose:
             print(f'\u2713 {path.name}: {stats}')
 
-    def save_extraction(self, out_path: Path, /) -> None:
+    def save_syntax(self, out_path: Path, /) -> None:
         doc: dict[str, object] = {
             'meta': {
                 'zsh_version': self.version,
@@ -524,7 +524,7 @@ def main() -> None:
         extractor.parse(file)
 
     # Save JSON
-    extractor.save_extraction(args.out.resolve())
+    extractor.save_syntax(args.out.resolve())
 
     if extractor.verbose:
         print('Wrote', args.out)

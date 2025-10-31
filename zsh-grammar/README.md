@@ -65,4 +65,4 @@ mise //vendor:prepare
 
 ## Workflow
 
-1. Run `mise //zsh-grammar:extract-raw-grammar` to extract the raw grammar from the Zsh source code.
+1. Run `mise //zsh-grammar:extract-raw-syntax` to extract the raw syntax from the Zsh source code.

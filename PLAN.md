@@ -221,8 +221,8 @@ Example (illustrative)
 Purpose
 
 - Faithful, low-level snapshot of Zsh syntax signals from C sources before normalization into CGD.
-- Producer: `zsh-grammar/src/zsh_grammar/extract_zsh_raw.py`
-- Output: `zsh-grammar/zsh_raw_extraction.json`
+- Producer: `zsh-grammar/src/zsh_grammar/extract_raw_syntax.py`
+- Output: `zsh-grammar/raw-syntax.json`
 - Consumers: CGD mapper, diagnostics tooling, provenance docs.
 
 Top-level fields
@@ -305,8 +305,8 @@ Example (abridged)
 
 Module
 
-- Path: `zsh-grammar/src/zsh_grammar/extract_zsh_raw.py`
-- Usage: `mise //zsh-grammar:extract-raw-grammar`
+- Path: `zsh-grammar/src/zsh_grammar/extract_raw_syntax.py`
+- Usage: `mise //zsh-grammar:extract-raw-syntax`
 - Options: `--zsh-version 5.9`, `--verbose`
 
 Notes
