@@ -125,7 +125,7 @@ name = "zsh-tools"
 version = "0.0.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "tree-sitter-zsh" },
+    { name = "tree-sitter-zsh", extra = ["core"] },
     { name = "zsh-grammar" },
 ]
 
@@ -138,7 +138,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "tree-sitter-zsh", editable = "tree-sitter-zsh" },
+    { name = "tree-sitter-zsh", extras = ["core"], editable = "tree-sitter-zsh" },
     { name = "zsh-grammar", editable = "zsh-grammar" },
 ]
 

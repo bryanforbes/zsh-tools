@@ -11,7 +11,7 @@ classifiers = [
   "Private :: Do Not Upload",
 ]
 dependencies = [
-  'tree-sitter-zsh',
+  'tree-sitter-zsh[core]',
   'zsh-grammar'
 ]
 

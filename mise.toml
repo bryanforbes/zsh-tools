@@ -25,3 +25,11 @@ run = 'pnpm install'
 [tasks."init-dev:uv"]
 description = "Initialize uv"
 run = 'uv sync --all-extras'
+
+[tasks.build]
+description = "Build everything"
+depends = '//...:build:*'
+
+[tasks.test]
+description = "Run all tests"
+depends = '//...:test:*'
