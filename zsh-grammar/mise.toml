@@ -1,6 +1,16 @@
 [tasks.extract-raw-syntax]
-depends = ['//vendor:prepare']
-sources = ['//vendor/zsh/Src/*.c', '//vendor/zsh/Src/zsh.h', 'src/zsh_grammar/extract_raw_syntax.py']
+wait_for = ['//vendor:prepare:source']
+sources = [
+  '//vendor/zsh/Src/*.c',
+  '//vendor/zsh/Src/zsh.h',
+  '//vendor/zsh/Src/zsh.mdh',
+  'src/zsh_grammar/extract_raw_syntax.py',
+]
 outputs = ['raw-syntax.json']
 description = "Extract raw Zsh syntax"
-run = 'uv run extract_raw_syntax'
+run = '''
+if [[ ! -f "../vendor/Src/zsh.mdh" ]]; then
+  mise run //vendor:prepare
+fi
+uv run extract_raw_syntax
+'''

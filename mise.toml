@@ -1,7 +1,9 @@
 experimental_monorepo_root = true
 
 [settings]
+experimental = true
 python.uv_venv_auto = true
+lockfile = true
 task.monorepo_exclude_dirs = [
   '.*',
   'node_modules',
@@ -11,18 +13,32 @@ task.monorepo_exclude_dirs = [
   'vendor/zsh',
 ]
 
+[tools]
+node = '24'
+uv = 'latest'
+'pipx:basedpyright' = 'latest'
+ruff = 'latest'
+
+[hooks]
+postinstall = '''
+corepack enable
+mise run dev
+'''
+
 [env]
-_.python.venv = { path = ".venv", create = true }
+_.path = ['./node_modules/.bin']
 
-[tasks.init-dev]
+[tasks.dev]
 description = "Initialize development environment"
-depends = ['//:init-dev:*']
+depends = ['//:dev:*']
 
-[tasks."init-dev:pnpm"]
+[tasks."dev:pnpm"]
 description = "Initialize node modules"
 run = 'pnpm install'
+sources = ['package.json', 'pnpm-lock.yaml', 'mise.toml']
+outputs = ['node_modules/.pnpm/lock.yaml']
 
-[tasks."init-dev:uv"]
+[tasks."dev:uv"]
 description = "Initialize uv"
 run = 'uv sync --all-extras'
 

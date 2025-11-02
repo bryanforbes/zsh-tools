@@ -9,3 +9,5 @@ onlyBuiltDependencies:
   - tree-sitter-cli
 
 updateNotifier: false
+autoInstallPeers: true
+nodeLinker: hoisted

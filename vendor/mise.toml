@@ -7,6 +7,7 @@ run = 'git clean -Xdf'
 
 [tasks."prepare:preconfigure"]
 description = "Run the preconfig script for Zsh"
+wait_for = [':clean']
 sources = ["configure.ac"]
 outputs = ["configure"]
 run = './Util/preconfig'

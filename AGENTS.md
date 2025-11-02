@@ -1,7 +1,7 @@
 # AGENTS Guide
 
-- Dependencies: `pnpm install`; Python: `uv sync` (Python 3.12–3.14), Rust/Go per toolchains.
-- Lint JS: `pnpm lint`; Format JS: `pnpm exec prettier -w .`.
+- Dependencies: `mise install`
+- Lint JS: `pnpm eslint .`; Format JS: `pnpm prettier -w .`
 - Lint/format Python: `uv run ruff check . && uv run ruff format .`; Types: `uv run basedpyright`.
 - All tests: `pnpm -r test` (delegates to tree-sitter-zsh).
 - Single grammar test: `pnpm exec tree-sitter test -f "<name|path>"` in `tree-sitter-zsh/`.
