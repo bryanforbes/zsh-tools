@@ -3,7 +3,10 @@ dir = "{{ config_root }}/zsh"
 
 [tasks.clean]
 description = "Clean the Zsh source directory"
-run = 'git clean -Xdf'
+run = [
+  'git clean -Xdf',
+  'rm -f ../zsh_compile_commands.json',
+]
 
 [tasks."prepare:preconfigure"]
 description = "Run the preconfig script for Zsh"
@@ -19,12 +22,12 @@ sources = ["configure", "config.h.in"]
 outputs = ["config.h"]
 run = './configure'
 
-[tasks."prepare:source"]
-description = "Prepare the Zsh source directory for extraction"
+[tasks."prepare:build"]
+description = "Build Zsh for extraction"
 depends = ':prepare:configure'
-sources = ["**/*.mdd"]
-outputs = ["Src/zsh.mdh"]
-run = 'make -C Src headers'
+sources = ["**/*.c", "Src/zsh.h"]
+outputs = ["Src/zsh", "zsh_compile_commands.json"]
+run = 'bear --output {{config_root}}/zsh_compile_commands.json -- make'
 
 [tasks.prepare]
 description = "Prepare the Zsh source"

@@ -47,3 +47,6 @@ mise.*.local.toml
 mise.local.toml
 .mise/*.local.toml
 mise/*.local.toml
+
+/vendor/*.json
+/zsh-grammar/*.json
