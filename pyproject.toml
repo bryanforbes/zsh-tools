@@ -11,13 +11,7 @@ classifiers = [
   "Private :: Do Not Upload",
 ]
 dependencies = [
-  'tree-sitter-zsh[core]',
   'zsh-grammar'
-]
-
-[dependency-groups]
-dev = [
-    "clang>=20.0.0",
 ]
 
 [tool.uv]
@@ -25,10 +19,9 @@ package = false
 
 [tool.uv.sources]
 zsh-grammar = { workspace = true }
-tree-sitter-zsh = { workspace = true }
 
 [tool.uv.workspace]
-members = ["zsh-grammar", "tree-sitter-zsh"]
+members = ["zsh-grammar"]
 
 [tool.pyright]
 stubPath = './typings'

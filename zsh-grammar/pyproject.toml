@@ -10,10 +10,11 @@ requires-python = ">=3.12,<3.15"
 classifiers = [
   "Private :: Do Not Upload",
 ]
+dependencies = [
+    "clang>=20.0.0",
+]
 
 [project.scripts]
-extract_raw_syntax = 'zsh_grammar.extract_raw_syntax:main'
-extract_relations = 'zsh_grammar.extract_relations:main'
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]
