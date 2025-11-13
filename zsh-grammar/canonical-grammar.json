@@ -1,0 +1,93 @@
+{
+  "$schema": "./canonical-grammar.schema.json",
+  "languages": {
+    "core": {
+      "SEPER": ";",
+      "NEWLIN": "\\\\n",
+      "SEMI": ";",
+      "DSEMI": ";;",
+      "AMPER": "&",
+      "INPAR": "(",
+      "OUTPAR": ")",
+      "DBAR": "||",
+      "DAMPER": "&&",
+      "OUTANG": ">",
+      "OUTANGBANG": ">|",
+      "DOUTANG": ">>",
+      "DOUTANGBANG": ">>|",
+      "INANG": "<",
+      "INOUTANG": "<>",
+      "DINANG": "<<",
+      "DINANGDASH": "<<-",
+      "INANGAMP": "<&",
+      "OUTANGAMP": ">&",
+      "AMPOUTANG": "&>",
+      "OUTANGAMPBANG": "&>|",
+      "DOUTANGAMP": ">>&",
+      "DOUTANGAMPBANG": ">>&|",
+      "TRINANG": "<<<",
+      "BAR": "|",
+      "BARAMP": "|&",
+      "INOUTPAR": "()",
+      "DINPAR": "((",
+      "DOUTPAR": "))",
+      "AMPERBANG": "&|",
+      "SEMIAMP": ";&",
+      "SEMIBAR": ";|",
+      "BANG": "!",
+      "DINBRACK": "[[",
+      "INBRACE": "{",
+      "OUTBRACE": "}",
+      "CASE": "case",
+      "COPROC": "coproc",
+      "DOLOOP": "do",
+      "DONE": "done",
+      "ELIF": "elif",
+      "ELSE": "else",
+      "ZEND": "end",
+      "ESAC": "esac",
+      "FI": "fi",
+      "FOR": "for",
+      "FOREACH": "foreach",
+      "FUNC": "function",
+      "IF": "if",
+      "NOCORRECT": "nocorrect",
+      "REPEAT": "repeat",
+      "SELECT": "select",
+      "THEN": "then",
+      "TIME": "time",
+      "UNTIL": "until",
+      "WHILE": "while",
+      "TYPESET": {
+        "union": [
+          "declare",
+          "export",
+          "float",
+          "integer",
+          "local",
+          "readonly",
+          "typeset"
+        ]
+      },
+      "Parameter": {
+        "union": [
+          {
+            "$ref": "Variable"
+          },
+          "*",
+          "@",
+          "#",
+          "?",
+          "-",
+          "$",
+          "!"
+        ]
+      },
+      "Variable": {
+        "pattern": "[a-zA-Z0-9_]+"
+      }
+    }
+  },
+  "zsh_version": "5.9",
+  "zsh_revision": "73d317384c9225e46d66444f93b46f0fbe7084ef"
+}

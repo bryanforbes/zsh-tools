@@ -23,7 +23,7 @@ zsh-grammar = { workspace = true }
 [tool.uv.workspace]
 members = ["zsh-grammar"]
 
-[tool.pyright]
+[tool.basedpyright]
 stubPath = './typings'
 exclude = [
   "**/node_modules",
@@ -57,7 +57,7 @@ reportIncompatibleUnannotatedOverride = "error"
 reportInvalidAbstractMethod = "error"
 
 executionEnvironments = [
-  { root = "typings", reportImplicitOverride = "none", reportIncompatibleVariableOverride = "none" }
+  { root = "typings", reportImplicitOverride = "none", reportIncompatibleVariableOverride = "none" },
 ]
 
 [tool.ruff]

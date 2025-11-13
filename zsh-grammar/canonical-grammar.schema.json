@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "title": "ZshGrammar",
+  "definitions": {
+    "Language": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[A-Z][a-zA-Z0-9_]*$",
+        "description": "Symbol names must start with uppercase and contain only letters, digits, or underscore"
+      },
+      "additionalProperties": { "$ref": "#/definitions/GrammarNode" }
+    },
+    "Optional": {
+      "type": "object",
+      "required": ["optional"],
+      "properties": {
+        "optional": { "$ref": "#/definitions/GrammarNode" }
+      },
+      "additionalProperties": false,
+      "description": "Optional node"
+    },
+    "Condition": {
+      "oneOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "required": ["not"],
+          "properties": {
+            "not": { "$ref": "#/definitions/Condition" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["and"],
+          "properties": {
+            "and": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Condition" },
+              "minItems": 2
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["or"],
+          "properties": {
+            "or": {
+              "type": "array",
+              "items": { "$ref": "#/definitions/Condition" },
+              "minItems": 2
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Variant": {
+      "type": "object",
+      "required": ["variant", "condition"],
+      "properties": {
+        "variant": { "$ref": "#/definitions/GrammarNode" },
+        "condition": { "$ref": "#/definitions/Condition" }
+      },
+      "additionalProperties": false,
+      "description": "Variant path based on options"
+    },
+    "Terminal": {
+      "oneOf": [
+        { "type": "string", "description": "Literal terminal string" },
+        {
+          "type": "object",
+          "required": ["pattern"],
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "Regex pattern terminal"
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Union": {
+      "type": "object",
+      "required": ["union"],
+      "properties": {
+        "union": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/GrammarNode" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Sequence": {
+      "type": "object",
+      "required": ["sequence"],
+      "properties": {
+        "sequence": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/GrammarNode" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Repeat": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["repeat"],
+          "properties": {
+            "repeat": { "$ref": "#/definitions/GrammarNode" }
+          },
+          "additionalProperties": false,
+          "description": "Zero-or-more repetition"
+        },
+        {
+          "type": "object",
+          "required": ["repeat1"],
+          "properties": {
+            "repeat1": { "$ref": "#/definitions/GrammarNode" }
+          },
+          "additionalProperties": false,
+          "description": "One-or-more repetition"
+        }
+      ]
+    },
+    "Ref": {
+      "type": "object",
+      "required": ["$ref"],
+      "properties": {
+        "$ref": {
+          "type": "string",
+          "pattern": "^(/[a-zA-Z0-9_]+?/)?[a-zA-Z0-9_]+$",
+          "description": "Reference to a symbol in the same or another language"
+        }
+      },
+      "additionalProperties": false
+    },
+    "GrammarNode": {
+      "anyOf": [
+        { "$ref": "#/definitions/Optional" },
+        { "$ref": "#/definitions/Terminal" },
+        { "$ref": "#/definitions/Union" },
+        { "$ref": "#/definitions/Sequence" },
+        { "$ref": "#/definitions/Repeat" },
+        { "$ref": "#/definitions/Ref" },
+        { "$ref": "#/definitions/Variant" }
+      ]
+    }
+  },
+  "type": "object",
+  "required": ["languages"],
+  "properties": {
+    "languages": {
+      "type": "object",
+      "required": ["core"],
+      "properties": {
+        "core": { "$ref": "#/definitions/Language" }
+      },
+      "propertyNames": {
+        "pattern": "^[a-z][a-zA-Z0-9_]*$",
+        "description": "Language names must start with lowercase and contain only letters, digits, or underscore"
+      },
+      "additionalProperties": { "$ref": "#/definitions/Language" }
+    },
+    "version": { "type": "string" },
+    "zsh_version": { "type": "string" },
+    "zsh_revision": { "type": "string" }
+  }
+}

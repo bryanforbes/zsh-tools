@@ -22,7 +22,7 @@ ruff = 'latest'
 [hooks]
 postinstall = '''
 corepack enable
-mise run dev
+mise run :dev
 '''
 
 [env]
