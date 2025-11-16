@@ -21,6 +21,7 @@ if TYPE_CHECKING:
         Ref,
         Repeat,
         Sequence,
+        Source,
         Terminal,
         Token,
         Union,
@@ -37,6 +38,19 @@ def _annotate_node[N: _BaseNode](node: N, /, **kwargs: Unpack[_BaseNode]) -> N:
         node['source'] = kwargs['source']
 
     return node
+
+
+def create_source(
+    file: str, line: int, /, *, function: str | None = None, context: str | None = None
+) -> Source:
+    source: Source = {'file': file, 'line': line}
+
+    if function is not None:
+        source['function'] = function
+    if context is not None:
+        source['context'] = context
+
+    return source
 
 
 def create_empty(**kwargs: Unpack[_BaseNode]) -> Empty:

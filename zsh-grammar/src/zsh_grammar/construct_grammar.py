@@ -8,11 +8,12 @@ from argparse import ArgumentParser
 from pathlib import Path
 from typing import TYPE_CHECKING, Final, NotRequired, TypedDict, cast
 
+import jsonschema
 from clang.cindex import Cursor, CursorKind, StorageClass
 
 from zsh_grammar.grammar_utils import (
     create_ref,
-    create_sequence,
+    create_source,
     create_terminal,
     create_token,
     create_union,
@@ -25,6 +26,11 @@ if TYPE_CHECKING:
     from zsh_grammar._types import Grammar, Language
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
+
+
+def _is_parser_function(name: str, /) -> bool:
+    """Check if a function name is a parser function (par_* or parse_*)."""
+    return name.startswith(('par_', 'parse_'))
 
 
 class _FunctionNode(TypedDict):
@@ -92,7 +98,7 @@ def _extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
             visibility, return_type, func_name, params = match.groups()
 
             # Filter to parser functions only
-            if not func_name.startswith(('par_', 'parse_')):
+            if not _is_parser_function(func_name):
                 continue
 
             # Extract visibility
@@ -168,14 +174,14 @@ def _extract_lexer_state_changes(
 ) -> dict[str, dict[str, list[int]]]:
     """
     Extract lexer state changes from parser functions.
-    
+
     Returns a dict mapping function names to state changes:
     {
         'par_cond': {'INCOND': [line1, line2, ...]},
         'par_for': {'INFOR': [line1, ...]},
         ...
     }
-    
+
     Lexer states include:
     - INCMDPOS: in command position
     - INCOND: inside [[ ... ]]
@@ -185,22 +191,33 @@ def _extract_lexer_state_changes(
     - etc.
     """
     state_changes: dict[str, dict[str, list[int]]] = {}
-    
+
     # Common lexer state variables to look for
     lexer_states = {
-        'incmdpos', 'incond', 'inredir', 'incasepat',
-        'infor', 'inrepeat', 'intypeset', 'isnewlin',
-        'in_math', 'aliasspaceflag', 'incomparison',
-        'in_array', 'in_substitution', 'in_braceexp', 'in_globpat'
+        'incmdpos',
+        'incond',
+        'inredir',
+        'incasepat',
+        'infor',
+        'inrepeat',
+        'intypeset',
+        'isnewlin',
+        'in_math',
+        'aliasspaceflag',
+        'incomparison',
+        'in_array',
+        'in_substitution',
+        'in_braceexp',
+        'in_globpat',
     }
-    
+
     # Parse parse.c to find state management
     tu = parser.parse('parse.c')
     if tu is None or tu.cursor is None:
         return state_changes
-    
+
     parser_func_names = set(parser_functions.keys())
-    
+
     for cursor in tu.cursor.walk_preorder():
         if (
             cursor.kind == CursorKind.FUNCTION_DECL
@@ -209,7 +226,7 @@ def _extract_lexer_state_changes(
         ):
             func_name = cursor.spelling
             state_changes[func_name] = {}
-            
+
             # Walk function body looking for state assignments
             for child in cursor.walk_preorder():
                 if child.kind == CursorKind.BINARY_OPERATOR:
@@ -219,41 +236,41 @@ def _extract_lexer_state_changes(
                         if token.spelling in lexer_states:
                             left_operand = token.spelling.lower()
                             break
-                    
+
                     if left_operand:
                         if left_operand not in state_changes[func_name]:
                             state_changes[func_name][left_operand] = []
-                        state_changes[func_name][left_operand].append(child.location.line)
-    
+                        state_changes[func_name][left_operand].append(
+                            child.location.line
+                        )
+
     # Filter to only functions that have state changes
-    return {
-        func: states
-        for func, states in state_changes.items()
-        if states
-    }
+    return {func: states for func, states in state_changes.items() if states}
 
 
-def _detect_cycles(call_graph: dict[str, _FunctionNode], /) -> dict[str, list[list[str]]]:
+def _detect_cycles(
+    call_graph: dict[str, _FunctionNode], /
+) -> dict[str, list[list[str]]]:
     """
     Detect all cycles in the call graph.
-    
+
     Returns a dict mapping each function to the list of cycles it participates in.
     Uses depth-first search to identify all cycles.
     """
     visited: set[str] = set()
     rec_stack: set[str] = set()
     cycles: set[tuple[str, ...]] = set()
-    
+
     def dfs(node: str, path: list[str]) -> None:
         visited.add(node)
         rec_stack.add(node)
         path.append(node)
-        
+
         if node not in call_graph:
             path.pop()
             rec_stack.discard(node)
             return
-        
+
         for neighbor in call_graph[node]['calls']:
             if neighbor not in visited:
                 dfs(neighbor, path)
@@ -266,15 +283,15 @@ def _detect_cycles(call_graph: dict[str, _FunctionNode], /) -> dict[str, list[li
                 min_idx = cycle_nodes.index(min_node)
                 normalized = tuple(cycle_nodes[min_idx:] + cycle_nodes[:min_idx])
                 cycles.add(normalized)
-        
+
         path.pop()
         rec_stack.discard(node)
-    
+
     # Run DFS from all nodes
     for start_node in call_graph:
         if start_node not in visited:
             dfs(start_node, [])
-    
+
     # Map each function to its cycles
     func_to_cycles: dict[str, list[list[str]]] = {}
     for cycle in cycles:
@@ -282,7 +299,7 @@ def _detect_cycles(call_graph: dict[str, _FunctionNode], /) -> dict[str, list[li
             if func not in func_to_cycles:
                 func_to_cycles[func] = []
             func_to_cycles[func].append(list(cycle))
-    
+
     return func_to_cycles
 
 
@@ -299,6 +316,23 @@ def _function_to_rule_name(func_name: str, /) -> str:
     if func_name.startswith('parse_'):
         return func_name[6:]  # Remove 'parse_' prefix
     return func_name
+
+
+def _build_func_to_rule_map(  # pyright: ignore[reportUnusedFunction]
+    parser_functions: dict[str, _FunctionNode], /
+) -> dict[str, str]:
+    """
+    Build a mapping from parser function names to rule names.
+
+    Iterates through parser functions and converts function names to rule names
+    using standard naming conventions.
+    """
+    func_to_rule: dict[str, str] = {}
+    for func_name in parser_functions:
+        if _is_parser_function(func_name):
+            rule_name = _function_to_rule_name(func_name)
+            func_to_rule[func_name] = rule_name
+    return func_to_rule
 
 
 def _build_grammar_rules(
@@ -321,15 +355,10 @@ def _build_grammar_rules(
     while accurately representing recursive parsing patterns.
     """
     rules: Language = {}
-    
-    # Detect cycles to handle them appropriately
-    func_to_cycles = _detect_cycles(call_graph)
 
     # Identify core parsing functions
     core_parse_funcs = {
-        name: node
-        for name, node in call_graph.items()
-        if name.startswith(('par_', 'parse_'))
+        name: node for name, node in call_graph.items() if _is_parser_function(name)
     }
 
     # Build rules from parse functions
@@ -339,36 +368,25 @@ def _build_grammar_rules(
         # Extract unique parse function calls
         called_funcs = node['calls']
         unique_parse_calls = sorted(
-            {f for f in called_funcs if f.startswith(('par_', 'parse_')) and f != func_name}
+            {f for f in called_funcs if _is_parser_function(f) and f != func_name}
         )
 
         # Convert called function names to rule refs
         rule_refs = [create_ref(_function_to_rule_name(f)) for f in unique_parse_calls]
 
         # Build source info from parser_functions if available
-        source_info = None
         if func_name in parser_functions:
             pf = parser_functions[func_name]
-            source_info = {
-                'file': pf['file'],
-                'line': pf['line'],
-                'function': func_name,
-            }
+            source_info = create_source(pf['file'], pf['line'], function=func_name)
         else:
             # Fallback from call_graph
-            source_info = {
-                'file': node['file'],
-                'line': node['line'],
-                'function': func_name,
-            }
+            source_info = create_source(node['file'], node['line'], function=func_name)
 
         # Classify rule based on unique calls
         if not unique_parse_calls:
             # No parse function calls -> leaf/terminal
             # These are typically token consumers (par_getword, etc.)
-            rules[rule_name] = create_terminal(
-                f'[{rule_name}]', source=source_info
-            )
+            rules[rule_name] = create_terminal(f'[{rule_name}]', source=source_info)
         elif len(unique_parse_calls) == 1:
             # Single unique parse call -> direct delegation/reference
             # Don't wrap single refs in a sequence (sequences need 2+ elements)
@@ -378,9 +396,7 @@ def _build_grammar_rules(
             # Multiple unique calls -> union/alternatives
             # (typically via switch/if statements with mutually exclusive branches)
             # Cycles are naturally broken because we use refs, not inlining
-            rules[rule_name] = create_union(
-                rule_refs, source=source_info
-            )
+            rules[rule_name] = create_union(rule_refs, source=source_info)
 
     return rules
 
@@ -556,17 +572,8 @@ def _extract_case_statements(  # noqa: C901, PLR0912, PLR0915
                             for candidate in stmt.walk_preorder():
                                 if candidate.kind == CursorKind.CALL_EXPR:
                                     callee = candidate.spelling
-                                    if callee.startswith(('par_', 'parse_')):
-                                        # Convert function name to rule name
-                                        if callee.startswith('par_'):
-                                            rule_name = callee[
-                                                4:
-                                            ]  # Remove 'par_' prefix
-                                        else:
-                                            rule_name = callee[
-                                                6:
-                                            ]  # Remove 'parse_' prefix
-
+                                    if _is_parser_function(callee):
+                                        rule_name = _function_to_rule_name(callee)
                                         yield token_name, rule_name
                                         found_par_call = True
                                         break
@@ -593,17 +600,8 @@ def _extract_case_statements(  # noqa: C901, PLR0912, PLR0915
                                 for candidate in node_to_search.walk_preorder():
                                     if candidate.kind == CursorKind.CALL_EXPR:
                                         callee = candidate.spelling
-                                        if callee.startswith(('par_', 'parse_')):
-                                            # Convert function name to rule name
-                                            if callee.startswith('par_'):
-                                                rule_name = callee[
-                                                    4:
-                                                ]  # Remove 'par_' prefix
-                                            else:
-                                                rule_name = callee[
-                                                    6:
-                                                ]  # Remove 'parse_' prefix
-
+                                        if _is_parser_function(callee):
+                                            rule_name = _function_to_rule_name(callee)
                                             yield token_name, rule_name
                                             found_par_call = True
                                             break
@@ -621,17 +619,8 @@ def _extract_case_statements(  # noqa: C901, PLR0912, PLR0915
                             for candidate in stmt.walk_preorder():
                                 if candidate.kind == CursorKind.CALL_EXPR:
                                     callee = candidate.spelling
-                                    if callee.startswith(('par_', 'parse_')):
-                                        # Convert function name to rule name
-                                        if callee.startswith('par_'):
-                                            rule_name = callee[
-                                                4:
-                                            ]  # Remove 'par_' prefix
-                                        else:
-                                            rule_name = callee[
-                                                6:
-                                            ]  # Remove 'parse_' prefix
-
+                                    if _is_parser_function(callee):
+                                        rule_name = _function_to_rule_name(callee)
                                         # For default case, associate with special token
                                         # Indicates it's the fallback/catch-all rule
                                         yield '__default__', rule_name
@@ -834,22 +823,17 @@ def _build_token_mapping(parser: ZshParser, /) -> dict[str, _TokenDef]:
 def _validate_schema(grammar: Grammar, schema_path: Path, /) -> list[str]:
     """
     Validate the grammar against the JSON schema.
-    
+
     Returns a list of validation errors, or an empty list if valid.
     """
-    try:
-        import jsonschema
-    except ImportError:
-        return ['jsonschema library not available for validation']
-    
     if not schema_path.exists():
         return [f'Schema file not found: {schema_path}']
-    
+
     try:
         schema = json.loads(schema_path.read_text())
     except json.JSONDecodeError as e:
         return [f'Failed to parse schema: {e}']
-    
+
     errors: list[str] = []
     try:
         jsonschema.validate(instance=grammar, schema=schema)
@@ -857,11 +841,13 @@ def _validate_schema(grammar: Grammar, schema_path: Path, /) -> list[str]:
         errors.append(f'Schema validation error at {e.path}: {e.message}')
     except jsonschema.SchemaError as e:
         errors.append(f'Invalid schema: {e.message}')
-    
+
     return errors
 
 
-def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR0912
+def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
+    zsh_path: Path, version: str, /
+) -> Grammar:
     zsh_src = zsh_path / 'Src'
     parser = ZshParser(zsh_src)
 
@@ -913,13 +899,13 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
 
     # Phase 2.3: Detect cycles in call graph
     func_to_cycles = _detect_cycles(call_graph)
-    
+
     # Phase 4: Extract lexer state dependencies
     lexer_states = _extract_lexer_state_changes(parser, parser_functions)
-    
+
     # Phase 3: Build grammar rules from call graph
     grammar_rules = _build_grammar_rules(call_graph, parser_functions)
-    
+
     # Merge rules into core_symbols
     core_symbols.update(grammar_rules)
 
@@ -973,23 +959,24 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
             for func in sorted(called_parser_funcs):
                 rule_name = func[4:] if func.startswith('par_') else func[6:]
                 print(f'    - {func:30} → {rule_name}')
-    
+
     # Log lexer state dependencies
     if lexer_states:
-        print(f'\nLexer state management: {len(lexer_states)} parser functions modify state')
+        num_funcs = len(lexer_states)
+        print(f'\nLexer state management: {num_funcs} parser functions modify state')
         for func, states in sorted(lexer_states.items()):
             state_str = ', '.join(sorted(states.keys()))
             rule_name = func[4:] if func.startswith('par_') else func[6:]
             print(f'  {rule_name:20} modifies: {state_str}')
     else:
         print('\nNo lexer state changes detected (may require full preprocessing)')
-    
+
     # Log cycle detection results
     if func_to_cycles:
         print(f'\nCycle detection found {len(func_to_cycles)} functions in cycles:')
         # Show unique cycles (avoid duplicates)
         seen_cycles: set[tuple[str, ...]] = set()
-        for func, cycles in sorted(func_to_cycles.items()):
+        for _func, cycles in sorted(func_to_cycles.items()):
             for cycle in cycles:
                 # Normalize cycle for display
                 min_node = min(cycle)
@@ -997,10 +984,10 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
                 normalized = tuple(cycle[min_idx:] + cycle[:min_idx])
                 if normalized not in seen_cycles:
                     seen_cycles.add(normalized)
-        
+
         for cycle in sorted(seen_cycles):
             print(f'  Cycle: {" → ".join(cycle)} → {cycle[0]}')
-        
+
         # Explain how cycles are handled
         print('\n  Cycles are broken by using $ref instead of inlining definitions.')
         print('  This keeps the grammar acyclic while representing recursive patterns.')
@@ -1014,7 +1001,7 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
     # Phase 5.2: Validate grammar against schema
     schema_path = PROJECT_ROOT / 'zsh-grammar' / 'canonical-grammar.schema.json'
     validation_errors = _validate_schema(grammar, schema_path)
-    
+
     if validation_errors:
         print('\nSchema validation errors:')
         for error in validation_errors:

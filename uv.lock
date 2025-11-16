@@ -164,12 +164,14 @@ source = { editable = "zsh-grammar" }
 dependencies = [
     { name = "clang" },
     { name = "jsonschema" },
+    { name = "typing-extensions" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "clang", specifier = ">=20.0.0" },
     { name = "jsonschema", specifier = ">=4.0.0" },
+    { name = "typing-extensions", specifier = ">=4.15.0" },
 ]
 
 [[package]]
