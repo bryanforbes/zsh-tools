@@ -163,6 +163,76 @@ def _build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
     return call_graph
 
 
+def _extract_lexer_state_changes(
+    parser: ZshParser, parser_functions: dict[str, _FunctionNode], /
+) -> dict[str, dict[str, list[int]]]:
+    """
+    Extract lexer state changes from parser functions.
+    
+    Returns a dict mapping function names to state changes:
+    {
+        'par_cond': {'INCOND': [line1, line2, ...]},
+        'par_for': {'INFOR': [line1, ...]},
+        ...
+    }
+    
+    Lexer states include:
+    - INCMDPOS: in command position
+    - INCOND: inside [[ ... ]]
+    - INREDIR: after redirection operator
+    - INCASEPAT: in case pattern
+    - IN_MATH: inside (( ... ))
+    - etc.
+    """
+    state_changes: dict[str, dict[str, list[int]]] = {}
+    
+    # Common lexer state variables to look for
+    lexer_states = {
+        'incmdpos', 'incond', 'inredir', 'incasepat',
+        'infor', 'inrepeat', 'intypeset', 'isnewlin',
+        'in_math', 'aliasspaceflag', 'incomparison',
+        'in_array', 'in_substitution', 'in_braceexp', 'in_globpat'
+    }
+    
+    # Parse parse.c to find state management
+    tu = parser.parse('parse.c')
+    if tu is None or tu.cursor is None:
+        return state_changes
+    
+    parser_func_names = set(parser_functions.keys())
+    
+    for cursor in tu.cursor.walk_preorder():
+        if (
+            cursor.kind == CursorKind.FUNCTION_DECL
+            and cursor.is_definition()
+            and cursor.spelling in parser_func_names
+        ):
+            func_name = cursor.spelling
+            state_changes[func_name] = {}
+            
+            # Walk function body looking for state assignments
+            for child in cursor.walk_preorder():
+                if child.kind == CursorKind.BINARY_OPERATOR:
+                    # Look for assignment patterns: state_var = ...
+                    left_operand = None
+                    for token in child.get_tokens():
+                        if token.spelling in lexer_states:
+                            left_operand = token.spelling.lower()
+                            break
+                    
+                    if left_operand:
+                        if left_operand not in state_changes[func_name]:
+                            state_changes[func_name][left_operand] = []
+                        state_changes[func_name][left_operand].append(child.location.line)
+    
+    # Filter to only functions that have state changes
+    return {
+        func: states
+        for func, states in state_changes.items()
+        if states
+    }
+
+
 def _detect_cycles(call_graph: dict[str, _FunctionNode], /) -> dict[str, list[list[str]]]:
     """
     Detect all cycles in the call graph.
@@ -844,6 +914,9 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
     # Phase 2.3: Detect cycles in call graph
     func_to_cycles = _detect_cycles(call_graph)
     
+    # Phase 4: Extract lexer state dependencies
+    lexer_states = _extract_lexer_state_changes(parser, parser_functions)
+    
     # Phase 3: Build grammar rules from call graph
     grammar_rules = _build_grammar_rules(call_graph, parser_functions)
     
@@ -900,6 +973,16 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
             for func in sorted(called_parser_funcs):
                 rule_name = func[4:] if func.startswith('par_') else func[6:]
                 print(f'    - {func:30} → {rule_name}')
+    
+    # Log lexer state dependencies
+    if lexer_states:
+        print(f'\nLexer state management: {len(lexer_states)} parser functions modify state')
+        for func, states in sorted(lexer_states.items()):
+            state_str = ', '.join(sorted(states.keys()))
+            rule_name = func[4:] if func.startswith('par_') else func[6:]
+            print(f'  {rule_name:20} modifies: {state_str}')
+    else:
+        print('\nNo lexer state changes detected (may require full preprocessing)')
     
     # Log cycle detection results
     if func_to_cycles:
