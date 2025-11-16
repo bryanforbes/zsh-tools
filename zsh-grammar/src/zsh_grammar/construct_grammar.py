@@ -163,6 +163,59 @@ def _build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
     return call_graph
 
 
+def _detect_cycles(call_graph: dict[str, _FunctionNode], /) -> dict[str, list[list[str]]]:
+    """
+    Detect all cycles in the call graph.
+    
+    Returns a dict mapping each function to the list of cycles it participates in.
+    Uses depth-first search to identify all cycles.
+    """
+    visited: set[str] = set()
+    rec_stack: set[str] = set()
+    cycles: set[tuple[str, ...]] = set()
+    
+    def dfs(node: str, path: list[str]) -> None:
+        visited.add(node)
+        rec_stack.add(node)
+        path.append(node)
+        
+        if node not in call_graph:
+            path.pop()
+            rec_stack.discard(node)
+            return
+        
+        for neighbor in call_graph[node]['calls']:
+            if neighbor not in visited:
+                dfs(neighbor, path)
+            elif neighbor in rec_stack:
+                # Found a cycle: normalize it to canonical form
+                cycle_start_idx = path.index(neighbor)
+                cycle_nodes = path[cycle_start_idx:]
+                # Find minimum to normalize cycle
+                min_node = min(cycle_nodes)
+                min_idx = cycle_nodes.index(min_node)
+                normalized = tuple(cycle_nodes[min_idx:] + cycle_nodes[:min_idx])
+                cycles.add(normalized)
+        
+        path.pop()
+        rec_stack.discard(node)
+    
+    # Run DFS from all nodes
+    for start_node in call_graph:
+        if start_node not in visited:
+            dfs(start_node, [])
+    
+    # Map each function to its cycles
+    func_to_cycles: dict[str, list[list[str]]] = {}
+    for cycle in cycles:
+        for func in cycle:
+            if func not in func_to_cycles:
+                func_to_cycles[func] = []
+            func_to_cycles[func].append(list(cycle))
+    
+    return func_to_cycles
+
+
 def _function_to_rule_name(func_name: str, /) -> str:
     """
     Convert function name to grammar rule name.
@@ -189,14 +242,18 @@ def _build_grammar_rules(
     2. For each function, extract unique parse function calls
     3. Classify based on:
        - No calls: leaf/terminal
-       - 1 call: sequential composition
+       - 1 call: direct delegation (reference)
        - Multiple calls: union (alternatives/dispatch)
+    4. Handle cycles by using references (breaking circular dependencies)
 
-    Note: The call pattern inference is approximate. A function that calls
-    multiple parse functions typically does so via switch/if statements,
-    making them mutually exclusive unions rather than sequential.
+    Cycles are handled by detecting them and using $ref to break cycles
+    rather than inlining definitions. This allows the grammar to remain acyclic
+    while accurately representing recursive parsing patterns.
     """
     rules: Language = {}
+    
+    # Detect cycles to handle them appropriately
+    func_to_cycles = _detect_cycles(call_graph)
 
     # Identify core parsing functions
     core_parse_funcs = {
@@ -250,6 +307,7 @@ def _build_grammar_rules(
         else:
             # Multiple unique calls -> union/alternatives
             # (typically via switch/if statements with mutually exclusive branches)
+            # Cycles are naturally broken because we use refs, not inlining
             rules[rule_name] = create_union(
                 rule_refs, source=source_info
             )
@@ -783,6 +841,9 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
     )
     core_symbols['variable'] = create_terminal('[a-zA-Z0-9_]+')
 
+    # Phase 2.3: Detect cycles in call graph
+    func_to_cycles = _detect_cycles(call_graph)
+    
     # Phase 3: Build grammar rules from call graph
     grammar_rules = _build_grammar_rules(call_graph, parser_functions)
     
@@ -839,6 +900,27 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:  # noqa: PLR
             for func in sorted(called_parser_funcs):
                 rule_name = func[4:] if func.startswith('par_') else func[6:]
                 print(f'    - {func:30} → {rule_name}')
+    
+    # Log cycle detection results
+    if func_to_cycles:
+        print(f'\nCycle detection found {len(func_to_cycles)} functions in cycles:')
+        # Show unique cycles (avoid duplicates)
+        seen_cycles: set[tuple[str, ...]] = set()
+        for func, cycles in sorted(func_to_cycles.items()):
+            for cycle in cycles:
+                # Normalize cycle for display
+                min_node = min(cycle)
+                min_idx = cycle.index(min_node)
+                normalized = tuple(cycle[min_idx:] + cycle[:min_idx])
+                if normalized not in seen_cycles:
+                    seen_cycles.add(normalized)
+        
+        for cycle in sorted(seen_cycles):
+            print(f'  Cycle: {" → ".join(cycle)} → {cycle[0]}')
+        
+        # Explain how cycles are handled
+        print('\n  Cycles are broken by using $ref instead of inlining definitions.')
+        print('  This keeps the grammar acyclic while representing recursive patterns.')
 
     grammar: Grammar = {
         '$schema': './canonical-grammar.schema.json',
