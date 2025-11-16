@@ -243,6 +243,116 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
 
 **Output**: Call graph with cycles identified and break-points selected.
 
+### 2.4 Extract Direct Token Consumption Patterns
+
+**Objective**: Identify and capture tokens that are consumed directly within parser functions (not delegated to other functions), and reconstruct token-sequence-based grammar from AST control flow.
+
+**Critical Insight**: The semantic grammar comments in `parse.c` (lines 1604-1611, etc.) describe **token sequences**, not function call graphs. Example: `par_subsh()` has semantic grammar:
+
+```
+subsh : INPAR list OUTPAR | INBRACE list OUTBRACE [ "always" INBRACE list OUTBRACE ]
+```
+
+This documents three critical elements:
+
+1. Token sequences wrapping function calls: `INPAR` + `list` + `OUTPAR`
+2. Token-based alternatives: `INPAR...OUTPAR` **vs** `INBRACE...OUTBRACE` (not function alternatives)
+3. Token-based conditionals: `[ "always" ... ]` (the optional "always" block depends on matching STRING token "always")
+
+**Why current approach fails**: Function call graphs cannot reconstruct these patterns because:
+
+- `par_list` is called unconditionally, but its wrapper tokens (`INPAR`/`INBRACE`) are token-dependent alternatives
+- The "always" keyword is a STRING token match, not a function call—control flow analysis sees `if (tok == STRING && !strcmp(...))` but doesn't extract the semantic relationship
+- Token consumption order relative to function calls is invisible to call graph alone
+
+**Implementation**:
+
+1. **Token-to-Call Sequencing** (Phase 2.4.1):
+    - For each parser function, walk AST preorder and record all `tok == TOKEN` checks and `par_*()` calls in execution order
+    - Build timeline: `[tok==INPAR, par_list(), tok==OUTPAR] | [tok==INBRACE, par_list(), tok==OUTBRACE]`
+    - Group tokens by control flow branch (if/else, switch cases)
+
+2. **Reconstruct Semantic Grammar Comments**:
+    - Extract leading C comment from each `par_*` function definition
+    - Parse grammar notation: `rule : alternative1 | alternative2 [ optional ]`
+    - Match extracted token sequences against documented grammar to validate extraction
+    - For functions without comments, synthesize grammar from extracted sequences
+
+3. **Token-Based Dispatch**:
+    - Identify where token values (not function calls) determine control flow: `if (tok == INPAR) ... else if (tok == INBRACE) ...`
+    - Model as Union where alternatives are selected by token value, not function name
+    - Create Union nodes with token conditions, not function references
+
+4. **Handle String Matching**:
+    - Keywords like "always" are matched via `tok == STRING && !strcmp(tokstr, "always")`
+    - These are control flow conditionals, not parsed tokens
+    - Model as Optional wrapped with condition matching STRING token with specific content
+
+5. **Tail-Call vs Function Call Distinction**:
+    - Some token consumption happens after calling a function: `par_list(); if (tok == OUTPAR) ...`
+    - These are suffix tokens (wrap rule with `Sequence[ref(called_rule), ref(suffix_token)]`)
+    - Distinguish from prefix tokens (come before function call)
+
+**Example for `par_subsh` (lines 1615-1659)**:
+
+Extract from AST:
+
+```
+Function par_subsh:
+  Line 1617: enum lextok otok = tok;  # Save initial token
+  Line 1623: zshlex();                # Consume token
+
+  Branch 1 (if otok == INPAR):
+    Sequence: tok==INPAR, par_list(), tok==OUTPAR
+
+  Branch 2 (else - otok == INBRACE):
+    Sequence: tok==INBRACE, par_list(), tok==OUTBRACE
+    Optional: tok==STRING("always"), tok==INBRACE, par_save_list(), tok==OUTBRACE
+```
+
+Reconstruct as:
+
+```
+subsh: Union[
+  Sequence[INPAR, list, OUTPAR],
+  Sequence[INBRACE, list, OUTBRACE, Optional[Sequence[ALWAYS, INBRACE, list, OUTBRACE]]]
+]
+```
+
+Where `ALWAYS` is a synthetic token derived from STRING matching "always".
+
+**Output**: Function nodes extended with `token_sequences` field containing ordered list of (token_name or function_call) elements per control flow branch.
+
+**Critical Gap**: The grammar extraction currently produces only parser function call references, missing the token sequences documented in grammar comments. This means:
+
+- Semantic grammar: `INPAR list OUTPAR | INBRACE list OUTBRACE [ "always" ... ]` (from line 1605 comment)
+- Extracted grammar: `$ref: list` only (missing token envelope)
+
+**Implementation**:
+
+1. For each parser function, analyze token consumption patterns:
+    - Identify `tok == TOKEN_NAME` conditionals and assignments
+    - Identify `zshlex()` calls to advance the token stream
+    - Track sequence: token check → function call(s) → token check
+    - Detect guards: tokens checked conditionally for control flow
+2. Build token-aware parse sequences:
+    - Pattern: `tok == INPAR; par_list(); tok == OUTPAR` → Sequence `[INPAR, list, OUTPAR]`
+    - Pattern: `(tok == INPAR || tok == INBRACE); par_list()` → Union with token-dependent wrapping
+    - Pattern: `if (tok == ALWAYS) { ... par_list() ... }` → Optional sequence
+    - Pattern: `while (tok == SEPER) { ... }` → Repeated sequence of tokens
+3. Enhance call graph representation:
+    - Extend `_FunctionNode` with new fields:
+        - `token_prefix`: List of tokens consumed before nested call
+        - `token_suffix`: List of tokens consumed after nested call
+        - `token_checks`: List of conditional token checks affecting control flow
+    - Create `_TokenEdge` type to represent direct token consumption (separate from function calls)
+4. Integrate tokens into grammar rules:
+    - When building rules from call graph, prepend/append token sequences
+    - Convert token sequences to Sequence or Repeat nodes in grammar
+    - Apply control flow analysis to sequences (optional wrapping, repetition)
+
+**Output**: Extended call graph with token consumption metadata; token-aware parse tree patterns for each function; ability to reconstruct full grammar from tokens + function calls.
+
 ### 2.3.5 Distinguish Tail Recursion from Mutual Recursion
 
 **Objective**: Detect and properly model tail-recursive patterns separately from mutual recursion.
@@ -283,43 +393,68 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
 
 **Output**: Dictionary mapping functions to their conditional behavior flags.
 
-## Phase 3: Build Grammar Rules from Call Graph
+## Phase 3: Build Grammar Rules from Token-Sequence Patterns
 
-### 3.1 Generate Rule Definitions
+**FUNDAMENTAL RESTRUCTURING**: Rules are derived from token-sequence patterns extracted in Phase 2.4, not from function call graphs alone.
 
-**Objective**: Transform call graph patterns into grammar rule definitions.
+### 3.1 Generate Rule Definitions from Token Sequences
+
+**Objective**: Transform token-sequence patterns into grammar rule definitions.
+
+**Why token sequences matter**: A function may call the same function unconditionally (single call in call graph) but use different wrapping tokens depending on control flow. Example:
+
+- Call graph view: `par_subsh() calls par_list()`
+- Semantic grammar: `INPAR list OUTPAR | INBRACE list OUTBRACE`
+
+The token sequences capture what the call graph cannot.
 
 **Implementation**:
 
-1. For each `par_*` function, generate a rule:
-    - Rule name: Remove `par_` prefix and convert to lower_snake_case
-    - Example: `par_for` → rule named `for`
-2. Rule generation logic by function type:
-    - **Leaf functions** (no calls to other `par_*` functions): Reference relevant tokens
-        - Example: `par_getword()` → `{'$ref': 'WORD'}`
-    - **Single-call functions** → `sequence` containing call to referenced rule
-        - Example: `par_list()` calls `par_sublist()` → `{'sequence': [{'$ref': 'sublist'}]}`
-    - **Multi-call functions** (switch/case): `union` of referenced rules
-        - Example: `par_cmd()` with cases FOR, CASE, IF → `{'union': [{'$ref': 'for'}, {'$ref': 'case'}, {'$ref': 'if'}]}`
-    - **Recursive functions**: `repeat` wrapping base rule reference
-        - Example: `par_list1()` recursively calls itself → `{'repeat': {'$ref': 'list'}, 'min': 0}`
-3. Handle special cases:
-    - `par_redir()` → Handles redirections, should be optional in many contexts
-    - `par_simple()` → Complex dispatcher, may need multiple union alternatives
-    - Conditional variants → Use `create_variant()` with option conditions
+1. For each `par_*` function, retrieve `token_sequences` from Phase 2.4
+2. For each branch in `token_sequences`, build a sequence or union:
+    - **Leaf functions** (only token checks, no calls): Build Terminal or Token sequence
+        - Example: `par_getword()` with tokens STRING, ENVSTRING → `Union[STRING, ENVSTRING]`
+    - **Single-sequence functions**: Build Sequence wrapping token + call + token
+        - Example: `par_for()` with sequence `[FOR, ... par_simple() ...]` → `Sequence[FOR, simple, ...]`
+    - **Multi-branch functions**: Build Union of alternatives per branch
+        - Example: `par_subsh()` with branches:
+            - Branch 1: `[INPAR, par_list(), OUTPAR]` → `Sequence[INPAR, list, OUTPAR]`
+            - Branch 2: `[INBRACE, par_list(), OUTBRACE, optional(ALWAYS, ...)]` → `Sequence[INBRACE, list, OUTBRACE, Optional[...]]`
+            - Result: `Union[Sequence[...], Sequence[...]]`
+    - **Recursive functions**: Model based on token sequence in loop
+        - If recursion is at end of sequence → `Repeat`
+        - If recursion is conditional → `Optional(Repeat(...))`
 
-**Output**: Complete `Language` dictionary with rule definitions (all referencing tokens and other rules via `$ref`).
+3. **Strict ordering requirement**:
+    - Preserve exact token order from AST extraction
+    - If extraction shows `tok==A, par_foo(), zshlex(), tok==B`, model as `Sequence[A, foo, B]`
+    - Do NOT reorder; AST order determines semantic meaning
+
+4. **Synthetic tokens for string matching**:
+    - If code contains `tok == STRING && !strcmp(tokstr, "always")`, create synthetic token `ALWAYS`
+    - Use it in token sequence: `Optional[Sequence[ALWAYS, ...]]`
+    - Document synthetic tokens in grammar metadata
+
+5. Handle special cases:
+    - `par_redir()` → Optional in many contexts; token sequence determines placement
+    - `par_simple()` → Complex dispatcher; may need multiple union alternatives per token pattern
+    - Conditional variants → Use `create_variant()` with option conditions
+    - Tail recursion → Wrap in `Repeat` with base case
+
+**Output**: Complete `Language` dictionary with rule definitions derived from token sequences, validated against call graph for completeness.
 
 ### 3.2 Integrate Token Dispatch into Grammar Rules
 
 **Objective**: Embed token-to-rule mappings into grammar rules to show which tokens trigger which alternatives.
 
 **Status**: COMPLETE ✅
+
 - ✅ Dispatcher switch/case tokens extracted and embedded
 - ✅ Inline conditional token matching extracted via Phase 3.2.1
 - Result: 30 explicit tokens, 23 dispatcher rules with embedded token references
 
 **Context**: Parser functions use two patterns to match tokens:
+
 1. **Switch/case dispatchers**: Functions like `par_cmd()` with explicit `case FOR:`, `case CASE:` statements
 2. **Inline conditionals**: Functions like `par_list()` with `if (tok == SEPER)`, `if (tok != WORD)`, bitwise checks, ternary operators, macros, etc.
 
@@ -727,10 +862,10 @@ vendor/zsh/Src/
 - Reference consistency: All `$ref` use correct naming (SCREAMING_SNAKE_CASE for tokens, lowercase for rules) ✅
 - No inlining: Tokens never inlined in rules; always referenced via `$ref` ✅
 - **Phase 3.2 Token Dispatch - PARTIAL** ⚠️:
-  - ✅ Dispatcher switch/case tokens extracted (9 dispatcher rules: for, while, case, if, etc.)
-  - ❌ Inline conditional token matching NOT YET extracted (blocking full completion)
-  - Success (when complete): All 31 parser functions have documented token entry points
-  - Missing patterns: Equality checks, bitwise flags, ranges, compounds, ternary, macros, indirect calls
+    - ✅ Dispatcher switch/case tokens extracted (9 dispatcher rules: for, while, case, if, etc.)
+    - ❌ Inline conditional token matching NOT YET extracted (blocking full completion)
+    - Success (when complete): All 31 parser functions have documented token entry points
+    - Missing patterns: Equality checks, bitwise flags, ranges, compounds, ternary, macros, indirect calls
 
 **Phase 4: Complex Cases**
 
