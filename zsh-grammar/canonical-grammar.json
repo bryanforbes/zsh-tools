@@ -466,6 +466,46 @@
           "line": 380
         }
       },
+      "STRING": {
+        "token": "STRING",
+        "matches": "<string>",
+        "source": {
+          "file": "zsh.h",
+          "line": 349
+        }
+      },
+      "ENVSTRING": {
+        "token": "ENVSTRING",
+        "matches": "<env_string>",
+        "source": {
+          "file": "zsh.h",
+          "line": 350
+        }
+      },
+      "ENVARRAY": {
+        "token": "ENVARRAY",
+        "matches": "<env_array>",
+        "source": {
+          "file": "zsh.h",
+          "line": 351
+        }
+      },
+      "NULLTOK": {
+        "token": "NULLTOK",
+        "matches": "<null>",
+        "source": {
+          "file": "zsh.h",
+          "line": 315
+        }
+      },
+      "LEXERR": {
+        "token": "LEXERR",
+        "matches": "<lexer_error>",
+        "source": {
+          "file": "zsh.h",
+          "line": 353
+        }
+      },
       "parameter": {
         "union": [
           {
@@ -526,8 +566,8 @@
           {
             "pattern": "[context_save]",
             "source": {
-              "file": "parse.syms",
-              "line": 18,
+              "file": "parse.c",
+              "line": 295,
               "function": "parse_context_save"
             }
           },
@@ -535,8 +575,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -555,8 +595,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -575,8 +615,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -595,8 +635,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -615,8 +655,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -635,8 +675,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -655,8 +695,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -675,8 +715,8 @@
             "variant": {
               "pattern": "[context_save]",
               "source": {
-                "file": "parse.syms",
-                "line": 18,
+                "file": "parse.c",
+                "line": 295,
                 "function": "parse_context_save"
               }
             },
@@ -694,8 +734,8 @@
         ],
         "description": "context_save (modifies lexer states: INCMDPOS, ALIASSPACEFLAG, INCOND, INREDIR, INCASEPAT, ISNEWLIN, INFOR, INTYPESET)",
         "source": {
-          "file": "parse.syms",
-          "line": 18,
+          "file": "parse.c",
+          "line": 295,
           "function": "parse_context_save"
         }
       },
@@ -704,8 +744,8 @@
           {
             "pattern": "[context_restore]",
             "source": {
-              "file": "parse.syms",
-              "line": 19,
+              "file": "parse.c",
+              "line": 326,
               "function": "parse_context_restore"
             }
           },
@@ -713,8 +753,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -733,8 +773,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -753,8 +793,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -773,8 +813,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -793,8 +833,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -813,8 +853,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -833,8 +873,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -853,8 +893,8 @@
             "variant": {
               "pattern": "[context_restore]",
               "source": {
-                "file": "parse.syms",
-                "line": 19,
+                "file": "parse.c",
+                "line": 326,
                 "function": "parse_context_restore"
               }
             },
@@ -872,8 +912,8 @@
         ],
         "description": "context_restore (modifies lexer states: INCMDPOS, ALIASSPACEFLAG, INCOND, INREDIR, INCASEPAT, ISNEWLIN, INFOR, INTYPESET)",
         "source": {
-          "file": "parse.syms",
-          "line": 19,
+          "file": "parse.c",
+          "line": 326,
           "function": "parse_context_restore"
         }
       },
@@ -885,15 +925,15 @@
                 "optional": {
                   "$ref": "sublist",
                   "source": {
-                    "file": "parse.syms",
-                    "line": 26,
+                    "file": "parse.c",
+                    "line": 631,
                     "function": "par_event"
                   }
                 },
                 "description": "par_event contains if statement without else with parser function calls",
                 "source": {
-                  "file": "parse.syms",
-                  "line": 26,
+                  "file": "parse.c",
+                  "line": 631,
                   "function": "par_event"
                 }
               },
@@ -902,15 +942,15 @@
                   "optional": {
                     "$ref": "sublist",
                     "source": {
-                      "file": "parse.syms",
-                      "line": 26,
+                      "file": "parse.c",
+                      "line": 631,
                       "function": "par_event"
                     }
                   },
                   "description": "par_event contains if statement without else with parser function calls",
                   "source": {
-                    "file": "parse.syms",
-                    "line": 26,
+                    "file": "parse.c",
+                    "line": 631,
                     "function": "par_event"
                   }
                 },
@@ -930,15 +970,15 @@
                   "optional": {
                     "$ref": "sublist",
                     "source": {
-                      "file": "parse.syms",
-                      "line": 26,
+                      "file": "parse.c",
+                      "line": 631,
                       "function": "par_event"
                     }
                   },
                   "description": "par_event contains if statement without else with parser function calls",
                   "source": {
-                    "file": "parse.syms",
-                    "line": 26,
+                    "file": "parse.c",
+                    "line": 631,
                     "function": "par_event"
                   }
                 },
@@ -956,8 +996,8 @@
             ],
             "description": "event (modifies lexer states: INCMDPOS, ALIASSPACEFLAG)",
             "source": {
-              "file": "parse.syms",
-              "line": 26,
+              "file": "parse.c",
+              "line": 631,
               "function": "par_event"
             }
           },
@@ -968,15 +1008,15 @@
                   "optional": {
                     "$ref": "sublist",
                     "source": {
-                      "file": "parse.syms",
-                      "line": 26,
+                      "file": "parse.c",
+                      "line": 631,
                       "function": "par_event"
                     }
                   },
                   "description": "par_event contains if statement without else with parser function calls",
                   "source": {
-                    "file": "parse.syms",
-                    "line": 26,
+                    "file": "parse.c",
+                    "line": 631,
                     "function": "par_event"
                   }
                 },
@@ -985,15 +1025,15 @@
                     "optional": {
                       "$ref": "sublist",
                       "source": {
-                        "file": "parse.syms",
-                        "line": 26,
+                        "file": "parse.c",
+                        "line": 631,
                         "function": "par_event"
                       }
                     },
                     "description": "par_event contains if statement without else with parser function calls",
                     "source": {
-                      "file": "parse.syms",
-                      "line": 26,
+                      "file": "parse.c",
+                      "line": 631,
                       "function": "par_event"
                     }
                   },
@@ -1013,15 +1053,15 @@
                     "optional": {
                       "$ref": "sublist",
                       "source": {
-                        "file": "parse.syms",
-                        "line": 26,
+                        "file": "parse.c",
+                        "line": 631,
                         "function": "par_event"
                       }
                     },
                     "description": "par_event contains if statement without else with parser function calls",
                     "source": {
-                      "file": "parse.syms",
-                      "line": 26,
+                      "file": "parse.c",
+                      "line": 631,
                       "function": "par_event"
                     }
                   },
@@ -1039,8 +1079,8 @@
               ],
               "description": "event (modifies lexer states: INCMDPOS, ALIASSPACEFLAG)",
               "source": {
-                "file": "parse.syms",
-                "line": 26,
+                "file": "parse.c",
+                "line": 631,
                 "function": "par_event"
               }
             },
@@ -1058,8 +1098,8 @@
         ],
         "description": "event (modifies lexer states: ISNEWLIN)",
         "source": {
-          "file": "parse.syms",
-          "line": 26,
+          "file": "parse.c",
+          "line": 631,
           "function": "par_event"
         }
       },
@@ -1068,8 +1108,8 @@
           {
             "$ref": "sublist",
             "source": {
-              "file": "parse.syms",
-              "line": 33,
+              "file": "parse.c",
+              "line": 767,
               "function": "par_list"
             }
           },
@@ -1077,8 +1117,8 @@
             "variant": {
               "$ref": "sublist",
               "source": {
-                "file": "parse.syms",
-                "line": 33,
+                "file": "parse.c",
+                "line": 767,
                 "function": "par_list"
               }
             },
@@ -1096,8 +1136,8 @@
         ],
         "description": "list (modifies lexer states: INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 33,
+          "file": "parse.c",
+          "line": 767,
           "function": "par_list"
         }
       },
@@ -1105,31 +1145,31 @@
         "optional": {
           "$ref": "cond_1",
           "source": {
-            "file": "parse.syms",
-            "line": 54,
+            "file": "parse.c",
+            "line": 2397,
             "function": "par_cond"
           }
         },
         "description": "par_cond contains if statement without else with parser function calls",
         "source": {
-          "file": "parse.syms",
-          "line": 54,
+          "file": "parse.c",
+          "line": 2397,
           "function": "par_cond"
         }
       },
       "list1": {
         "$ref": "sublist",
         "source": {
-          "file": "parse.syms",
-          "line": 34,
+          "file": "parse.c",
+          "line": 804,
           "function": "par_list1"
         }
       },
       "sublist": {
         "$ref": "sublist2",
         "source": {
-          "file": "parse.syms",
-          "line": 35,
+          "file": "parse.c",
+          "line": 821,
           "function": "par_sublist"
         }
       },
@@ -1137,15 +1177,15 @@
         "optional": {
           "$ref": "pline",
           "source": {
-            "file": "parse.syms",
-            "line": 36,
+            "file": "parse.c",
+            "line": 865,
             "function": "par_sublist2"
           }
         },
         "description": "par_sublist2 contains if statement without else with parser function calls",
         "source": {
-          "file": "parse.syms",
-          "line": 36,
+          "file": "parse.c",
+          "line": 865,
           "function": "par_sublist2"
         }
       },
@@ -1153,15 +1193,15 @@
         "optional": {
           "$ref": "cmd",
           "source": {
-            "file": "parse.syms",
-            "line": 37,
+            "file": "parse.c",
+            "line": 890,
             "function": "par_pline"
           }
         },
         "description": "par_pline contains if statement without else with parser function calls",
         "source": {
-          "file": "parse.syms",
-          "line": 37,
+          "file": "parse.c",
+          "line": 890,
           "function": "par_pline"
         }
       },
@@ -1170,6 +1210,9 @@
           {
             "optional": {
               "union": [
+                {
+                  "$ref": "INBRACE"
+                },
                 {
                   "$ref": "case"
                 },
@@ -1202,15 +1245,15 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 38,
+                "file": "parse.c",
+                "line": 954,
                 "function": "par_cmd"
               }
             },
             "description": "par_cmd contains if statement without else with parser function calls",
             "source": {
-              "file": "parse.syms",
-              "line": 38,
+              "file": "parse.c",
+              "line": 954,
               "function": "par_cmd"
             }
           },
@@ -1218,6 +1261,9 @@
             "variant": {
               "optional": {
                 "union": [
+                  {
+                    "$ref": "INBRACE"
+                  },
                   {
                     "$ref": "case"
                   },
@@ -1250,15 +1296,15 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 38,
+                  "file": "parse.c",
+                  "line": 954,
                   "function": "par_cmd"
                 }
               },
               "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 38,
+                "file": "parse.c",
+                "line": 954,
                 "function": "par_cmd"
               }
             },
@@ -1278,6 +1324,9 @@
               "optional": {
                 "union": [
                   {
+                    "$ref": "INBRACE"
+                  },
+                  {
                     "$ref": "case"
                   },
                   {
@@ -1309,15 +1358,15 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 38,
+                  "file": "parse.c",
+                  "line": 954,
                   "function": "par_cmd"
                 }
               },
               "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 38,
+                "file": "parse.c",
+                "line": 954,
                 "function": "par_cmd"
               }
             },
@@ -1337,6 +1386,9 @@
               "optional": {
                 "union": [
                   {
+                    "$ref": "INBRACE"
+                  },
+                  {
                     "$ref": "case"
                   },
                   {
@@ -1368,15 +1420,15 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 38,
+                  "file": "parse.c",
+                  "line": 954,
                   "function": "par_cmd"
                 }
               },
               "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 38,
+                "file": "parse.c",
+                "line": 954,
                 "function": "par_cmd"
               }
             },
@@ -1396,6 +1448,9 @@
               "optional": {
                 "union": [
                   {
+                    "$ref": "INBRACE"
+                  },
+                  {
                     "$ref": "case"
                   },
                   {
@@ -1427,15 +1482,15 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 38,
+                  "file": "parse.c",
+                  "line": 954,
                   "function": "par_cmd"
                 }
               },
               "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 38,
+                "file": "parse.c",
+                "line": 954,
                 "function": "par_cmd"
               }
             },
@@ -1453,8 +1508,8 @@
         ],
         "description": "cmd (modifies lexer states: INCMDPOS, INCASEPAT, INCOND, INTYPESET)",
         "source": {
-          "file": "parse.syms",
-          "line": 38,
+          "file": "parse.c",
+          "line": 954,
           "function": "par_cmd"
         }
       },
@@ -1462,6 +1517,15 @@
         "union": [
           {
             "union": [
+              {
+                "$ref": "SELECT"
+              },
+              {
+                "$ref": "FOREACH"
+              },
+              {
+                "$ref": "FOR"
+              },
               {
                 "$ref": "list"
               },
@@ -1476,14 +1540,23 @@
               }
             ],
             "source": {
-              "file": "parse.syms",
-              "line": 39,
+              "file": "parse.c",
+              "line": 1083,
               "function": "par_for"
             }
           },
           {
             "variant": {
               "union": [
+                {
+                  "$ref": "SELECT"
+                },
+                {
+                  "$ref": "FOREACH"
+                },
+                {
+                  "$ref": "FOR"
+                },
                 {
                   "$ref": "list"
                 },
@@ -1498,8 +1571,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 39,
+                "file": "parse.c",
+                "line": 1083,
                 "function": "par_for"
               }
             },
@@ -1518,6 +1591,15 @@
             "variant": {
               "union": [
                 {
+                  "$ref": "SELECT"
+                },
+                {
+                  "$ref": "FOREACH"
+                },
+                {
+                  "$ref": "FOR"
+                },
+                {
                   "$ref": "list"
                 },
                 {
@@ -1531,8 +1613,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 39,
+                "file": "parse.c",
+                "line": 1083,
                 "function": "par_for"
               }
             },
@@ -1551,6 +1633,15 @@
             "variant": {
               "union": [
                 {
+                  "$ref": "SELECT"
+                },
+                {
+                  "$ref": "FOREACH"
+                },
+                {
+                  "$ref": "FOR"
+                },
+                {
                   "$ref": "list"
                 },
                 {
@@ -1564,8 +1655,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 39,
+                "file": "parse.c",
+                "line": 1083,
                 "function": "par_for"
               }
             },
@@ -1584,6 +1675,15 @@
             "variant": {
               "union": [
                 {
+                  "$ref": "SELECT"
+                },
+                {
+                  "$ref": "FOREACH"
+                },
+                {
+                  "$ref": "FOR"
+                },
+                {
                   "$ref": "list"
                 },
                 {
@@ -1597,8 +1697,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 39,
+                "file": "parse.c",
+                "line": 1083,
                 "function": "par_for"
               }
             },
@@ -1616,8 +1716,8 @@
         ],
         "description": "for (modifies lexer states: INCMDPOS, INFOR, ISNEWLIN, INCASEPAT)",
         "source": {
-          "file": "parse.syms",
-          "line": 39,
+          "file": "parse.c",
+          "line": 1083,
           "function": "par_for"
         }
       },
@@ -1627,16 +1727,16 @@
             "repeat": {
               "$ref": "list",
               "source": {
-                "file": "parse.syms",
-                "line": 40,
+                "file": "parse.c",
+                "line": 1205,
                 "function": "par_case"
               }
             },
             "min": 0,
             "description": "par_case contains for loop with parser function calls",
             "source": {
-              "file": "parse.syms",
-              "line": 40,
+              "file": "parse.c",
+              "line": 1205,
               "function": "par_case"
             }
           },
@@ -1645,16 +1745,16 @@
               "repeat": {
                 "$ref": "list",
                 "source": {
-                  "file": "parse.syms",
-                  "line": 40,
+                  "file": "parse.c",
+                  "line": 1205,
                   "function": "par_case"
                 }
               },
               "min": 0,
               "description": "par_case contains for loop with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 40,
+                "file": "parse.c",
+                "line": 1205,
                 "function": "par_case"
               }
             },
@@ -1674,16 +1774,16 @@
               "repeat": {
                 "$ref": "list",
                 "source": {
-                  "file": "parse.syms",
-                  "line": 40,
+                  "file": "parse.c",
+                  "line": 1205,
                   "function": "par_case"
                 }
               },
               "min": 0,
               "description": "par_case contains for loop with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 40,
+                "file": "parse.c",
+                "line": 1205,
                 "function": "par_case"
               }
             },
@@ -1701,8 +1801,8 @@
         ],
         "description": "case (modifies lexer states: INCMDPOS, INCASEPAT)",
         "source": {
-          "file": "parse.syms",
-          "line": 40,
+          "file": "parse.c",
+          "line": 1205,
           "function": "par_case"
         }
       },
@@ -1712,6 +1812,9 @@
             "repeat": {
               "union": [
                 {
+                  "$ref": "IF"
+                },
+                {
                   "$ref": "list"
                 },
                 {
@@ -1719,16 +1822,16 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 41,
+                "file": "parse.c",
+                "line": 1407,
                 "function": "par_if"
               }
             },
             "min": 0,
             "description": "par_if contains for loop with parser function calls",
             "source": {
-              "file": "parse.syms",
-              "line": 41,
+              "file": "parse.c",
+              "line": 1407,
               "function": "par_if"
             }
           },
@@ -1737,6 +1840,9 @@
               "repeat": {
                 "union": [
                   {
+                    "$ref": "IF"
+                  },
+                  {
                     "$ref": "list"
                   },
                   {
@@ -1744,16 +1850,16 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 41,
+                  "file": "parse.c",
+                  "line": 1407,
                   "function": "par_if"
                 }
               },
               "min": 0,
               "description": "par_if contains for loop with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 41,
+                "file": "parse.c",
+                "line": 1407,
                 "function": "par_if"
               }
             },
@@ -1773,6 +1879,9 @@
               "repeat": {
                 "union": [
                   {
+                    "$ref": "IF"
+                  },
+                  {
                     "$ref": "list"
                   },
                   {
@@ -1780,16 +1889,16 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 41,
+                  "file": "parse.c",
+                  "line": 1407,
                   "function": "par_if"
                 }
               },
               "min": 0,
               "description": "par_if contains for loop with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 41,
+                "file": "parse.c",
+                "line": 1407,
                 "function": "par_if"
               }
             },
@@ -1807,8 +1916,8 @@
         ],
         "description": "if (modifies lexer states: INCMDPOS, INCASEPAT)",
         "source": {
-          "file": "parse.syms",
-          "line": 41,
+          "file": "parse.c",
+          "line": 1407,
           "function": "par_if"
         }
       },
@@ -1817,6 +1926,12 @@
           {
             "union": [
               {
+                "$ref": "WHILE"
+              },
+              {
+                "$ref": "UNTIL"
+              },
+              {
                 "$ref": "list"
               },
               {
@@ -1824,14 +1939,20 @@
               }
             ],
             "source": {
-              "file": "parse.syms",
-              "line": 42,
+              "file": "parse.c",
+              "line": 1517,
               "function": "par_while"
             }
           },
           {
             "variant": {
               "union": [
+                {
+                  "$ref": "WHILE"
+                },
+                {
+                  "$ref": "UNTIL"
+                },
                 {
                   "$ref": "list"
                 },
@@ -1840,8 +1961,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 42,
+                "file": "parse.c",
+                "line": 1517,
                 "function": "par_while"
               }
             },
@@ -1860,6 +1981,12 @@
             "variant": {
               "union": [
                 {
+                  "$ref": "WHILE"
+                },
+                {
+                  "$ref": "UNTIL"
+                },
+                {
                   "$ref": "list"
                 },
                 {
@@ -1867,8 +1994,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 42,
+                "file": "parse.c",
+                "line": 1517,
                 "function": "par_while"
               }
             },
@@ -1886,8 +2013,8 @@
         ],
         "description": "while (modifies lexer states: INCASEPAT, INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 42,
+          "file": "parse.c",
+          "line": 1517,
           "function": "par_while"
         }
       },
@@ -1896,6 +2023,9 @@
           {
             "union": [
               {
+                "$ref": "REPEAT"
+              },
+              {
                 "$ref": "list"
               },
               {
@@ -1903,14 +2033,17 @@
               }
             ],
             "source": {
-              "file": "parse.syms",
-              "line": 43,
+              "file": "parse.c",
+              "line": 1561,
               "function": "par_repeat"
             }
           },
           {
             "variant": {
               "union": [
+                {
+                  "$ref": "REPEAT"
+                },
                 {
                   "$ref": "list"
                 },
@@ -1919,8 +2052,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 43,
+                "file": "parse.c",
+                "line": 1561,
                 "function": "par_repeat"
               }
             },
@@ -1939,6 +2072,9 @@
             "variant": {
               "union": [
                 {
+                  "$ref": "REPEAT"
+                },
+                {
                   "$ref": "list"
                 },
                 {
@@ -1946,8 +2082,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 43,
+                "file": "parse.c",
+                "line": 1561,
                 "function": "par_repeat"
               }
             },
@@ -1965,8 +2101,8 @@
         ],
         "description": "repeat (modifies lexer states: INCMDPOS, INCASEPAT)",
         "source": {
-          "file": "parse.syms",
-          "line": 43,
+          "file": "parse.c",
+          "line": 1561,
           "function": "par_repeat"
         }
       },
@@ -1975,8 +2111,8 @@
           {
             "$ref": "list",
             "source": {
-              "file": "parse.syms",
-              "line": 44,
+              "file": "parse.c",
+              "line": 1615,
               "function": "par_subsh"
             }
           },
@@ -1984,8 +2120,8 @@
             "variant": {
               "$ref": "list",
               "source": {
-                "file": "parse.syms",
-                "line": 44,
+                "file": "parse.c",
+                "line": 1615,
                 "function": "par_subsh"
               }
             },
@@ -2004,8 +2140,8 @@
             "variant": {
               "$ref": "list",
               "source": {
-                "file": "parse.syms",
-                "line": 44,
+                "file": "parse.c",
+                "line": 1615,
                 "function": "par_subsh"
               }
             },
@@ -2023,8 +2159,8 @@
         ],
         "description": "subsh (modifies lexer states: INCMDPOS, INCASEPAT)",
         "source": {
-          "file": "parse.syms",
-          "line": 44,
+          "file": "parse.c",
+          "line": 1615,
           "function": "par_subsh"
         }
       },
@@ -2033,6 +2169,9 @@
           {
             "union": [
               {
+                "$ref": "FUNC"
+              },
+              {
                 "$ref": "list"
               },
               {
@@ -2040,14 +2179,17 @@
               }
             ],
             "source": {
-              "file": "parse.syms",
-              "line": 45,
+              "file": "parse.c",
+              "line": 1668,
               "function": "par_funcdef"
             }
           },
           {
             "variant": {
               "union": [
+                {
+                  "$ref": "FUNC"
+                },
                 {
                   "$ref": "list"
                 },
@@ -2056,8 +2198,8 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 45,
+                "file": "parse.c",
+                "line": 1668,
                 "function": "par_funcdef"
               }
             },
@@ -2075,16 +2217,16 @@
         ],
         "description": "funcdef (modifies lexer states: INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 45,
+          "file": "parse.c",
+          "line": 1668,
           "function": "par_funcdef"
         }
       },
       "time": {
         "$ref": "sublist2",
         "source": {
-          "file": "parse.syms",
-          "line": 46,
+          "file": "parse.c",
+          "line": 1783,
           "function": "par_time"
         }
       },
@@ -2093,8 +2235,8 @@
           {
             "$ref": "cond",
             "source": {
-              "file": "parse.syms",
-              "line": 47,
+              "file": "parse.c",
+              "line": 1806,
               "function": "par_dinbrack"
             }
           },
@@ -2102,8 +2244,8 @@
             "variant": {
               "$ref": "cond",
               "source": {
-                "file": "parse.syms",
-                "line": 47,
+                "file": "parse.c",
+                "line": 1806,
                 "function": "par_dinbrack"
               }
             },
@@ -2122,8 +2264,8 @@
             "variant": {
               "$ref": "cond",
               "source": {
-                "file": "parse.syms",
-                "line": 47,
+                "file": "parse.c",
+                "line": 1806,
                 "function": "par_dinbrack"
               }
             },
@@ -2141,8 +2283,8 @@
         ],
         "description": "dinbrack (modifies lexer states: INCOND, INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 47,
+          "file": "parse.c",
+          "line": 1806,
           "function": "par_dinbrack"
         }
       },
@@ -2165,16 +2307,16 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 48,
+                "file": "parse.c",
+                "line": 1832,
                 "function": "par_simple"
               }
             },
             "min": 0,
             "description": "par_simple contains for loop with parser function calls",
             "source": {
-              "file": "parse.syms",
-              "line": 48,
+              "file": "parse.c",
+              "line": 1832,
               "function": "par_simple"
             }
           },
@@ -2196,16 +2338,16 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 48,
+                  "file": "parse.c",
+                  "line": 1832,
                   "function": "par_simple"
                 }
               },
               "min": 0,
               "description": "par_simple contains for loop with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 48,
+                "file": "parse.c",
+                "line": 1832,
                 "function": "par_simple"
               }
             },
@@ -2238,16 +2380,16 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 48,
+                  "file": "parse.c",
+                  "line": 1832,
                   "function": "par_simple"
                 }
               },
               "min": 0,
               "description": "par_simple contains for loop with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 48,
+                "file": "parse.c",
+                "line": 1832,
                 "function": "par_simple"
               }
             },
@@ -2265,8 +2407,8 @@
         ],
         "description": "simple (modifies lexer states: INCMDPOS, INTYPESET)",
         "source": {
-          "file": "parse.syms",
-          "line": 48,
+          "file": "parse.c",
+          "line": 1832,
           "function": "par_simple"
         }
       },
@@ -2275,8 +2417,8 @@
           {
             "pattern": "[redir]",
             "source": {
-              "file": "parse.syms",
-              "line": 49,
+              "file": "parse.c",
+              "line": 2220,
               "function": "par_redir"
             }
           },
@@ -2284,8 +2426,8 @@
             "variant": {
               "pattern": "[redir]",
               "source": {
-                "file": "parse.syms",
-                "line": 49,
+                "file": "parse.c",
+                "line": 2220,
                 "function": "par_redir"
               }
             },
@@ -2303,24 +2445,24 @@
         ],
         "description": "redir (modifies lexer states: INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 49,
+          "file": "parse.c",
+          "line": 2220,
           "function": "par_redir"
         }
       },
       "wordlist": {
         "pattern": "[wordlist]",
         "source": {
-          "file": "parse.syms",
-          "line": 51,
+          "file": "parse.c",
+          "line": 2350,
           "function": "par_wordlist"
         }
       },
       "nl_wordlist": {
         "pattern": "[nl_wordlist]",
         "source": {
-          "file": "parse.syms",
-          "line": 52,
+          "file": "parse.c",
+          "line": 2367,
           "function": "par_nl_wordlist"
         }
       },
@@ -2328,15 +2470,15 @@
         "optional": {
           "$ref": "cond_2",
           "source": {
-            "file": "parse.syms",
-            "line": 55,
+            "file": "parse.c",
+            "line": 2422,
             "function": "par_cond_1"
           }
         },
         "description": "par_cond_1 contains if statement without else with parser function calls",
         "source": {
-          "file": "parse.syms",
-          "line": 55,
+          "file": "parse.c",
+          "line": 2422,
           "function": "par_cond_1"
         }
       },
@@ -2345,6 +2487,9 @@
           {
             "optional": {
               "union": [
+                {
+                  "$ref": "BANG"
+                },
                 {
                   "$ref": "cond"
                 },
@@ -2359,15 +2504,15 @@
                 }
               ],
               "source": {
-                "file": "parse.syms",
-                "line": 56,
+                "file": "parse.c",
+                "line": 2464,
                 "function": "par_cond_2"
               }
             },
             "description": "par_cond_2 contains if statement without else with parser function calls",
             "source": {
-              "file": "parse.syms",
-              "line": 56,
+              "file": "parse.c",
+              "line": 2464,
               "function": "par_cond_2"
             }
           },
@@ -2375,6 +2520,9 @@
             "variant": {
               "optional": {
                 "union": [
+                  {
+                    "$ref": "BANG"
+                  },
                   {
                     "$ref": "cond"
                   },
@@ -2389,15 +2537,15 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 56,
+                  "file": "parse.c",
+                  "line": 2464,
                   "function": "par_cond_2"
                 }
               },
               "description": "par_cond_2 contains if statement without else with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 56,
+                "file": "parse.c",
+                "line": 2464,
                 "function": "par_cond_2"
               }
             },
@@ -2417,6 +2565,9 @@
               "optional": {
                 "union": [
                   {
+                    "$ref": "BANG"
+                  },
+                  {
                     "$ref": "cond"
                   },
                   {
@@ -2430,15 +2581,15 @@
                   }
                 ],
                 "source": {
-                  "file": "parse.syms",
-                  "line": 56,
+                  "file": "parse.c",
+                  "line": 2464,
                   "function": "par_cond_2"
                 }
               },
               "description": "par_cond_2 contains if statement without else with parser function calls",
               "source": {
-                "file": "parse.syms",
-                "line": 56,
+                "file": "parse.c",
+                "line": 2464,
                 "function": "par_cond_2"
               }
             },
@@ -2456,8 +2607,8 @@
         ],
         "description": "cond_2 (modifies lexer states: INCMDPOS, INCOND)",
         "source": {
-          "file": "parse.syms",
-          "line": 56,
+          "file": "parse.c",
+          "line": 2464,
           "function": "par_cond_2"
         }
       },
@@ -2466,8 +2617,8 @@
           {
             "pattern": "[cond_double]",
             "source": {
-              "file": "parse.syms",
-              "line": 57,
+              "file": "parse.c",
+              "line": 2612,
               "function": "par_cond_double"
             }
           },
@@ -2475,8 +2626,8 @@
             "variant": {
               "pattern": "[cond_double]",
               "source": {
-                "file": "parse.syms",
-                "line": 57,
+                "file": "parse.c",
+                "line": 2612,
                 "function": "par_cond_double"
               }
             },
@@ -2494,8 +2645,8 @@
         ],
         "description": "cond_double (modifies lexer states: INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 57,
+          "file": "parse.c",
+          "line": 2612,
           "function": "par_cond_double"
         }
       },
@@ -2504,8 +2655,8 @@
           {
             "pattern": "[cond_triple]",
             "source": {
-              "file": "parse.syms",
-              "line": 59,
+              "file": "parse.c",
+              "line": 2645,
               "function": "par_cond_triple"
             }
           },
@@ -2513,8 +2664,8 @@
             "variant": {
               "pattern": "[cond_triple]",
               "source": {
-                "file": "parse.syms",
-                "line": 59,
+                "file": "parse.c",
+                "line": 2645,
                 "function": "par_cond_triple"
               }
             },
@@ -2532,8 +2683,8 @@
         ],
         "description": "cond_triple (modifies lexer states: INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 59,
+          "file": "parse.c",
+          "line": 2645,
           "function": "par_cond_triple"
         }
       },
@@ -2542,8 +2693,8 @@
           {
             "pattern": "[cond_multi]",
             "source": {
-              "file": "parse.syms",
-              "line": 60,
+              "file": "parse.c",
+              "line": 2696,
               "function": "par_cond_multi"
             }
           },
@@ -2551,8 +2702,8 @@
             "variant": {
               "pattern": "[cond_multi]",
               "source": {
-                "file": "parse.syms",
-                "line": 60,
+                "file": "parse.c",
+                "line": 2696,
                 "function": "par_cond_multi"
               }
             },
@@ -2570,8 +2721,8 @@
         ],
         "description": "cond_multi (modifies lexer states: INCMDPOS)",
         "source": {
-          "file": "parse.syms",
-          "line": 60,
+          "file": "parse.c",
+          "line": 2696,
           "function": "par_cond_multi"
         }
       }

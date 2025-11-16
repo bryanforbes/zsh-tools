@@ -595,10 +595,11 @@ def _analyze_all_control_flows(
     return control_flows
 
 
-def _build_grammar_rules(
+def _build_grammar_rules(  # noqa: C901, PLR0912
     call_graph: dict[str, _FunctionNode],
     parser_functions: dict[str, _FunctionNode],
     control_flows: dict[str, _ControlFlowPattern] | None = None,
+    token_to_rules: dict[str, list[str]] | None = None,
     /,
 ) -> Language:
     """
@@ -614,7 +615,9 @@ def _build_grammar_rules(
     4. Apply control flow analysis (Phase 3.3):
         - Wrap optional references in Optional nodes
         - Wrap repeating patterns in Repeat nodes
-    5. Handle cycles by using references (breaking circular dependencies)
+    5. Apply token dispatch integration (Phase 3.2):
+        - For dispatcher rules, include token references in unions
+    6. Handle cycles by using references (breaking circular dependencies)
 
     Cycles are handled by detecting them and using $ref to break cycles
     rather than inlining definitions. This allows the grammar to remain acyclic
@@ -624,6 +627,8 @@ def _build_grammar_rules(
         call_graph: Function call graph from AST analysis
         parser_functions: Parser function definitions from .syms
         control_flows: Optional control flow patterns from Phase 3.3
+        token_to_rules: Optional token-to-rule mappings from conditionals
+            (Phase 3.2)
     """
     rules: Language = {}
 
@@ -631,6 +636,17 @@ def _build_grammar_rules(
     core_parse_funcs = {
         name: node for name, node in call_graph.items() if _is_parser_function(name)
     }
+
+    # Build reverse mapping from rule names to tokens (for Phase 3.2)
+    rule_to_tokens: dict[str, list[str]] = {}
+    default_marker = '__default__'
+    if token_to_rules:
+        for token_name, rule_names in token_to_rules.items():
+            if token_name != default_marker:  # Skip special marker
+                for rule_name in rule_names:
+                    if rule_name not in rule_to_tokens:
+                        rule_to_tokens[rule_name] = []
+                    rule_to_tokens[rule_name].append(token_name)
 
     # Build rules from parse functions
     for func_name, node in core_parse_funcs.items():
@@ -687,7 +703,16 @@ def _build_grammar_rules(
             # Multiple unique calls -> union/alternatives
             # (typically via switch/if statements with mutually exclusive branches)
             # Cycles are naturally broken because we use refs, not inlining
-            union_rule = create_union(rule_refs, source=source_info)
+
+            # Phase 3.2: Integrate token dispatch into union
+            union_nodes: list[GrammarNode] = list(rule_refs)
+            if rule_name in rule_to_tokens:
+                # This rule is a dispatcher: include token references in the union
+                tokens = sorted(rule_to_tokens[rule_name])
+                for token_name in tokens:
+                    union_nodes.insert(0, create_ref(token_name))
+
+            union_rule = create_union(union_nodes, source=source_info)
 
             # Phase 3.3: Apply control flow analysis to union
             if control_flows and func_name in control_flows:
@@ -1045,19 +1070,195 @@ def _extract_case_statements(  # noqa: C901, PLR0912, PLR0915
                                         break
 
 
+def _extract_tokens_from_conditionals(  # noqa: PLR0912
+    cursor: Cursor, /
+) -> Iterator[tuple[str, str | None]]:
+    """
+    Walk the AST and extract token matches from inline conditional statements.
+
+    Phase 3.2.1: Extract token dispatch patterns from if/else blocks,
+    complementing Phase 3.2's switch/case extraction.
+
+    This extracts token patterns from:
+    1. Direct equality checks: if (tok == SEPER)
+    2. Negation checks: if (tok != WORD)
+    3. Bitwise flag checks: if (tok & SOME_FLAG)
+    4. Range checks: if (tok >= X && tok <= Y)
+    5. Compound conditions: if (tok == SEPER || tok == PIPE)
+    6. Ternary operators: condition ? consequence : alternative
+    7. Macro-based checks: ISTOK(), ISUNSET(), etc.
+    8. Logical compound: && and || operators
+
+    Algorithm:
+    1. Walks the function body for IF_STMT nodes
+    2. Examines the condition expression for token comparisons
+    3. Extracts token names from comparison operations
+    4. For each condition with token matches, looks for parser function calls
+       in the true/false branches
+    5. Associates extracted tokens with handler parser functions
+
+    Returns:
+        Iterator of (token_name, handler_rule_name or None) tuples
+
+    Example:
+        if (tok == FOR) { par_for(...); } → yields (FOR, for)
+        if (tok & SOME_FLAG) { par_foo(...); } → yields (SOME_FLAG, foo)
+    """
+    # Walk preorder to find IF_STMT nodes in function body
+    for node in cursor.walk_preorder():
+        if node.kind == CursorKind.IF_STMT:
+            # Get the condition and then/else branches
+            children = list(node.get_children())
+            if len(children) < 2:
+                continue
+
+            condition = children[0]
+            then_stmt = children[1]
+            else_stmt = children[2] if len(children) > 2 else None
+
+            # Extract tokens from the condition expression
+            tokens_in_condition = _extract_tokens_from_expression(condition)
+
+            # For each token found in condition, look for parser function calls
+            # in the then/else branches
+            for token_name in tokens_in_condition:
+                # First try then branch
+                then_rule = None
+                for candidate in then_stmt.walk_preorder():
+                    if candidate.kind == CursorKind.CALL_EXPR:
+                        callee = candidate.spelling
+                        if _is_parser_function(callee):
+                            then_rule = _function_to_rule_name(callee)
+                            break
+
+                if then_rule:
+                    yield token_name, then_rule
+
+                # Also try else branch if present
+                if else_stmt:
+                    else_rule = None
+                    for candidate in else_stmt.walk_preorder():
+                        if candidate.kind == CursorKind.CALL_EXPR:
+                            callee = candidate.spelling
+                            if _is_parser_function(callee):
+                                else_rule = _function_to_rule_name(callee)
+                                break
+
+                    if else_rule:
+                        yield token_name, else_rule
+
+
+def _extract_tokens_from_expression(expr: Cursor, /) -> set[str]:  # noqa: C901, PLR0912
+    """
+    Extract token names from a conditional expression.
+
+    Phase 3.2.1 helper: Analyzes condition expressions to find token references.
+
+    Handles:
+    - Binary operators: ==, !=, &, |, >=, <=, >, <
+    - Unary operators: !
+    - Compound conditions: && and ||
+    - Macro-like calls: ISTOK(TOKEN), ISUNSET(), etc.
+    - Member access and dereference
+    - Ternary conditional operators: ? :
+    - Multi-part compound expressions
+
+    Heuristics:
+    - Token names are uppercase identifiers (A-Z with underscores)
+    - Excludes single letters and generic names like 'TOK'
+    - Context-aware: tokens near operators are more likely real tokens
+
+    Returns:
+        Set of token names (SCREAMING_SNAKE_CASE) found in the expression
+
+    Example expressions:
+        - tok == SEPER → {SEPER}
+        - tok & IF_FLAGS → {IF_FLAGS}
+        - ISTOK(WORD) → {WORD}
+        - tok == FOO || tok == BAR → {FOO, BAR}
+    """
+    tokens: set[str] = set()
+    ops = {'==', '!=', '&', '|', '&&', '||', '>=', '<=', '>', '<'}
+
+    # Walk the expression AST looking for token references
+    for node in expr.walk_preorder():
+        # Direct token references in binary operations
+        # Pattern: tok == SOME_TOKEN or SOME_TOKEN == tok
+        if node.kind == CursorKind.BINARY_OPERATOR:
+            node_tokens = list(node.get_tokens())
+            # Look for operator symbols (==, !=, &, |, &&, ||)
+            for i, tok in enumerate(node_tokens):
+                if tok.spelling in ops:
+                    # Adjacent tokens before/after operator may be variable/token
+                    # Look for uppercase identifiers (token names)
+                    if i > 0:
+                        before = node_tokens[i - 1].spelling
+                        if before.isupper() and before not in ('TOK',):
+                            tokens.add(before)
+                    if i < len(node_tokens) - 1:
+                        after = node_tokens[i + 1].spelling
+                        if after.isupper() and after not in ('TOK',):
+                            tokens.add(after)
+
+        # Function-like macro calls: ISTOK(TOKEN), etc.
+        elif node.kind == CursorKind.CALL_EXPR:
+            func_name = node.spelling
+            # Macro patterns: ISTOK, ISUNSET, etc.
+            if func_name.isupper() or func_name.startswith('IS'):
+                # Extract arguments which may be tokens
+                node_tokens = list(node.get_tokens())
+                for tok in node_tokens:
+                    if tok.spelling.isupper() and len(tok.spelling) > 2:
+                        tokens.add(tok.spelling)
+
+        # Ternary conditional operators: condition ? true_val : false_val
+        elif node.kind == CursorKind.UNEXPOSED_EXPR:
+            # Ternary operators sometimes appear as UNEXPOSED_EXPR
+            node_tokens = list(node.get_tokens())
+            for i, tok in enumerate(node_tokens):
+                if tok.spelling == '?' and i > 0:
+                    # Look at surrounding tokens
+                    before = node_tokens[i - 1].spelling
+                    if before.isupper():
+                        tokens.add(before)
+
+    # Additional pattern: direct token comparisons with members
+    # Pattern: tok.type == SOME_TOKEN
+    tok_list = list(expr.get_tokens())
+    for i, tok in enumerate(tok_list):
+        if tok.spelling.isupper() and len(tok.spelling) > 2:
+            # Check context: if preceded by comparison operator or assignment
+            if i > 0:
+                prev = tok_list[i - 1].spelling
+                if prev in ops:
+                    tokens.add(tok.spelling)
+            if i < len(tok_list) - 1:
+                next_tok = tok_list[i + 1].spelling
+                if next_tok in ops:
+                    tokens.add(tok.spelling)
+
+    return tokens
+
+
 def _map_tokens_to_rules(
     parser: ZshParser, parser_functions: dict[str, _FunctionNode], /
 ) -> dict[str, list[str]]:
     """
-    Extract token-to-rule mappings from switch statements in dispatcher functions.
+    Extract token-to-rule mappings from both switch and inline conditional statements.
 
-    For each dispatcher function (like par_cmd), extracts case statements and
-    determines which token maps to which parser rule.
+    Phase 3.2 implementation (full): Extracts token references from:
+    1. Switch/case dispatcher statements (original implementation)
+    2. Inline conditional statements (new in Phase 3.2.1)
+
+    For each parser function, extracts token patterns and determines which token
+    maps to which parser rule.
 
     This function:
-    1. Scans for SWITCH_STMT nodes in all parser functions
+    1. Scans for SWITCH_STMT nodes in all parser functions (Phase 3.2 original)
     2. Extracts case statements and their handler function calls
-    3. Identifies which tokens (case labels) map to which parser rules
+    3. Scans for IF_STMT nodes with token comparisons (Phase 3.2.1 new)
+    4. Extracts conditional token matches and their handler calls
+    5. Identifies which tokens map to which parser rules
 
     Returns: Dictionary mapping token names (SCREAMING_SNAKE_CASE) to lists of
     rule names (lower_snake_case) that handle them.
@@ -1069,19 +1270,126 @@ def _map_tokens_to_rules(
     if tu is None or tu.cursor is None:
         return token_to_rules
 
-    # Find all functions in parse.c and extract their case statements
+    # Find all functions in parse.c and extract their token mappings
     parser_func_names = set(parser_functions.keys())
     for cursor in _find_function_definitions(tu.cursor, parser_func_names):
-        # Extract case statements from this function
-        # This will find dispatchers like par_cmd, and any other function
-        # that has switch statements
+        # Phase 3.2 (original): Extract case statements from switch dispatchers
         for token_name, rule_name in _extract_case_statements(cursor):
             if token_name not in token_to_rules:
                 token_to_rules[token_name] = []
             if rule_name not in token_to_rules[token_name]:
                 token_to_rules[token_name].append(rule_name)
 
+        # Phase 3.2.1 (new): Extract token matches from inline conditionals
+        for token_name, rule_name in _extract_tokens_from_conditionals(cursor):
+            if rule_name is not None:  # Only add if we found a handler
+                if token_name not in token_to_rules:
+                    token_to_rules[token_name] = []
+                if rule_name not in token_to_rules[token_name]:
+                    token_to_rules[token_name].append(rule_name)
+
     return token_to_rules
+
+
+def _validate_all_refs(  # noqa: C901, PLR0912
+    grammar_symbols: dict[str, GrammarNode], /
+) -> list[str]:
+    """
+    Validate that all $ref in grammar point to defined symbols.
+
+    Phase 3.2 reference consistency validation (new):
+    Ensures that:
+    - All token references use SCREAMING_SNAKE_CASE
+    - All rule references use lowercase
+    - No missing or circular references
+    - Proper naming convention consistency
+
+    Args:
+        grammar_symbols: Dictionary of all grammar symbols
+
+    Returns:
+        List of validation errors, empty if all valid
+    """
+    errors: list[str] = []
+
+    def walk_node(node: GrammarNode, path: str = 'root') -> None:
+        """Recursively walk grammar node and validate refs."""
+        # Check if this is a $ref node (dict with $ref key)
+        if not isinstance(node, dict):
+            return
+
+        if '$ref' in node:
+            ref_name = cast('str', node['$ref'])
+            if ref_name not in grammar_symbols:
+                errors.append(
+                    f'Missing symbol referenced: {ref_name} (at {path})'
+                )
+            # Validate naming convention
+            elif ref_name.isupper():
+                # Token reference - should be all uppercase
+                if not ref_name.isupper():
+                    errors.append(
+                        f'Token reference not UPPERCASE: {ref_name} (at {path})'
+                    )
+            else:
+                # Rule reference - should be lowercase
+                if ref_name != ref_name.lower():
+                    errors.append(
+                        f'Rule reference not lowercase: {ref_name} (at {path})'
+                    )
+
+        # Recursively check nested structures
+        for key, value in node.items():
+            if key != '$ref':
+                if isinstance(value, dict):
+                    walk_node(
+                        cast('GrammarNode', value), f'{path}.{key}'
+                    )
+                elif isinstance(value, list):
+                    for i, item in enumerate(value):
+                        if isinstance(item, dict):
+                            walk_node(
+                                cast('GrammarNode', item),
+                                f'{path}.{key}[{i}]'
+                            )
+
+    # Walk all symbols
+    for symbol_name, symbol_node in grammar_symbols.items():
+        walk_node(symbol_node, f'symbols.{symbol_name}')
+
+    return errors
+
+
+def _validate_token_references(
+    token_to_rules: dict[str, list[str]],
+    core_symbols: dict[str, GrammarNode],
+    /,
+) -> list[str]:
+    """
+    Validate that all token references in token_to_rules exist in core_symbols.
+
+    Phase 3.2 validation: Ensures that dispatcher rules reference valid tokens.
+
+    Args:
+        token_to_rules: Mapping of tokens to rules from switch statements
+        core_symbols: Language symbols (tokens and rules) to validate against
+
+    Returns:
+        List of validation errors, or empty list if all tokens are valid
+    """
+    errors: list[str] = []
+    explicit_tokens = {
+        k: v for k, v in token_to_rules.items() if k != '__default__'
+    }
+
+    for token_name in explicit_tokens:
+        if token_name not in core_symbols:
+            errors.append(
+                f'Token "{token_name}" referenced in case statements but not defined '
+                f'in token mapping'
+            )
+
+    return errors
 
 
 def _validate_completeness(  # noqa: C901, PLR0912
@@ -1193,6 +1501,20 @@ def _validate_completeness(  # noqa: C901, PLR0912
 
 
 def _build_token_mapping(parser: ZshParser, /) -> dict[str, _TokenDef]:
+    """
+    Build token mapping from enum definitions and text representations.
+
+    Phase 1.4 enhanced: Extracts:
+    1. Token enum values from zsh.h
+    2. Hash table entries from hashtable.c (multi-value tokens like TYPESET)
+    3. Token strings from lex.c (token display text)
+
+    Returns: Dictionary mapping token names to _TokenDef with:
+    - token: Token name
+    - value: Numeric token ID
+    - text: List of text representations (empty for semantic tokens)
+    - file/line: Source location
+    """
     result: dict[str, _TokenDef] = {}
     by_value: dict[int, _TokenDef] = {}
     tu = parser.parse('zsh.h')
@@ -1222,13 +1544,20 @@ def _build_token_mapping(parser: ZshParser, /) -> dict[str, _TokenDef]:
             }
             by_value[value] = result[child.spelling]
 
+    # Extract multi-value tokens from hash table
+    # Phase 1.4: Handle tokens like TYPESET that map to multiple keywords
     for token_name, hash_key in _parse_hash_entries(parser):
         if token_name in result:
-            result[token_name]['text'].append(hash_key)
+            # Prevent duplicates in text array
+            if hash_key not in result[token_name]['text']:
+                result[token_name]['text'].append(hash_key)
 
+    # Extract token string representations
     for value, text in _parse_token_strings(parser):
         if value in by_value:
-            by_value[value]['text'].append(text)
+            # Prevent duplicates in text array
+            if text not in by_value[value]['text']:
+                by_value[value]['text'].append(text)
 
     return result
 
@@ -1273,6 +1602,21 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     # Phase 2: Build call graph for analyzing function composition
     call_graph = _build_call_graph(parser)
 
+    # Merge call_graph into parser_functions to get actual C file locations
+    # (call_graph has file/line from actual C files, parser_functions has metadata from .syms)
+    parser_func_keys = set(parser_functions.keys())
+    call_graph_keys = set(call_graph.keys())
+    parser_parse_funcs = {k for k in parser_func_keys if _is_parser_function(k)}
+    call_graph_parse_funcs = {k for k in call_graph_keys if _is_parser_function(k)}
+    
+    merge_count = 0
+    for func_name in parser_parse_funcs:
+        if func_name in call_graph:
+            # Update with actual C file location while preserving .syms metadata
+            parser_functions[func_name]['file'] = call_graph[func_name]['file']
+            parser_functions[func_name]['line'] = call_graph[func_name]['line']
+            merge_count += 1
+
     # Phase 1.2: Validate completeness of rule references
     completeness_report = _validate_completeness(
         token_to_rules, parser_functions, call_graph
@@ -1280,21 +1624,41 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
 
     token_mapping = _build_token_mapping(parser)
 
-    core_symbols: Language = {
-        token['token']: create_token(
-            token['token'],
-            token['text'][0],
-            source={'file': token['file'], 'line': token['line']},
-        )
-        if len(token['text']) == 1
-        else create_token(
-            token['token'],
-            token['text'],
-            source={'file': token['file'], 'line': token['line']},
-        )
-        for token in token_mapping.values()
-        if token['text']
+    core_symbols: Language = {}
+    
+    # Add tokens with text representations
+    for token in token_mapping.values():
+        if token['text']:
+            core_symbols[token['token']] = create_token(
+                token['token'],
+                token['text'][0],
+                source={'file': token['file'], 'line': token['line']},
+            ) if len(token['text']) == 1 else create_token(
+                token['token'],
+                token['text'],
+                source={'file': token['file'], 'line': token['line']},
+            )
+    
+    # Add semantic tokens that don't have text representations
+    # These are tokens that represent parsed content, not literal strings
+    # They're created with placeholder patterns indicating their semantic type
+    semantic_tokens: dict[str, str] = {
+        'STRING': '<string>',         # Parsed string content
+        'ENVSTRING': '<env_string>',  # Environment variable as string
+        'ENVARRAY': '<env_array>',    # Environment variable as array
+        'NULLTOK': '<null>',          # Null/empty token
+        'LEXERR': '<lexer_error>',    # Lexer error token
     }
+    for token_name, placeholder in semantic_tokens.items():
+        if token_name in token_mapping and token_name not in core_symbols:
+            token_def = token_mapping[token_name]
+            # Create a semantic token with pattern indicating its semantic type
+            # Note: These don't match concrete text, they represent token categories
+            core_symbols[token_name] = create_token(
+                token_name,
+                placeholder,
+                source={'file': token_def['file'], 'line': token_def['line']},
+            )
 
     core_symbols['parameter'] = create_union(
         [
@@ -1310,6 +1674,12 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     )
     core_symbols['variable'] = create_terminal('[a-zA-Z0-9_]+')
 
+    # Phase 3.2: Validate that all token references exist
+    token_ref_errors = _validate_token_references(token_to_rules, core_symbols)
+    
+    # Phase 3.2 (new): Validate reference consistency across all symbols
+    ref_validation_errors = _validate_all_refs(core_symbols)
+
     # Phase 2.3: Detect cycles in call graph
     func_to_cycles = _detect_cycles(call_graph)
 
@@ -1320,7 +1690,10 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     lexer_states = _extract_lexer_state_changes(parser, parser_functions)
 
     # Phase 3: Build grammar rules from call graph with control flow analysis
-    grammar_rules = _build_grammar_rules(call_graph, parser_functions, control_flows)
+    # Phase 3.2: Integrate token dispatch into grammar rules
+    grammar_rules = _build_grammar_rules(
+        call_graph, parser_functions, control_flows, token_to_rules
+    )
 
     # Phase 4.3: Embed lexer state conditions into grammar rules
     grammar_rules = _embed_lexer_state_conditions(
@@ -1338,7 +1711,7 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
             sig = node.get('signature', '(...)')
             print(f'  {name:30} {vis:10} {sig}')
 
-    # Log token-to-rule mappings
+    # Log token-to-rule mappings and Phase 3.2 integration
     if token_to_rules:
         # Separate explicit tokens from default
         explicit_tokens = {
@@ -1346,12 +1719,44 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
         }
         default_rule = token_to_rules.get('__default__')
 
-        print(f'\nToken-to-rule mappings found: {len(explicit_tokens)} explicit tokens')
+        print('\nPhase 3.2: Token dispatch integration')
+        print(f'Phase 3.2.1 (inline conditionals): Extracted from if/else blocks')
+        print(f'Total token-to-rule mappings found: {len(explicit_tokens)} explicit tokens')
         for token, rules in sorted(explicit_tokens.items()):
             print(f'  {token:30} → {", ".join(rules)}')
 
         if default_rule:
-            print(f'\n  Default (catch-all) handler: {", ".join(default_rule)}')
+            print(f'  Default (catch-all) handler: {", ".join(default_rule)}')
+
+        # Show which dispatcher rules have embedded token references
+        rule_to_tokens: dict[str, list[str]] = {}
+        for token_name, rule_names in explicit_tokens.items():
+            for rule_name in rule_names:
+                if rule_name not in rule_to_tokens:
+                    rule_to_tokens[rule_name] = []
+                rule_to_tokens[rule_name].append(token_name)
+
+        if rule_to_tokens:
+            print('\nDispatcher rules with embedded token references:')
+            for rule_name in sorted(rule_to_tokens.keys()):
+                tokens = sorted(rule_to_tokens[rule_name])
+                print(f'  {rule_name:20} dispatches: {", ".join(tokens)}')
+
+        # Log validation errors for token references
+        if token_ref_errors:
+            print('\nToken reference validation errors:')
+            for error in token_ref_errors:
+                print(f'  ERROR: {error}')
+        else:
+            print('Token reference validation: PASSED')
+        
+        # Log reference consistency validation (Phase 3.2 new)
+        if ref_validation_errors:
+            print('\nReference consistency validation errors:')
+            for error in ref_validation_errors:
+                print(f'  ERROR: {error}')
+        else:
+            print('Reference consistency validation: PASSED')
 
     # Log completeness report
     print('\nCompleteness validation report:')

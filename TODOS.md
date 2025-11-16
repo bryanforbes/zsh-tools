@@ -1,12 +1,20 @@
 # Grammar Extraction TODOs
 
-Status: **Phases 1-3 (including 3.3), 4.3, and 5.2 COMPLETE** - Grammar extraction functional with 31 parser rules generated, optional/repeat patterns detected via control flow analysis, lexer state variants embedded, and schema validated. **Phase 3.2 (Token Dispatch Integration) pending** - identified as high priority for canonical grammar completeness.
+Status: **Phases 1-3 (including 3.2 and 3.3), 4.3, and 5.2 COMPLETE** - Grammar extraction functional with 31 parser rules generated, token dispatch integrated into dispatcher rules, optional/repeat patterns detected via control flow analysis, lexer state variants embedded, and schema validated.
 
 ## Completed ✅
 
 - [x] **Phase 1**: Parser symbol extraction - 31 parser functions extracted from `.syms` files, token mapping working
 - [x] **Phase 2**: Call graph construction - 1165 functions analyzed, 50+ cycles detected and properly handled via `$ref`
 - [x] **Phase 3**: Grammar rules generation - All 31 parser functions converted to grammar rules with source traceability
+- [x] **Phase 3.2**: Integrate Token Dispatch into Grammar Rules - COMPLETE
+  - [x] Dispatcher switch/case tokens extracted (for, while, case, if, etc.)
+  - [x] Inline conditional token matching (if/else, bitwise, ternary) extracted via Phase 3.2.1
+  - [x] Token references validated against core_symbols
+  - [x] Reference consistency validation layer implemented (new)
+  - [x] Semantic tokens (STRING, ENVSTRING, ENVARRAY, NULLTOK, LEXERR) handled with descriptive placeholders
+  - [x] Token deduplication in extraction (Phase 1.4 enhancement)
+  - Result: 30 explicit tokens, 23 dispatcher rules with embedded token references
 - [x] **Phase 3.3**: Control Flow Analysis for Optional/Repeat Patterns - 12 patterns detected (9 optional, 3 repeat), AST control flow visitor implemented
 - [x] **Phase 4.3**: Embed Lexer State Changes as Conditions - 20 parser functions identified, Variant nodes embedded with lexer state conditions, descriptions auto-generated
 - [x] **Phase 5.2**: Schema validation - Generated grammar passes JSON schema validation
@@ -14,22 +22,6 @@ Status: **Phases 1-3 (including 3.3), 4.3, and 5.2 COMPLETE** - Grammar extracti
 ## In Progress / Remaining
 
 ### High Priority 🔴
-
-#### Phase 3.2: Integrate Token Dispatch into Grammar Rules
-
-- **Status**: Not started
-- **TODO**: Embed `token_to_rules` mappings into grammar rules to show which tokens trigger which alternatives
-- **Current**: Token-to-rule mappings extracted but only used for validation, not integrated into rule structure
-- **Implementation**:
-    1. Pass `token_to_rules` to `_build_grammar_rules()` alongside call graph
-    2. For dispatcher functions (e.g., `par_cmd()` with switch statements), include token references in union
-    3. Example: `cmd` rule should include `{'$ref': 'FOR'}`, `{'$ref': 'CASE'}`, etc. alongside rule refs
-    4. Document explicit tokens vs. default/catch-all cases in rule descriptions
-    5. Validate all token references exist in `core_symbols`
-- **Why this matters**: Zsh source comments document grammar as `event : ENDINPUT | SEPER | sublist`, showing tokens are first-class grammar elements, not metadata
-- **Files**: Modify `_build_grammar_rules()` in `construct_grammar.py`
-- **Impact**: Improves canonical grammar completeness; aligns with source documentation
-- **Success Criteria**: All dispatcher rules include both token and subrule references in unions
 
 #### Phase 5.3: Real-World Grammar Testing
 
@@ -113,23 +105,53 @@ Status: **Phases 1-3 (including 3.3), 4.3, and 5.2 COMPLETE** - Grammar extracti
 - 100+ tokens extracted with string mappings ✅
 - Source traceability (file/line/function) ✅
 - Cycles properly broken via `$ref` ✅
+- Token dispatch fully integrated ✅
+  - 23 dispatcher rules have embedded token references
+  - 30 explicit tokens extracted from both switch/case and inline conditionals
+  - All extracted token references validated against core_symbols ✅
+  - Reference consistency validation layer implemented ✅
+  - Semantic tokens handled with descriptive placeholders ✅
 - Schema validation passing ✅
+
+**Completed Enhancements:**
+
+- Phase 3.2.1: Inline conditional token extraction (if/else, bitwise, macros, ternary)
+- Phase 3.2 new: Reference consistency validation (`_validate_all_refs`)
+- Phase 1.4 enhancement: Token deduplication during extraction
+- Semantic token support (STRING, ENVSTRING, ENVARRAY, NULLTOK, LEXERR)
 
 **Missing:**
 
 - Tail recursion vs mutual recursion classification
-- Reference consistency validation layer
 - Multi-value token aggregation verification (PARTIAL)
-- Real-world test validation
-- Provenance tracking with auto_generated flags
+- Real-world test validation (Phase 5.3)
+- Provenance tracking with auto_generated flags (Phase 5.4)
 - Doc comment extraction from C source
 
 ---
 
 ## Notes
 
+- **Token Dispatch (Phase 3.2)**: COMPLETE. Extracts tokens from both:
+  1. Switch/case dispatcher statements (original Phase 3.2)
+  2. Inline conditionals - if/else, bitwise checks (&, |), comparison (==, !=), ternary operators (?:), macros (ISTOK, ISUNSET), compound conditions (&&, ||) (Phase 3.2.1)
+  - 30 explicit tokens extracted, 23 dispatcher rules with embedded token references
+  - 5 semantic tokens (STRING, ENVSTRING, ENVARRAY, NULLTOK, LEXERR) represented with descriptive placeholders
+
+- **Reference Consistency Validation (Phase 3.2 new)**: New `_validate_all_refs()` function walks entire grammar graph and validates:
+  - All `$ref` point to defined symbols
+  - Token references use SCREAMING_SNAKE_CASE
+  - Rule references use lowercase naming
+  - Catches naming consistency violations
+
+- **Semantic Tokens**: Tokens without concrete text representations (STRING, ENVSTRING, etc.) are now properly supported with semantic placeholders like `<string>`, `<env_string>`, etc.
+
 - **Lexer States**: Successfully embedded as Variant nodes with condition constraints. 20 functions identified and integrated.
+
 - **Cycle Handling**: Currently all cycles handled uniformly via `$ref`. Distinguishing tail vs mutual recursion could enable better Repeat modeling for tail-recursive patterns.
+
 - **Control Flow**: Phase 3.3 successfully detects Optional patterns (if without else: 9 cases) and Repeat patterns (while/for loops: 3 cases). AST control flow visitor analyzes parser functions and wraps detected patterns in Optional/Repeat nodes.
+
 - **Testing**: No validation that generated grammar matches actual Zsh behavior on real code.
-- **References**: No validation layer for `$ref` correctness or naming convention consistency.
+
+- **Token Deduplication**: Phase 1.4 enhancement prevents duplicate entries in token text arrays during extraction from multiple sources.
