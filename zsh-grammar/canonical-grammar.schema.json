@@ -6,10 +6,35 @@
       "type": "object",
       "minProperties": 1,
       "propertyNames": {
-        "pattern": "^[A-Z][a-zA-Z0-9_]*$",
-        "description": "Symbol names must start with uppercase and contain only letters, digits, or underscore"
+        "pattern": "^([A-Z][A-Z0-9_]*|[a-z][a-z0-9_]*)$",
+        "description": "Token names in SCREAMING_SNAKE_CASE (e.g., FOR, WORD) or rule names in lower_snake_case (e.g., for, while, case)"
       },
       "additionalProperties": { "$ref": "#/definitions/GrammarNode" }
+    },
+    "Empty": {
+      "type": "object",
+      "const": { "empty": true }
+    },
+    "Token": {
+      "type": "object",
+      "required": ["token", "matches"],
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Token constant name"
+        },
+        "matches": {
+          "oneOf": [
+            { "type": "string", "description": "Single string match" },
+            {
+              "type": "array",
+              "items": { "type": "string" },
+              "minItems": 2,
+              "description": "Multiple string matches (eg. declare, export, and float all produce TYPESET)"
+            }
+          ]
+        }
+      }
     },
     "Optional": {
       "type": "object",
@@ -17,12 +42,74 @@
       "properties": {
         "optional": { "$ref": "#/definitions/GrammarNode" }
       },
-      "additionalProperties": false,
       "description": "Optional node"
     },
     "Condition": {
       "oneOf": [
-        { "type": "string" },
+        {
+          "type": "object",
+          "required": ["option"],
+          "properties": {
+            "option": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["parseflag"],
+          "properties": {
+            "parseflag": {
+              "type": "string",
+              "enum": [
+                "incmdpos",
+                "incond",
+                "inredir",
+                "incasepat",
+                "infor",
+                "inrepeat",
+                "intypeset",
+                "isnewlin"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["lexstate"],
+          "properties": {
+            "lexstate": {
+              "type": "string",
+              "enum": [
+                "INCMDPOS",
+                "INCOND",
+                "INREDIR",
+                "INCASEPAT",
+                "INFOR",
+                "INREPEAT",
+                "INTYPESET",
+                "ISNEWLIN",
+                "IN_MATH",
+                "ALIASSPACEFLAG",
+                "INCOMPARISON",
+                "IN_ARRAY",
+                "IN_SUBSTITUTION",
+                "IN_BRACEEXP",
+                "IN_GLOBPAT"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "sinceVersion": { "type": "string" },
+            "untilVersion": { "type": "string" }
+          },
+          "minProperties": 1,
+          "additionalProperties": false
+        },
         {
           "type": "object",
           "required": ["not"],
@@ -64,24 +151,18 @@
         "variant": { "$ref": "#/definitions/GrammarNode" },
         "condition": { "$ref": "#/definitions/Condition" }
       },
-      "additionalProperties": false,
       "description": "Variant path based on options"
     },
     "Terminal": {
-      "oneOf": [
-        { "type": "string", "description": "Literal terminal string" },
-        {
-          "type": "object",
-          "required": ["pattern"],
-          "properties": {
-            "pattern": {
-              "type": "string",
-              "description": "Regex pattern terminal"
-            }
-          },
-          "additionalProperties": false
+      "type": "object",
+      "required": ["pattern"],
+      "properties": {
+        "pattern": {
+          "type": "string",
+          "description": "Regex pattern for unnamed terminal (identifier, number, etc.)",
+          "format": "regex"
         }
-      ]
+      }
     },
     "Union": {
       "type": "object",
@@ -89,10 +170,10 @@
       "properties": {
         "union": {
           "type": "array",
-          "items": { "$ref": "#/definitions/GrammarNode" }
+          "items": { "$ref": "#/definitions/GrammarNode" },
+          "minItems": 2
         }
-      },
-      "additionalProperties": false
+      }
     },
     "Sequence": {
       "type": "object",
@@ -100,32 +181,26 @@
       "properties": {
         "sequence": {
           "type": "array",
-          "items": { "$ref": "#/definitions/GrammarNode" }
+          "items": { "$ref": "#/definitions/GrammarNode" },
+          "minItems": 2
         }
-      },
-      "additionalProperties": false
+      }
     },
     "Repeat": {
-      "oneOf": [
-        {
-          "type": "object",
-          "required": ["repeat"],
-          "properties": {
-            "repeat": { "$ref": "#/definitions/GrammarNode" }
-          },
-          "additionalProperties": false,
-          "description": "Zero-or-more repetition"
+      "type": "object",
+      "required": ["repeat"],
+      "properties": {
+        "repeat": { "$ref": "#/definitions/GrammarNode" },
+        "min": {
+          "type": "integer",
+          "default": 0,
+          "description": "Minimum repetitions (0 for *, 1 for +; must validate min <= max externally)"
         },
-        {
-          "type": "object",
-          "required": ["repeat1"],
-          "properties": {
-            "repeat1": { "$ref": "#/definitions/GrammarNode" }
-          },
-          "additionalProperties": false,
-          "description": "One-or-more repetition"
+        "max": {
+          "type": "integer",
+          "description": "Maximum repetitions (omit for unbounded)"
         }
-      ]
+      }
     },
     "Ref": {
       "type": "object",
@@ -133,21 +208,52 @@
       "properties": {
         "$ref": {
           "type": "string",
-          "pattern": "^(/[a-zA-Z0-9_]+?/)?[a-zA-Z0-9_]+$",
-          "description": "Reference to a symbol in the same or another language"
+          "pattern": "^(/[a-z][a-zA-Z0-9_]*/)?([A-Z][A-Z0-9_]*|[a-z][a-z0-9_]*)$",
+          "description": "Reference to a symbol (token in SCREAMING_SNAKE_CASE or rule in lower_snake_case)"
         }
-      },
-      "additionalProperties": false
+      }
     },
     "GrammarNode": {
-      "anyOf": [
-        { "$ref": "#/definitions/Optional" },
-        { "$ref": "#/definitions/Terminal" },
-        { "$ref": "#/definitions/Union" },
-        { "$ref": "#/definitions/Sequence" },
-        { "$ref": "#/definitions/Repeat" },
-        { "$ref": "#/definitions/Ref" },
-        { "$ref": "#/definitions/Variant" }
+      "allOf": [
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/Empty" },
+            { "$ref": "#/definitions/Optional" },
+            { "$ref": "#/definitions/Ref" },
+            { "$ref": "#/definitions/Repeat" },
+            { "$ref": "#/definitions/Sequence" },
+            { "$ref": "#/definitions/Terminal" },
+            { "$ref": "#/definitions/Token" },
+            { "$ref": "#/definitions/Union" },
+            { "$ref": "#/definitions/Variant" }
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "description": "What this rule or symbol represents"
+            },
+            "source": {
+              "type": "object",
+              "required": ["file", "line"],
+              "properties": {
+                "file": { "type": "string", "description": "e.g., parse.c" },
+                "line": { "type": "integer" },
+                "function": {
+                  "type": "string",
+                  "description": "e.g., par_cmd"
+                },
+                "context": {
+                  "type": "string",
+                  "description": "e.g., switch case FOR"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        }
       ]
     }
   },
@@ -168,6 +274,11 @@
     },
     "version": { "type": "string" },
     "zsh_version": { "type": "string" },
-    "zsh_revision": { "type": "string" }
+    "zsh_revision": { "type": "string" },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when the schema was generated"
+    }
   }
 }

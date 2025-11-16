@@ -14,6 +14,7 @@ The token mapping extracted by `_build_token_mapping()` in `construct_grammar.py
 The token mapping is extracted from three sources in the Zsh source code:
 
 ### 1. Token Enum Definition (`zsh.h`)
+
 The `enum lextok` defines all 64 token types, including their symbolic names and numeric values.
 
 **Source**: `vendor/zsh/Src/zsh.h` lines 314-381
@@ -29,16 +30,19 @@ enum lextok {
 ```
 
 ### 2. Reserved Word Hash Table (`hashtable.c`)
+
 Maps keyword strings to token names. Extracted from the `reswds` static array.
 
 **Source**: `vendor/zsh/Src/hashtable.c` lines 1076-1109
 
 Examples:
+
 - `"case"` → `CASE`
 - `"function"` → `FUNC`
 - `"declare"`, `"export"`, `"float"`, `"integer"`, `"local"`, `"readonly"`, `"typeset"` → all map to `TYPESET`
 
 ### 3. Token String Array (`lex.c`)
+
 Provides literal string representations for operators and special syntax.
 
 **Source**: `vendor/zsh/Src/lex.c` lines 171-205
@@ -57,7 +61,9 @@ mod_export char *tokstrings[WHILE + 1] = {
 ### By Category
 
 #### ✓ Redirection Operators (15/15)
+
 All redirection operators are correctly extracted:
+
 - Write: `OUTANG` (>), `OUTANGBANG` (>|), `DOUTANG` (>>), `DOUTANGBANG` (>>|)
 - Read: `INANG` (<), `INOUTANG` (<>)
 - Heredoc: `DINANG` (<<), `DINANGDASH` (<<-)
@@ -66,12 +72,15 @@ All redirection operators are correctly extracted:
 - Here-string: `TRINANG` (<<<)
 
 #### ✓ Pipe Operators (3/3)
+
 - `BAR` (|)
 - `DBAR` (||)
 - `BARAMP` (|&)
 
 #### ✓ Control Flow Keywords (15/15)
+
 All control flow constructs are extracted:
+
 - Conditionals: `IF`, `THEN`, `ELIF`, `ELSE`, `FI`
 - Case: `CASE`, `ESAC`
 - Loops: `FOR`, `FOREACH`, `WHILE`, `UNTIL`, `DOLOOP`, `DONE`
@@ -79,12 +88,14 @@ All control flow constructs are extracted:
 - Plus: `ZEND` (end - Zsh variant)
 
 #### ✓ Compound Delimiters (8/8)
+
 - Parentheses: `INPAR` ((), `OUTPAR` ()), `INOUTPAR` (())
 - Braces: `INBRACE` ({), `OUTBRACE` (})
 - Brackets: `DINBRACK` ([[ )
 - Arithmetic: `DINPAR` ((, `DOUTPAR` ())
 
 #### ✓ Separators (6/6)
+
 - `SEMI` (;)
 - `DSEMI` (;;)
 - `SEPER` (;) - same as SEMI
@@ -93,6 +104,7 @@ All control flow constructs are extracted:
 - `NEWLIN` (\n)
 
 #### ✓ Other Keywords (9/9)
+
 - `AMPER` (&)
 - `AMPERBANG` (&|)
 - `BANG` (!)
@@ -103,7 +115,9 @@ All control flow constructs are extracted:
 - `TYPESET` (declare, export, float, integer, local, readonly, typeset)
 
 #### ✓ Special Tokens - No Text (7/7)
+
 These tokens intentionally have no text mapping because they're semantic categories, not literals:
+
 - `NULLTOK` - null/uninitialized token
 - `STRING` - generic string value
 - `ENVSTRING` - environment variable string
@@ -116,27 +130,29 @@ These tokens intentionally have no text mapping because they're semantic categor
 
 Sample spot checks against source:
 
-| Token | Expected Text | Extracted | Status |
-|-------|---------------|-----------|--------|
-| SEPER | `;` | `;` | ✓ |
-| NEWLIN | `\n` | `\\n` | ✓ |
-| DSEMI | `;;` | `;;` | ✓ |
-| DINBRACK | `[[` | `[[` | ✓ |
-| DINPAR | `((` | `((` | ✓ |
-| DOUTPAR | `))` | `))` | ✓ |
-| CASE | `case` | `case` | ✓ |
-| FOR | `for` | `for` | ✓ |
-| FUNC | `function` | `function` | ✓ |
-| TYPESET | `{declare, export, ...}` | `{declare, export, ...}` | ✓ |
+| Token    | Expected Text            | Extracted                | Status |
+| -------- | ------------------------ | ------------------------ | ------ |
+| SEPER    | `;`                      | `;`                      | ✓      |
+| NEWLIN   | `\n`                     | `\\n`                    | ✓      |
+| DSEMI    | `;;`                     | `;;`                     | ✓      |
+| DINBRACK | `[[`                     | `[[`                     | ✓      |
+| DINPAR   | `((`                     | `((`                     | ✓      |
+| DOUTPAR  | `))`                     | `))`                     | ✓      |
+| CASE     | `case`                   | `case`                   | ✓      |
+| FOR      | `for`                    | `for`                    | ✓      |
+| FUNC     | `function`               | `function`               | ✓      |
+| TYPESET  | `{declare, export, ...}` | `{declare, export, ...}` | ✓      |
 
 ## Data Quality
 
 ### Coverage
+
 - **100%** of enum tokens extracted
 - **89.1%** have text mappings (57/64)
 - **10.9%** are special semantic tokens without text
 
 ### Mapping Accuracy
+
 - **100%** of sampled mappings are correct
 - Reserved words match hash table entries
 - Operator strings match lexer token array

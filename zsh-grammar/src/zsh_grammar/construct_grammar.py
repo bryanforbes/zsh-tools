@@ -13,7 +13,8 @@ from clang.cindex import Cursor, CursorKind, StorageClass
 from zsh_grammar.grammar_utils import (
     create_ref,
     create_sequence,
-    create_terminal_pattern,
+    create_terminal,
+    create_token,
     create_union,
 )
 from zsh_grammar.source_parser import ZshParser
@@ -120,14 +121,18 @@ def _build_grammar_rules(call_graph: dict[str, _FunctionNode], /) -> Language:
         # Classify rule based on unique calls
         if not unique_parse_calls:
             # No parse function calls -> token/terminal
-            rules[func_name] = create_terminal_pattern(f'[{func_name}]')
+            rules[func_name] = create_terminal(f'[{func_name}]')
         elif len(unique_parse_calls) == 1:
             # Single unique parse call -> direct composition
-            rules[func_name] = create_sequence(unique_parse_calls)
+            rules[func_name] = create_sequence(
+                [create_ref(call) for call in unique_parse_calls]
+            )
         else:
             # Multiple unique calls -> dispatch/union
             # (typically via switch/if statements with mutually exclusive branches)
-            rules[func_name] = create_union(unique_parse_calls)
+            rules[func_name] = create_union(
+                [create_ref(call) for call in unique_parse_calls]
+            )
 
     return rules
 
@@ -136,6 +141,8 @@ class _TokenDef(TypedDict):
     token: str
     value: int
     text: list[str]
+    file: str
+    line: int
 
 
 def _find_cursor(
@@ -169,7 +176,7 @@ def _find_all_cursors(
 
 
 def _parse_hash_entries(parser: ZshParser, /) -> Iterator[tuple[str, str]]:
-    tu = parser.parse('hashtable.c')
+    tu = parser.parse('hashtable.c', expand_macros=True)
     if (
         tu is not None
         and (
@@ -209,7 +216,7 @@ def _parse_hash_entries(parser: ZshParser, /) -> Iterator[tuple[str, str]]:
 
 
 def _parse_token_strings(parser: ZshParser, /) -> Iterator[tuple[int, str]]:
-    tu = parser.parse('lex.c')
+    tu = parser.parse('lex.c', expand_macros=True)
 
     if tu is None or tu.cursor is None:
         return
@@ -231,6 +238,7 @@ def _parse_token_strings(parser: ZshParser, /) -> Iterator[tuple[int, str]]:
                 tokens = list(item.get_tokens())
                 if tokens:
                     text = ''.join([token.spelling for token in tokens])
+                    print(text)
                     if text.startswith('"') and text.endswith('"'):
                         text = text[1:-1]
 
@@ -263,6 +271,8 @@ def _build_token_mapping(parser: ZshParser, /) -> dict[str, _TokenDef]:
                 'token': child.spelling,
                 'value': value,
                 'text': [],
+                'file': 'zsh.h',
+                'line': child.location.line,
             }
             by_value[value] = result[child.spelling]
 
@@ -283,17 +293,34 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:
     token_mapping = _build_token_mapping(parser)
 
     core_symbols: Language = {
-        token['token']: token['text'][0]
+        token['token']: create_token(
+            token['token'],
+            token['text'][0],
+            source={'file': token['file'], 'line': token['line']},
+        )
         if len(token['text']) == 1
-        else create_union(token['text'])
+        else create_token(
+            token['token'],
+            token['text'],
+            source={'file': token['file'], 'line': token['line']},
+        )
         for token in token_mapping.values()
         if token['text']
     }
 
     core_symbols['Parameter'] = create_union(
-        [create_ref('Variable'), '*', '@', '#', '?', '-', '$', '!']
+        [
+            create_ref('Variable'),
+            create_terminal('*'),
+            create_terminal('@'),
+            create_terminal('#'),
+            create_terminal('?'),
+            create_terminal('-'),
+            create_terminal('$'),
+            create_terminal('!'),
+        ]
     )
-    core_symbols['Variable'] = create_terminal_pattern('[a-zA-Z0-9_]+')
+    core_symbols['Variable'] = create_terminal('[a-zA-Z0-9_]+')
 
     # call_graph = _build_call_graph(parser)
 

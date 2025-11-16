@@ -12,13 +12,13 @@ version = "1.33.0"
 backend = "pipx:basedpyright"
 
 [[tools.ruff]]
-version = "0.14.4"
+version = "0.14.5"
 backend = "aqua:astral-sh/ruff"
 
 [tools.ruff.platforms.macos-arm64]
-checksum = "sha256:ab26cd2b03d5b2ec42dc7ac1886a29055eb2003aa2db14b26c7091c7cd6b4c68"
-size = 11942656
-url = "https://github.com/astral-sh/ruff/releases/download/0.14.4/ruff-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:c07616663ac63792c16269d6798a47fb1f45b29997706178d60e90da698a9970"
+size = 12032411
+url = "https://github.com/astral-sh/ruff/releases/download/0.14.5/ruff-aarch64-apple-darwin.tar.gz"
 
 [[tools.uv]]
 version = "0.9.9"

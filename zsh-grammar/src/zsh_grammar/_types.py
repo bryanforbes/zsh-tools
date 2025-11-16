@@ -1,54 +1,128 @@
 from __future__ import annotations
 
-from typing import NotRequired, TypedDict
+from typing import Literal, NotRequired, TypedDict
 
 
-class Optional(TypedDict):
+class Source(TypedDict):
+    file: str
+    line: int
+    function: NotRequired[str]
+    context: NotRequired[str]
+
+
+class _BaseNode(TypedDict):
+    description: NotRequired[str]
+    source: NotRequired[Source]
+
+
+class Empty(_BaseNode):
+    empty: Literal[True]
+
+
+class Token(_BaseNode):
+    token: str
+    matches: str | list[str]
+
+
+class Optional(_BaseNode):
     optional: GrammarNode
+
+
+class OptionCondition(TypedDict):
+    option: str
+
+
+type ParseFlag = Literal[
+    'incmdpos',
+    'incond',
+    'inredir',
+    'incasepat',
+    'infor',
+    'inrepeat',
+    'intypeset',
+    'isnewlin',
+]
+
+
+class ParseFlagCondition(TypedDict):
+    parseflag: ParseFlag
+
+
+type LexState = Literal[
+    'INCMDPOS',
+    'INCOND',
+    'INREDIR',
+    'INCASEPAT',
+    'INFOR',
+    'INREPEAT',
+    'INTYPESET',
+    'ISNEWLIN',
+    'IN_MATH',
+    'ALIASSPACEFLAG',
+    'INCOMPARISON',
+    'IN_ARRAY',
+    'IN_SUBSTITUTION',
+    'IN_BRACEEXP',
+    'IN_GLOBPAT',
+]
+
+
+class LexStateCondition(TypedDict):
+    lexstate: LexState
+
+
+class VersionCondition(TypedDict):
+    sinceVersion: NotRequired[str]
+    untilVersion: NotRequired[str]
 
 
 NotCondition = TypedDict('NotCondition', {'not': 'Condition'})
 AndCondition = TypedDict('AndCondition', {'and': 'list[Condition]'})
 OrCondition = TypedDict('OrCondition', {'or': 'list[Condition]'})
 
-type Condition = str | NotCondition | AndCondition | OrCondition
+type Condition = (
+    OptionCondition
+    | ParseFlagCondition
+    | LexStateCondition
+    | VersionCondition
+    | NotCondition
+    | AndCondition
+    | OrCondition
+)
 
 
-class Variant(TypedDict):
+class Variant(_BaseNode):
     variant: GrammarNode
     condition: Condition
 
 
-class TerminalPattern(TypedDict):
+class Terminal(_BaseNode):
     pattern: str
 
 
-type Terminal = str | TerminalPattern
-
-
-class Union(TypedDict):
+class Union(_BaseNode):
     union: list[GrammarNode]
 
 
-class Sequence(TypedDict):
+class Sequence(_BaseNode):
     sequence: list[GrammarNode]
 
 
-class RepeatNone(TypedDict):
+class Repeat(_BaseNode):
     repeat: GrammarNode
+    min: NotRequired[int]
+    max: NotRequired[int]
 
 
-class RepeatOne(TypedDict):
-    repeat1: GrammarNode
+_RefBase = TypedDict('_RefBase', {'$ref': str})
 
 
-type Repeat = RepeatNone | RepeatOne
+class Ref(_BaseNode, _RefBase): ...
 
 
-Ref = TypedDict('Ref', {'$ref': str})
-
-
-type GrammarNode = Optional | Ref | Repeat | Sequence | Terminal | Union | Variant
+type GrammarNode = (
+    Empty | Optional | Ref | Repeat | Sequence | Terminal | Token | Union | Variant
+)
 type Language = dict[str, GrammarNode]
 
 
@@ -61,3 +135,4 @@ class Grammar(TypedDict, extra_items=str):
     version: NotRequired[str]
     zsh_version: NotRequired[str]
     zsh_revision: NotRequired[str]
+    generated_at: NotRequired[str]
