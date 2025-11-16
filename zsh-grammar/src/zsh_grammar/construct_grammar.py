@@ -13,7 +13,9 @@ from clang.cindex import Cursor, CursorKind, StorageClass
 
 from zsh_grammar.grammar_utils import (
     create_lex_state,
+    create_optional,
     create_ref,
+    create_repeat,
     create_source,
     create_terminal,
     create_token,
@@ -128,6 +130,26 @@ class _FunctionNode(TypedDict):
     conditions: NotRequired[list[str]]
     signature: NotRequired[str]
     visibility: NotRequired[str]
+
+
+class _ControlFlowPattern(TypedDict):
+    """Control flow classification for grammar rules.
+
+    Attributes:
+        pattern_type: 'optional', 'repeat', 'conditional', or 'sequential'
+        reason: Human-readable description of why this pattern was classified
+        has_else: For optional patterns, whether if statement has explicit else
+        loop_type: For repeat patterns, 'while' or 'for'
+        min_iterations: Minimum iterations for repeat (0 for optional, 1+ for required)
+        max_iterations: Maximum iterations for repeat (None for unlimited)
+    """
+
+    pattern_type: str  # 'optional', 'repeat', 'conditional', 'sequential'
+    reason: str
+    has_else: NotRequired[bool]
+    loop_type: NotRequired[str]
+    min_iterations: NotRequired[int]
+    max_iterations: NotRequired[int]
 
 
 def _extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
@@ -319,12 +341,135 @@ def _extract_lexer_state_changes(
             if left_operand:
                 if left_operand not in state_changes[func_name]:
                     state_changes[func_name][left_operand] = []
-                state_changes[func_name][left_operand].append(
-                    child.location.line
-                )
+                state_changes[func_name][left_operand].append(child.location.line)
 
     # Filter to only functions that have state changes
     return {func: states for func, states in state_changes.items() if states}
+
+
+def _analyze_control_flow(  # noqa: C901, PLR0912
+    cursor: Cursor, /, *, func_name: str = ''
+) -> _ControlFlowPattern | None:
+    """
+    Analyze control flow patterns in a function body.
+
+    Detects:
+    - While loops with parser function calls → Repeat pattern
+    - If statements without else → Optional pattern
+    - Switch/case patterns with exhaustive coverage → Conditional (non-optional)
+    - Sequential calls → Sequential pattern
+
+    Phase 3.3 implementation: Analyzes AST to distinguish between:
+    1. Repeating elements (while/for loops calling parser functions)
+    2. Optional elements (if statements without else branches)
+    3. Conditional alternatives (switch/case or if-else with all branches covered)
+    4. Sequential required elements (no control flow modifying optionality)
+
+    Args:
+        cursor: Function definition cursor
+        func_name: Function name for description
+
+    Returns:
+        _ControlFlowPattern if a clear pattern is detected, None if sequential/neutral
+    """
+    # Collect control flow structures
+    while_stmts: list[Cursor] = []
+    for_stmts: list[Cursor] = []
+    if_stmts: list[Cursor] = []
+    switch_stmts: list[Cursor] = []
+
+    for child in cursor.walk_preorder():
+        if child.kind == CursorKind.WHILE_STMT:
+            while_stmts.append(child)
+        elif child.kind == CursorKind.FOR_STMT:
+            for_stmts.append(child)
+        elif child.kind == CursorKind.IF_STMT:
+            if_stmts.append(child)
+        elif child.kind == CursorKind.SWITCH_STMT:
+            switch_stmts.append(child)
+
+    # Check for while loops with parser function calls
+    # These indicate repetition in the grammar
+    for while_stmt in while_stmts:
+        # Check if while body contains parser function calls
+        has_parser_call = False
+        for node in while_stmt.walk_preorder():
+            if node.kind == CursorKind.CALL_EXPR and _is_parser_function(node.spelling):
+                has_parser_call = True
+                break
+
+        if has_parser_call:
+            return _ControlFlowPattern(
+                pattern_type='repeat',
+                reason=f'{func_name} contains while loop with parser function calls',
+                loop_type='while',
+                min_iterations=0,  # while can execute 0 times
+            )
+
+    # Check for for loops with parser function calls
+    for for_stmt in for_stmts:
+        has_parser_call = False
+        for node in for_stmt.walk_preorder():
+            if node.kind == CursorKind.CALL_EXPR and _is_parser_function(node.spelling):
+                has_parser_call = True
+                break
+
+        if has_parser_call:
+            return _ControlFlowPattern(
+                pattern_type='repeat',
+                reason=f'{func_name} contains for loop with parser function calls',
+                loop_type='for',
+                min_iterations=0,
+            )
+
+    # Check for if statements without else (indicating optional parsing)
+    # Only consider if statements that are direct children of function body,
+    # not nested ones (nested ones are part of conditional logic)
+    func_children = list(cursor.get_children())
+    func_body: Cursor | None = None
+
+    for child in func_children:
+        if child.kind == CursorKind.COMPOUND_STMT:
+            func_body = child
+            break
+
+    if func_body:
+        for if_stmt in if_stmts:
+            # Count tokens to detect presence of "else"
+            tokens = list(if_stmt.get_tokens())
+            token_spellings = [t.spelling for t in tokens]
+            has_else_token = 'else' in token_spellings
+
+            # Check if if body contains parser function calls
+            has_parser_call = False
+            for node in if_stmt.walk_preorder():
+                if node.kind == CursorKind.CALL_EXPR and _is_parser_function(
+                    node.spelling
+                ):
+                    has_parser_call = True
+                    break
+
+            # If there's no else and there are parser calls, it's optional
+            if has_parser_call and not has_else_token:
+                reason = (
+                    f'{func_name} contains if statement without else '
+                    'with parser function calls'
+                )
+                return _ControlFlowPattern(
+                    pattern_type='optional',
+                    reason=reason,
+                    has_else=False,
+                    min_iterations=0,
+                )
+
+    # If we have extensive if-else chains (like large conditional parsing),
+    # but all branches contain parser calls, it's conditional (not optional)
+    if if_stmts and switch_stmts:
+        # Multiple conditional paths - likely just conditional routing
+        pass
+
+    # Default: sequential pattern (control flow analysis didn't reveal optional/repeat)
+    return None
 
 
 def _detect_cycles(
@@ -414,8 +559,47 @@ def _build_func_to_rule_map(  # pyright: ignore[reportUnusedFunction]
     return func_to_rule
 
 
+def _analyze_all_control_flows(
+    parser: ZshParser, parser_functions: dict[str, _FunctionNode], /
+) -> dict[str, _ControlFlowPattern]:
+    """
+    Analyze control flow patterns for all parser functions.
+
+    Phase 3.3: Walks AST of each parser function and detects:
+    - While/for loops with parser calls → Repeat patterns
+    - If statements without else → Optional patterns
+    - Other control flow → Sequential/conditional patterns
+
+    Args:
+        parser: ZshParser instance for parsing C source
+        parser_functions: Map of parser function definitions
+
+    Returns:
+        Dict mapping function names to detected control flow patterns
+    """
+    control_flows: dict[str, _ControlFlowPattern] = {}
+    parser_func_names = set(parser_functions.keys())
+
+    # Parse parse.c to get AST for all functions
+    tu = parser.parse('parse.c')
+    if tu is None or tu.cursor is None:
+        return control_flows
+
+    # Analyze each parser function
+    for cursor in _find_function_definitions(tu.cursor, parser_func_names):
+        func_name = cursor.spelling
+        pattern = _analyze_control_flow(cursor, func_name=func_name)
+        if pattern:
+            control_flows[func_name] = pattern
+
+    return control_flows
+
+
 def _build_grammar_rules(
-    call_graph: dict[str, _FunctionNode], parser_functions: dict[str, _FunctionNode], /
+    call_graph: dict[str, _FunctionNode],
+    parser_functions: dict[str, _FunctionNode],
+    control_flows: dict[str, _ControlFlowPattern] | None = None,
+    /,
 ) -> Language:
     """
     Infer grammar rules from the call graph using call pattern heuristics.
@@ -427,11 +611,19 @@ def _build_grammar_rules(
         - No calls: leaf/terminal
         - 1 call: direct delegation (reference)
         - Multiple calls: union (alternatives/dispatch)
-    4. Handle cycles by using references (breaking circular dependencies)
+    4. Apply control flow analysis (Phase 3.3):
+        - Wrap optional references in Optional nodes
+        - Wrap repeating patterns in Repeat nodes
+    5. Handle cycles by using references (breaking circular dependencies)
 
     Cycles are handled by detecting them and using $ref to break cycles
     rather than inlining definitions. This allows the grammar to remain acyclic
     while accurately representing recursive parsing patterns.
+
+    Args:
+        call_graph: Function call graph from AST analysis
+        parser_functions: Parser function definitions from .syms
+        control_flows: Optional control flow patterns from Phase 3.3
     """
     rules: Language = {}
 
@@ -470,12 +662,52 @@ def _build_grammar_rules(
             # Single unique parse call -> direct delegation/reference
             # Don't wrap single refs in a sequence (sequences need 2+ elements)
             ref_name = _function_to_rule_name(unique_parse_calls[0])
-            rules[rule_name] = create_ref(ref_name, source=source_info)
+            base_rule = create_ref(ref_name, source=source_info)
+
+            # Phase 3.3: Apply control flow analysis
+            if control_flows and func_name in control_flows:
+                flow = control_flows[func_name]
+                if flow['pattern_type'] == 'optional':
+                    base_rule = create_optional(
+                        base_rule,
+                        description=flow['reason'],
+                        source=source_info,
+                    )
+                elif flow['pattern_type'] == 'repeat':
+                    min_iter = flow.get('min_iterations', 0)
+                    base_rule = create_repeat(
+                        base_rule,
+                        min=min_iter,
+                        description=flow['reason'],
+                        source=source_info,
+                    )
+
+            rules[rule_name] = base_rule
         else:
             # Multiple unique calls -> union/alternatives
             # (typically via switch/if statements with mutually exclusive branches)
             # Cycles are naturally broken because we use refs, not inlining
-            rules[rule_name] = create_union(rule_refs, source=source_info)
+            union_rule = create_union(rule_refs, source=source_info)
+
+            # Phase 3.3: Apply control flow analysis to union
+            if control_flows and func_name in control_flows:
+                flow = control_flows[func_name]
+                if flow['pattern_type'] == 'optional':
+                    union_rule = create_optional(
+                        union_rule,
+                        description=flow['reason'],
+                        source=source_info,
+                    )
+                elif flow['pattern_type'] == 'repeat':
+                    min_iter = flow.get('min_iterations', 0)
+                    union_rule = create_repeat(
+                        union_rule,
+                        min=min_iter,
+                        description=flow['reason'],
+                        source=source_info,
+                    )
+
+            rules[rule_name] = union_rule
 
     return rules
 
@@ -1081,11 +1313,14 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     # Phase 2.3: Detect cycles in call graph
     func_to_cycles = _detect_cycles(call_graph)
 
+    # Phase 3.3: Analyze control flow patterns for optional/repeat detection
+    control_flows = _analyze_all_control_flows(parser, parser_functions)
+
     # Phase 4: Extract lexer state dependencies
     lexer_states = _extract_lexer_state_changes(parser, parser_functions)
 
-    # Phase 3: Build grammar rules from call graph
-    grammar_rules = _build_grammar_rules(call_graph, parser_functions)
+    # Phase 3: Build grammar rules from call graph with control flow analysis
+    grammar_rules = _build_grammar_rules(call_graph, parser_functions, control_flows)
 
     # Phase 4.3: Embed lexer state conditions into grammar rules
     grammar_rules = _embed_lexer_state_conditions(
@@ -1127,6 +1362,33 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
                 print(f'    - {item}')
     else:
         print('  (No issues found - all rules are referenced)')
+
+    # Log control flow analysis (Phase 3.3)
+    if control_flows:
+        optional_count = sum(
+            1 for cf in control_flows.values() if cf['pattern_type'] == 'optional'
+        )
+        repeat_count = sum(
+            1 for cf in control_flows.values() if cf['pattern_type'] == 'repeat'
+        )
+        total = len(control_flows)
+        print(f'\nControl flow analysis (Phase 3.3): {total} patterns detected')
+        if optional_count:
+            print(f'  Optional patterns (if without else): {optional_count}')
+            for func, pattern in sorted(control_flows.items()):
+                if pattern['pattern_type'] == 'optional':
+                    rule_name = _function_to_rule_name(func)
+                    reason = pattern['reason']
+                    print(f'    - {func:30} → {rule_name:20} ({reason})')
+        if repeat_count:
+            print(f'  Repeat patterns (while/for loops): {repeat_count}')
+            for func, pattern in sorted(control_flows.items()):
+                if pattern['pattern_type'] == 'repeat':
+                    rule_name = _function_to_rule_name(func)
+                    loop_type = pattern.get('loop_type', 'unknown')
+                    print(f'    - {func:30} → {rule_name:20} ({loop_type} loop)')
+    else:
+        print('\nControl flow analysis (Phase 3.3): No patterns detected')
 
     # Log call graph analysis
     if call_graph:

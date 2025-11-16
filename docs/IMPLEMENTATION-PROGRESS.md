@@ -11,12 +11,14 @@ Successfully implemented automatic extraction of a modular Zsh grammar from sour
 **Status**: Fully implemented with validation
 
 **Implementation**:
+
 - `_extract_parser_functions()`: Parses `.syms` files (primarily `parse.syms`) to extract function declarations
 - Extracts 31 parser functions with their signatures, visibility (static/extern), and line numbers
 - Naming convention: `par_*` functions converted to lowercase rule names (e.g., `par_for` → `for`)
 - No preprocessing needed - simple text parsing of `.syms` files
 
 **Key Functions Extracted**:
+
 ```
 Entry points: parse_list, parse_event, parse_cond
 Top-level: par_list, par_list1, par_sublist, par_sublist2, par_pline
@@ -27,6 +29,7 @@ Conditionals: par_cond, par_cond_1, par_cond_2, par_cond_double, etc.
 ```
 
 **Token Extraction**:
+
 - `_build_token_mapping()`: Extracts tokens from enum definitions and hash tables
 - Maps token values to their literal syntax strings
 - Handles multi-value tokens (e.g., TYPESET from multiple keywords)
@@ -37,12 +40,14 @@ Conditionals: par_cond, par_cond_1, par_cond_2, par_cond_double, etc.
 **Status**: Fully implemented with cycle detection
 
 **Implementation**:
+
 - `_build_call_graph()`: Uses libclang to analyze function bodies
 - Walks AST of each parser function to extract CALL_EXPR nodes
 - Builds complete call graph showing which functions call which other functions
 - Filters to parser functions only
 
 **Call Graph Statistics**:
+
 - Total functions in call graph: 1,165
 - Parser functions called by others: 31
 - All parser functions properly linked and referenced
@@ -52,12 +57,14 @@ Conditionals: par_cond, par_cond_1, par_cond_2, par_cond_double, etc.
 **Status**: Fully implemented with DFS algorithm
 
 **Implementation**:
+
 - `_detect_cycles()`: Uses depth-first search to find all cycles
 - Normalizes cycles to canonical form for deduplication
 - Maps each function to its participating cycles
 - Cycles are broken in grammar using `$ref` instead of inlining
 
 **Cycle Patterns Identified**:
+
 - **Direct mutual recursion**: `cmd → simple → cmd` (handled via `$ref`)
 - **Chain recursion**: `cmd → for → list → sublist → sublist2 → pline → cmd`
 - Total of 11+ unique parser function cycles detected
@@ -68,24 +75,27 @@ Conditionals: par_cond, par_cond_1, par_cond_2, par_cond_double, etc.
 **Status**: Fully implemented with proper classification
 
 **Implementation**:
+
 - `_build_grammar_rules()`: Transforms parser functions to grammar rules
 - Classifies rules by call patterns:
-  - **Leaf nodes** (no calls): Terminal patterns `[rule_name]`
-  - **Single calls**: Direct references via `$ref`
-  - **Multiple calls**: Union nodes for alternatives/dispatch
+    - **Leaf nodes** (no calls): Terminal patterns `[rule_name]`
+    - **Single calls**: Direct references via `$ref`
+    - **Multiple calls**: Union nodes for alternatives/dispatch
 - Converts function names correctly: `par_for` → `for`, `parse_list` → `list`
 - Includes source tracking: file, line number, function name
 
 **Generated Rules**:
+
 - 31 grammar rules covering all parser functions
 - Examples:
-  - `cmd`: Union of all command types (case, for, if, while, repeat, etc.)
-  - `simple`: Union including cmd, list, wordlist, redir (mutual recursion via ref)
-  - `for`: Union of parsing alternatives
-  - `list`: Direct reference to `sublist`
+    - `cmd`: Union of all command types (case, for, if, while, repeat, etc.)
+    - `simple`: Union including cmd, list, wordlist, redir (mutual recursion via ref)
+    - `for`: Union of parsing alternatives
+    - `list`: Direct reference to `sublist`
 
 **Source Tracking**:
 Each rule includes provenance:
+
 ```json
 "source": {
   "file": "parse.syms",
@@ -99,11 +109,13 @@ Each rule includes provenance:
 **Status**: Implemented with state change detection
 
 **Implementation**:
+
 - `_extract_lexer_state_changes()`: Analyzes parse.c for state management
 - Identifies which lexer states each parser function modifies
 - Supports states: `incmdpos`, `incond`, `infor`, `inrepeat`, `intypeset`, `isnewlin`, etc.
 
 **Extracted State Dependencies**:
+
 ```
 par_cmd      modifies: incasepat, incmdpos, incond, intypeset
 par_cond     modifies: incmdpos, incond
@@ -124,12 +136,14 @@ Can embed these as Condition nodes in grammar for context-sensitive rules.
 #### Phase 5.2: Schema Validation ✅
 
 **Implementation**:
+
 - `_validate_schema()`: Uses jsonschema library to validate grammar
 - Validates against `canonical-grammar.schema.json`
 - Catches naming convention violations
 - Detects structural schema violations
 
 **Results**:
+
 - Grammar passes full schema validation
 - All rules follow naming conventions (lowercase)
 - All tokens follow naming conventions (SCREAMING_SNAKE_CASE)
@@ -140,6 +154,7 @@ Can embed these as Condition nodes in grammar for context-sensitive rules.
 **Location**: `/zsh-grammar/canonical-grammar.json`
 
 **Structure**:
+
 ```json
 {
   "$schema": "./canonical-grammar.schema.json",
@@ -160,6 +175,7 @@ Can embed these as Condition nodes in grammar for context-sensitive rules.
 ```
 
 **Statistics**:
+
 - 80+ token definitions (SCREAMING_SNAKE_CASE)
 - 31 parser rule definitions (lowercase)
 - All rules cross-referenced
@@ -169,29 +185,34 @@ Can embed these as Condition nodes in grammar for context-sensitive rules.
 ## Technical Achievements
 
 ### 1. **Proper Naming Conventions**
+
 - Tokens: `WORD`, `SEPER`, `FOR` (SCREAMING_SNAKE_CASE)
 - Rules: `for`, `case`, `cmd` (lowercase_snake_case)
 - No naming conflicts between namespaces
 
 ### 2. **Cycle Safety**
+
 - All recursive patterns safely represented using `$ref`
 - Grammar remains acyclic while representing recursive parsing
 - No infinite loops or infinite definitions
 
 ### 3. **Source Traceability**
+
 - Every rule tracks its origin:
-  - Source file (parse.syms or parse.c)
-  - Line number in source file
-  - Function name
+    - Source file (parse.syms or parse.c)
+    - Line number in source file
+    - Function name
 - Enables debugging and validation
 
 ### 4. **Schema Compliance**
+
 - Generated grammar validates against JSON Schema
 - Property names follow pattern rules
 - All references are valid
 - Minimal extra requirements satisfied
 
 ### 5. **Comprehensive Analysis**
+
 - Function extraction: 31 parser functions
 - Call graph: 1,165 functions analyzed
 - Cycle detection: 11+ unique cycles
@@ -201,18 +222,21 @@ Can embed these as Condition nodes in grammar for context-sensitive rules.
 ## Known Limitations & Future Work
 
 ### Phase 5.3: Real-world Testing (TODO)
+
 - Validate grammar against Zsh test suite
 - Test grammar against real Zsh scripts
 - Identify over-permissive or under-permissive rules
 - Quantify coverage (target: ≥80% of scripts)
 
 ### Phase 5.4: Manual Integration (TODO)
+
 - Merge auto-generated rules with any manual refinements
 - Implement conflict resolution
 - Track provenance (auto vs manual)
 - Re-validate after merge
 
 ### Phase 4.4: Variant Embedding (Future Enhancement)
+
 - Embed lexer state conditions as Variant nodes
 - Create state-dependent token variants
 - Model context-sensitive parsing more precisely
@@ -276,4 +300,3 @@ mise //zsh-grammar:construct-zsh-grammar
 **Last Updated**: 2025-11-16
 
 **Implementation Duration**: ~2 hours of focused development
-

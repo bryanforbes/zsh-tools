@@ -882,7 +882,15 @@
           {
             "union": [
               {
-                "$ref": "sublist",
+                "optional": {
+                  "$ref": "sublist",
+                  "source": {
+                    "file": "parse.syms",
+                    "line": 26,
+                    "function": "par_event"
+                  }
+                },
+                "description": "par_event contains if statement without else with parser function calls",
                 "source": {
                   "file": "parse.syms",
                   "line": 26,
@@ -891,7 +899,15 @@
               },
               {
                 "variant": {
-                  "$ref": "sublist",
+                  "optional": {
+                    "$ref": "sublist",
+                    "source": {
+                      "file": "parse.syms",
+                      "line": 26,
+                      "function": "par_event"
+                    }
+                  },
+                  "description": "par_event contains if statement without else with parser function calls",
                   "source": {
                     "file": "parse.syms",
                     "line": 26,
@@ -911,7 +927,15 @@
               },
               {
                 "variant": {
-                  "$ref": "sublist",
+                  "optional": {
+                    "$ref": "sublist",
+                    "source": {
+                      "file": "parse.syms",
+                      "line": 26,
+                      "function": "par_event"
+                    }
+                  },
+                  "description": "par_event contains if statement without else with parser function calls",
                   "source": {
                     "file": "parse.syms",
                     "line": 26,
@@ -941,7 +965,15 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "sublist",
+                  "optional": {
+                    "$ref": "sublist",
+                    "source": {
+                      "file": "parse.syms",
+                      "line": 26,
+                      "function": "par_event"
+                    }
+                  },
+                  "description": "par_event contains if statement without else with parser function calls",
                   "source": {
                     "file": "parse.syms",
                     "line": 26,
@@ -950,7 +982,15 @@
                 },
                 {
                   "variant": {
-                    "$ref": "sublist",
+                    "optional": {
+                      "$ref": "sublist",
+                      "source": {
+                        "file": "parse.syms",
+                        "line": 26,
+                        "function": "par_event"
+                      }
+                    },
+                    "description": "par_event contains if statement without else with parser function calls",
                     "source": {
                       "file": "parse.syms",
                       "line": 26,
@@ -970,7 +1010,15 @@
                 },
                 {
                   "variant": {
-                    "$ref": "sublist",
+                    "optional": {
+                      "$ref": "sublist",
+                      "source": {
+                        "file": "parse.syms",
+                        "line": 26,
+                        "function": "par_event"
+                      }
+                    },
+                    "description": "par_event contains if statement without else with parser function calls",
                     "source": {
                       "file": "parse.syms",
                       "line": 26,
@@ -1054,7 +1102,15 @@
         }
       },
       "cond": {
-        "$ref": "cond_1",
+        "optional": {
+          "$ref": "cond_1",
+          "source": {
+            "file": "parse.syms",
+            "line": 54,
+            "function": "par_cond"
+          }
+        },
+        "description": "par_cond contains if statement without else with parser function calls",
         "source": {
           "file": "parse.syms",
           "line": 54,
@@ -1078,7 +1134,15 @@
         }
       },
       "sublist2": {
-        "$ref": "pline",
+        "optional": {
+          "$ref": "pline",
+          "source": {
+            "file": "parse.syms",
+            "line": 36,
+            "function": "par_sublist2"
+          }
+        },
+        "description": "par_sublist2 contains if statement without else with parser function calls",
         "source": {
           "file": "parse.syms",
           "line": 36,
@@ -1086,7 +1150,15 @@
         }
       },
       "pline": {
-        "$ref": "cmd",
+        "optional": {
+          "$ref": "cmd",
+          "source": {
+            "file": "parse.syms",
+            "line": 37,
+            "function": "par_pline"
+          }
+        },
+        "description": "par_pline contains if statement without else with parser function calls",
         "source": {
           "file": "parse.syms",
           "line": 37,
@@ -1096,46 +1168,7 @@
       "cmd": {
         "union": [
           {
-            "union": [
-              {
-                "$ref": "case"
-              },
-              {
-                "$ref": "dinbrack"
-              },
-              {
-                "$ref": "for"
-              },
-              {
-                "$ref": "funcdef"
-              },
-              {
-                "$ref": "if"
-              },
-              {
-                "$ref": "repeat"
-              },
-              {
-                "$ref": "simple"
-              },
-              {
-                "$ref": "subsh"
-              },
-              {
-                "$ref": "time"
-              },
-              {
-                "$ref": "while"
-              }
-            ],
-            "source": {
-              "file": "parse.syms",
-              "line": 38,
-              "function": "par_cmd"
-            }
-          },
-          {
-            "variant": {
+            "optional": {
               "union": [
                 {
                   "$ref": "case"
@@ -1168,6 +1201,61 @@
                   "$ref": "while"
                 }
               ],
+              "source": {
+                "file": "parse.syms",
+                "line": 38,
+                "function": "par_cmd"
+              }
+            },
+            "description": "par_cmd contains if statement without else with parser function calls",
+            "source": {
+              "file": "parse.syms",
+              "line": 38,
+              "function": "par_cmd"
+            }
+          },
+          {
+            "variant": {
+              "optional": {
+                "union": [
+                  {
+                    "$ref": "case"
+                  },
+                  {
+                    "$ref": "dinbrack"
+                  },
+                  {
+                    "$ref": "for"
+                  },
+                  {
+                    "$ref": "funcdef"
+                  },
+                  {
+                    "$ref": "if"
+                  },
+                  {
+                    "$ref": "repeat"
+                  },
+                  {
+                    "$ref": "simple"
+                  },
+                  {
+                    "$ref": "subsh"
+                  },
+                  {
+                    "$ref": "time"
+                  },
+                  {
+                    "$ref": "while"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 38,
+                  "function": "par_cmd"
+                }
+              },
+              "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 38,
@@ -1187,38 +1275,46 @@
           },
           {
             "variant": {
-              "union": [
-                {
-                  "$ref": "case"
-                },
-                {
-                  "$ref": "dinbrack"
-                },
-                {
-                  "$ref": "for"
-                },
-                {
-                  "$ref": "funcdef"
-                },
-                {
-                  "$ref": "if"
-                },
-                {
-                  "$ref": "repeat"
-                },
-                {
-                  "$ref": "simple"
-                },
-                {
-                  "$ref": "subsh"
-                },
-                {
-                  "$ref": "time"
-                },
-                {
-                  "$ref": "while"
+              "optional": {
+                "union": [
+                  {
+                    "$ref": "case"
+                  },
+                  {
+                    "$ref": "dinbrack"
+                  },
+                  {
+                    "$ref": "for"
+                  },
+                  {
+                    "$ref": "funcdef"
+                  },
+                  {
+                    "$ref": "if"
+                  },
+                  {
+                    "$ref": "repeat"
+                  },
+                  {
+                    "$ref": "simple"
+                  },
+                  {
+                    "$ref": "subsh"
+                  },
+                  {
+                    "$ref": "time"
+                  },
+                  {
+                    "$ref": "while"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 38,
+                  "function": "par_cmd"
                 }
-              ],
+              },
+              "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 38,
@@ -1238,38 +1334,46 @@
           },
           {
             "variant": {
-              "union": [
-                {
-                  "$ref": "case"
-                },
-                {
-                  "$ref": "dinbrack"
-                },
-                {
-                  "$ref": "for"
-                },
-                {
-                  "$ref": "funcdef"
-                },
-                {
-                  "$ref": "if"
-                },
-                {
-                  "$ref": "repeat"
-                },
-                {
-                  "$ref": "simple"
-                },
-                {
-                  "$ref": "subsh"
-                },
-                {
-                  "$ref": "time"
-                },
-                {
-                  "$ref": "while"
+              "optional": {
+                "union": [
+                  {
+                    "$ref": "case"
+                  },
+                  {
+                    "$ref": "dinbrack"
+                  },
+                  {
+                    "$ref": "for"
+                  },
+                  {
+                    "$ref": "funcdef"
+                  },
+                  {
+                    "$ref": "if"
+                  },
+                  {
+                    "$ref": "repeat"
+                  },
+                  {
+                    "$ref": "simple"
+                  },
+                  {
+                    "$ref": "subsh"
+                  },
+                  {
+                    "$ref": "time"
+                  },
+                  {
+                    "$ref": "while"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 38,
+                  "function": "par_cmd"
                 }
-              ],
+              },
+              "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 38,
@@ -1289,38 +1393,46 @@
           },
           {
             "variant": {
-              "union": [
-                {
-                  "$ref": "case"
-                },
-                {
-                  "$ref": "dinbrack"
-                },
-                {
-                  "$ref": "for"
-                },
-                {
-                  "$ref": "funcdef"
-                },
-                {
-                  "$ref": "if"
-                },
-                {
-                  "$ref": "repeat"
-                },
-                {
-                  "$ref": "simple"
-                },
-                {
-                  "$ref": "subsh"
-                },
-                {
-                  "$ref": "time"
-                },
-                {
-                  "$ref": "while"
+              "optional": {
+                "union": [
+                  {
+                    "$ref": "case"
+                  },
+                  {
+                    "$ref": "dinbrack"
+                  },
+                  {
+                    "$ref": "for"
+                  },
+                  {
+                    "$ref": "funcdef"
+                  },
+                  {
+                    "$ref": "if"
+                  },
+                  {
+                    "$ref": "repeat"
+                  },
+                  {
+                    "$ref": "simple"
+                  },
+                  {
+                    "$ref": "subsh"
+                  },
+                  {
+                    "$ref": "time"
+                  },
+                  {
+                    "$ref": "while"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 38,
+                  "function": "par_cmd"
                 }
-              ],
+              },
+              "description": "par_cmd contains if statement without else with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 38,
@@ -1512,7 +1624,16 @@
       "case": {
         "union": [
           {
-            "$ref": "list",
+            "repeat": {
+              "$ref": "list",
+              "source": {
+                "file": "parse.syms",
+                "line": 40,
+                "function": "par_case"
+              }
+            },
+            "min": 0,
+            "description": "par_case contains for loop with parser function calls",
             "source": {
               "file": "parse.syms",
               "line": 40,
@@ -1521,7 +1642,16 @@
           },
           {
             "variant": {
-              "$ref": "list",
+              "repeat": {
+                "$ref": "list",
+                "source": {
+                  "file": "parse.syms",
+                  "line": 40,
+                  "function": "par_case"
+                }
+              },
+              "min": 0,
+              "description": "par_case contains for loop with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 40,
@@ -1541,7 +1671,16 @@
           },
           {
             "variant": {
-              "$ref": "list",
+              "repeat": {
+                "$ref": "list",
+                "source": {
+                  "file": "parse.syms",
+                  "line": 40,
+                  "function": "par_case"
+                }
+              },
+              "min": 0,
+              "description": "par_case contains for loop with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 40,
@@ -1570,22 +1709,7 @@
       "if": {
         "union": [
           {
-            "union": [
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list1"
-              }
-            ],
-            "source": {
-              "file": "parse.syms",
-              "line": 41,
-              "function": "par_if"
-            }
-          },
-          {
-            "variant": {
+            "repeat": {
               "union": [
                 {
                   "$ref": "list"
@@ -1594,6 +1718,39 @@
                   "$ref": "list1"
                 }
               ],
+              "source": {
+                "file": "parse.syms",
+                "line": 41,
+                "function": "par_if"
+              }
+            },
+            "min": 0,
+            "description": "par_if contains for loop with parser function calls",
+            "source": {
+              "file": "parse.syms",
+              "line": 41,
+              "function": "par_if"
+            }
+          },
+          {
+            "variant": {
+              "repeat": {
+                "union": [
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list1"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 41,
+                  "function": "par_if"
+                }
+              },
+              "min": 0,
+              "description": "par_if contains for loop with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 41,
@@ -1613,14 +1770,23 @@
           },
           {
             "variant": {
-              "union": [
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list1"
+              "repeat": {
+                "union": [
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list1"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 41,
+                  "function": "par_if"
                 }
-              ],
+              },
+              "min": 0,
+              "description": "par_if contains for loop with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 41,
@@ -1983,28 +2149,7 @@
       "simple": {
         "union": [
           {
-            "union": [
-              {
-                "$ref": "cmd"
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "nl_wordlist"
-              },
-              {
-                "$ref": "redir"
-              }
-            ],
-            "source": {
-              "file": "parse.syms",
-              "line": 48,
-              "function": "par_simple"
-            }
-          },
-          {
-            "variant": {
+            "repeat": {
               "union": [
                 {
                   "$ref": "cmd"
@@ -2025,6 +2170,45 @@
                 "function": "par_simple"
               }
             },
+            "min": 0,
+            "description": "par_simple contains for loop with parser function calls",
+            "source": {
+              "file": "parse.syms",
+              "line": 48,
+              "function": "par_simple"
+            }
+          },
+          {
+            "variant": {
+              "repeat": {
+                "union": [
+                  {
+                    "$ref": "cmd"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "nl_wordlist"
+                  },
+                  {
+                    "$ref": "redir"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 48,
+                  "function": "par_simple"
+                }
+              },
+              "min": 0,
+              "description": "par_simple contains for loop with parser function calls",
+              "source": {
+                "file": "parse.syms",
+                "line": 48,
+                "function": "par_simple"
+              }
+            },
             "condition": {
               "lexstate": "INCMDPOS"
             },
@@ -2038,20 +2222,29 @@
           },
           {
             "variant": {
-              "union": [
-                {
-                  "$ref": "cmd"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "nl_wordlist"
-                },
-                {
-                  "$ref": "redir"
+              "repeat": {
+                "union": [
+                  {
+                    "$ref": "cmd"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "nl_wordlist"
+                  },
+                  {
+                    "$ref": "redir"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 48,
+                  "function": "par_simple"
                 }
-              ],
+              },
+              "min": 0,
+              "description": "par_simple contains for loop with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 48,
@@ -2132,7 +2325,15 @@
         }
       },
       "cond_1": {
-        "$ref": "cond_2",
+        "optional": {
+          "$ref": "cond_2",
+          "source": {
+            "file": "parse.syms",
+            "line": 55,
+            "function": "par_cond_1"
+          }
+        },
+        "description": "par_cond_1 contains if statement without else with parser function calls",
         "source": {
           "file": "parse.syms",
           "line": 55,
@@ -2142,28 +2343,7 @@
       "cond_2": {
         "union": [
           {
-            "union": [
-              {
-                "$ref": "cond"
-              },
-              {
-                "$ref": "cond_double"
-              },
-              {
-                "$ref": "cond_multi"
-              },
-              {
-                "$ref": "cond_triple"
-              }
-            ],
-            "source": {
-              "file": "parse.syms",
-              "line": 56,
-              "function": "par_cond_2"
-            }
-          },
-          {
-            "variant": {
+            "optional": {
               "union": [
                 {
                   "$ref": "cond"
@@ -2184,6 +2364,43 @@
                 "function": "par_cond_2"
               }
             },
+            "description": "par_cond_2 contains if statement without else with parser function calls",
+            "source": {
+              "file": "parse.syms",
+              "line": 56,
+              "function": "par_cond_2"
+            }
+          },
+          {
+            "variant": {
+              "optional": {
+                "union": [
+                  {
+                    "$ref": "cond"
+                  },
+                  {
+                    "$ref": "cond_double"
+                  },
+                  {
+                    "$ref": "cond_multi"
+                  },
+                  {
+                    "$ref": "cond_triple"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 56,
+                  "function": "par_cond_2"
+                }
+              },
+              "description": "par_cond_2 contains if statement without else with parser function calls",
+              "source": {
+                "file": "parse.syms",
+                "line": 56,
+                "function": "par_cond_2"
+              }
+            },
             "condition": {
               "lexstate": "INCMDPOS"
             },
@@ -2197,20 +2414,28 @@
           },
           {
             "variant": {
-              "union": [
-                {
-                  "$ref": "cond"
-                },
-                {
-                  "$ref": "cond_double"
-                },
-                {
-                  "$ref": "cond_multi"
-                },
-                {
-                  "$ref": "cond_triple"
+              "optional": {
+                "union": [
+                  {
+                    "$ref": "cond"
+                  },
+                  {
+                    "$ref": "cond_double"
+                  },
+                  {
+                    "$ref": "cond_multi"
+                  },
+                  {
+                    "$ref": "cond_triple"
+                  }
+                ],
+                "source": {
+                  "file": "parse.syms",
+                  "line": 56,
+                  "function": "par_cond_2"
                 }
-              ],
+              },
+              "description": "par_cond_2 contains if statement without else with parser function calls",
               "source": {
                 "file": "parse.syms",
                 "line": 56,

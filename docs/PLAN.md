@@ -310,7 +310,40 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
 
 **Output**: Complete `Language` dictionary with rule definitions (all referencing tokens and other rules via `$ref`).
 
-### 3.2 Construct Symbol References
+### 3.2 Integrate Token Dispatch into Grammar Rules
+
+**Objective**: Embed token-to-rule mappings into grammar rules to show which tokens trigger which alternatives.
+
+**Context**: Phase 1.2 extracts `token_to_rules` mappings (e.g., `FOR → for`, `CASE → case`) from switch/case statements in dispatcher functions. Currently this mapping is only used for validation; it should be integrated into rule structure to document the complete dispatcher logic.
+
+**Why this matters**: Zsh parser comments document grammar as `event : ENDINPUT | SEPER | sublist`, showing that tokens are first-class grammar elements, not just metadata. The canonical grammar should surface this information.
+
+**Implementation**:
+
+1. Pass `token_to_rules` to `_build_grammar_rules()` alongside call graph
+2. For dispatcher functions (e.g., `par_cmd()` with switch statements):
+    - Identify all tokens that map to rules from that function
+    - Include token references in rule union alongside subrule references
+3. Example transformation:
+    - Parser code: `switch(tok) { case FOR: par_for(); case CASE: par_case(); ... }`
+    - Generated rule: `cmd: { union: [{'$ref': 'FOR'}, {'$ref': 'CASE'}, ..., {'$ref': 'for'}, {'$ref': 'case'}, ...] }`
+    - Or alternatively separate token and rule dispatch for clarity
+4. Document explicit tokens vs. default/catch-all cases:
+    - Tokens matched in explicit case statements → explicit union members
+    - Default case handler → documented in rule description or variant
+5. Validate that all token references exist in `core_symbols`
+6. Maintain distinction: tokens in SCREAMING_SNAKE_CASE, rules in lowercase
+
+**Benefits**:
+
+- Grammar rules show complete dispatcher logic (what tokens trigger what)
+- Tokens become discoverable through rules that use them
+- Aligns extracted grammar with Zsh parser source comments
+- Improves canonical grammar completeness and fidelity to source
+
+**Output**: Grammar rules with embedded token dispatch information; `token_to_rules` mapping integrated into rule definitions rather than kept as metadata.
+
+### 3.3 Construct Symbol References
 
 **Objective**: Create proper inter-symbol references using the `$ref` mechanism.
 
@@ -328,7 +361,7 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
 
 **Output**: Grammar with properly resolved symbol references (tokens and rules both as `$ref`).
 
-### 3.3 Infer Optional and Repetition Patterns
+### 3.4 Infer Optional and Repetition Patterns
 
 **Objective**: Add structural annotations for optional and repeated elements.
 
@@ -346,7 +379,7 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
 
 **Output**: Grammar with proper optional and repetition annotations.
 
-### 3.4 Define Token/Symbol Merge Rules
+### 3.5 Define Token/Symbol Merge Rules
 
 **Objective**: Establish precedence rules for combining token and symbol information with concrete heuristics.
 

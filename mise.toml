@@ -56,4 +56,8 @@ depends = '//...:lint'
 
 [tasks.format]
 description = "Format all source files"
-depends = '//...:format'
+depends = ['//...:format', ':format:docs']
+
+[tasks."format:docs"]
+description = "Format documentation files"
+run = 'pnpm prettier --write "**/*.md"'
