@@ -12,18 +12,20 @@ import jsonschema
 from clang.cindex import Cursor, CursorKind, StorageClass
 
 from zsh_grammar.grammar_utils import (
+    create_lex_state,
     create_ref,
     create_source,
     create_terminal,
     create_token,
     create_union,
+    create_variant,
 )
 from zsh_grammar.source_parser import ZshParser
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from zsh_grammar._types import Grammar, Language
+    from zsh_grammar._types import Grammar, GrammarNode, Language
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
 
@@ -31,6 +33,91 @@ PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
 def _is_parser_function(name: str, /) -> bool:
     """Check if a function name is a parser function (par_* or parse_*)."""
     return name.startswith(('par_', 'parse_'))
+
+
+def _walk_and_filter(cursor: Cursor, kind: CursorKind, /) -> Iterator[Cursor]:
+    """
+    Walk AST preorder and filter by cursor kind.
+
+    Args:
+        cursor: Root cursor to walk
+        kind: CursorKind to filter by
+
+    Yields:
+        Cursors matching the specified kind
+    """
+    for node in cursor.walk_preorder():
+        if node.kind == kind:
+            yield node
+
+
+def _extract_token_name(expr_node: Cursor, /) -> str | None:
+    """
+    Extract token name from case expression node.
+
+    Args:
+        expr_node: Expression cursor to extract token from
+
+    Returns:
+        Token name (first token spelling) or None if not found
+    """
+    tokens = list(expr_node.get_tokens())
+    if tokens:
+        return tokens[0].spelling
+    return None
+
+
+def _filter_parser_functions(names: list[str], /) -> list[str]:  # pyright: ignore[reportUnusedFunction]
+    """
+    Filter list of function names to keep only parser functions.
+
+    Args:
+        names: List of function names to filter
+
+    Returns:
+        Filtered list containing only par_* or parse_* functions
+    """
+    return [name for name in names if _is_parser_function(name)]
+
+
+def _detect_state_assignment(
+    token_spelling: str, lexer_states: set[str], /
+) -> str | None:
+    """
+    Detect if token matches a lexer state variable and return its lowercase name.
+
+    Args:
+        token_spelling: Token spelling to check
+        lexer_states: Set of valid lexer state names (lowercase)
+
+    Returns:
+        Lowercase state name if token matches a lexer state, None otherwise
+    """
+    if token_spelling in lexer_states:
+        return token_spelling.lower()
+    return None
+
+
+def _find_function_definitions(
+    cursor: Cursor, names: set[str] | None = None, /
+) -> Iterator[Cursor]:
+    """
+    Find function definitions in AST, optionally filtered by name.
+
+    Args:
+        cursor: Root cursor to walk
+        names: Optional set of function names to filter by
+
+    Yields:
+        Function definition cursors matching criteria
+    """
+    for node in cursor.walk_preorder():
+        if (
+            node.kind == CursorKind.FUNCTION_DECL
+            and node.is_definition()
+            and (names is None or node.spelling in names)
+        ):
+            yield node
 
 
 class _FunctionNode(TypedDict):
@@ -144,27 +231,25 @@ def _build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
         if tu.cursor is None:
             continue
 
-        for cursor in tu.cursor.walk_preorder():
-            if cursor.kind == CursorKind.FUNCTION_DECL and cursor.is_definition():
-                function_name = cursor.spelling
-                calls: list[str] = []
+        for cursor in _find_function_definitions(tu.cursor):
+            function_name = cursor.spelling
+            calls: list[str] = []
 
-                for child in cursor.walk_preorder():
-                    if child.kind == CursorKind.CALL_EXPR:
-                        callee_name = child.spelling
-                        if callee_name != function_name:
-                            calls.append(callee_name)
+            for child in _walk_and_filter(cursor, CursorKind.CALL_EXPR):
+                callee_name = child.spelling
+                if callee_name != function_name:
+                    calls.append(callee_name)
 
-                node = call_graph[function_name] = {
-                    'name': function_name,
-                    'file': str(file.relative_to(parser.zsh_src)),
-                    'line': cursor.location.line,
-                    'calls': calls,
-                }
+            node = call_graph[function_name] = {
+                'name': function_name,
+                'file': str(file.relative_to(parser.zsh_src)),
+                'line': cursor.location.line,
+                'calls': calls,
+            }
 
-                conditions = _detect_conditions(cursor)
-                if conditions:
-                    node['conditions'] = conditions
+            conditions = _detect_conditions(cursor)
+            if conditions:
+                node['conditions'] = conditions
 
     return call_graph
 
@@ -218,31 +303,25 @@ def _extract_lexer_state_changes(
 
     parser_func_names = set(parser_functions.keys())
 
-    for cursor in tu.cursor.walk_preorder():
-        if (
-            cursor.kind == CursorKind.FUNCTION_DECL
-            and cursor.is_definition()
-            and cursor.spelling in parser_func_names
-        ):
-            func_name = cursor.spelling
-            state_changes[func_name] = {}
+    for cursor in _find_function_definitions(tu.cursor, parser_func_names):
+        func_name = cursor.spelling
+        state_changes[func_name] = {}
 
-            # Walk function body looking for state assignments
-            for child in cursor.walk_preorder():
-                if child.kind == CursorKind.BINARY_OPERATOR:
-                    # Look for assignment patterns: state_var = ...
-                    left_operand = None
-                    for token in child.get_tokens():
-                        if token.spelling in lexer_states:
-                            left_operand = token.spelling.lower()
-                            break
+        # Walk function body looking for state assignments
+        for child in _walk_and_filter(cursor, CursorKind.BINARY_OPERATOR):
+            # Look for assignment patterns: state_var = ...
+            left_operand = None
+            for token in child.get_tokens():
+                left_operand = _detect_state_assignment(token.spelling, lexer_states)
+                if left_operand:
+                    break
 
-                    if left_operand:
-                        if left_operand not in state_changes[func_name]:
-                            state_changes[func_name][left_operand] = []
-                        state_changes[func_name][left_operand].append(
-                            child.location.line
-                        )
+            if left_operand:
+                if left_operand not in state_changes[func_name]:
+                    state_changes[func_name][left_operand] = []
+                state_changes[func_name][left_operand].append(
+                    child.location.line
+                )
 
     # Filter to only functions that have state changes
     return {func: states for func, states in state_changes.items() if states}
@@ -345,9 +424,9 @@ def _build_grammar_rules(
     1. Identify core parsing functions (par_* and parse_* functions)
     2. For each function, extract unique parse function calls
     3. Classify based on:
-       - No calls: leaf/terminal
-       - 1 call: direct delegation (reference)
-       - Multiple calls: union (alternatives/dispatch)
+        - No calls: leaf/terminal
+        - 1 call: direct delegation (reference)
+        - Multiple calls: union (alternatives/dispatch)
     4. Handle cycles by using references (breaking circular dependencies)
 
     Cycles are handled by detecting them and using $ref to break cycles
@@ -399,6 +478,114 @@ def _build_grammar_rules(
             rules[rule_name] = create_union(rule_refs, source=source_info)
 
     return rules
+
+
+def _embed_lexer_state_conditions(
+    rules: Language,
+    lexer_states: dict[str, dict[str, list[int]]],
+    parser_functions: dict[str, _FunctionNode],
+    /,
+) -> Language:
+    """
+    Embed lexer state changes as Condition/Variant nodes in grammar rules.
+
+    Phase 4.3: For each parser function that modifies lexer state, add variant
+    definitions showing which lexer states are set when the rule is active.
+
+    Args:
+        rules: Grammar rules generated from call graph
+        lexer_states: Maps function names to state changes
+            {
+                'par_cond': {'incond': [line1, line2, ...]},
+                'par_for': {'infor': [line1, ...]},
+                ...
+            }
+        parser_functions: Map of parser function definitions from .syms
+
+    Returns:
+        Enhanced language rules with lexer state documentation/variants
+    """
+    # Map lowercase state names to SCREAMING_SNAKE_CASE for schema compliance
+    state_case_map: dict[str, str] = {
+        'incmdpos': 'INCMDPOS',
+        'incond': 'INCOND',
+        'inredir': 'INREDIR',
+        'incasepat': 'INCASEPAT',
+        'infor': 'INFOR',
+        'inrepeat': 'INREPEAT',
+        'intypeset': 'INTYPESET',
+        'isnewlin': 'ISNEWLIN',
+        'in_math': 'IN_MATH',
+        'aliasspaceflag': 'ALIASSPACEFLAG',
+        'incomparison': 'INCOMPARISON',
+        'in_array': 'IN_ARRAY',
+        'in_substitution': 'IN_SUBSTITUTION',
+        'in_braceexp': 'IN_BRACEEXP',
+        'in_globpat': 'IN_GLOBPAT',
+    }
+
+    enhanced_rules = dict(rules)
+
+    # For each function that modifies lexer state
+    for func_name, states in lexer_states.items():
+        rule_name = _function_to_rule_name(func_name)
+
+        # Only enhance rules that exist (skip if rule wasn't generated)
+        if rule_name not in enhanced_rules:
+            continue
+
+        base_rule = enhanced_rules[rule_name]
+
+        # Convert state names to proper case
+        uppercase_states: list[str] = []
+        for state_name in states:
+            if state_name in state_case_map:
+                uppercase_states.append(state_case_map[state_name])
+
+        # If we have state changes, add variant documentation
+        if uppercase_states:
+            # For each state this rule modifies, create a variant showing
+            # that when this rule is active, that lexer state is set
+            variant_list: list[GrammarNode] = []
+
+            for lex_state in sorted(uppercase_states):
+                # Get source location from first state change line
+                state_lines = states[
+                    next(s for s in states if state_case_map.get(s) == lex_state)
+                ]
+                source_line = state_lines[0] if state_lines else 0
+
+                # Build source info for variant
+                variant_source = create_source(
+                    'parse.c',
+                    source_line,
+                    function=func_name,
+                    context=f'sets {lex_state}',
+                )
+
+                # Create variant: this rule with condition on active lexer state
+                # Note: lex_state is validated at runtime via state_case_map
+                variant = create_variant(
+                    base_rule,
+                    create_lex_state(lex_state),  # pyright: ignore[reportArgumentType]
+                    source=variant_source,
+                    description=f'{rule_name} sets lexer state {lex_state}',
+                )
+                variant_list.append(variant)
+
+            # Replace rule with union containing base rule and all state variants
+            # This allows rule matching unconditionally OR with specific state context
+            source_info = rules[rule_name].get('source')
+            enhanced_rules[rule_name] = create_union(
+                [base_rule, *variant_list],
+                source=source_info,  # pyright: ignore[reportArgumentType]
+                description=(
+                    f'{rule_name} '
+                    f'(modifies lexer states: {", ".join(uppercase_states)})'
+                ),
+            )
+
+    return enhanced_rules
 
 
 class _TokenDef(TypedDict):
@@ -550,9 +737,8 @@ def _extract_case_statements(  # noqa: C901, PLR0912, PLR0915
                             case_children = list(child.get_children())
                             if case_children:
                                 expr = case_children[0]
-                                tokens = list(expr.get_tokens())
-                                if tokens:
-                                    token_name = tokens[0].spelling
+                                token_name = _extract_token_name(expr)
+                                if token_name:
                                     cases[idx] = (token_name, idx)
                         elif child.kind == CursorKind.DEFAULT_STMT:
                             default_idx = idx
@@ -653,20 +839,15 @@ def _map_tokens_to_rules(
 
     # Find all functions in parse.c and extract their case statements
     parser_func_names = set(parser_functions.keys())
-    for cursor in tu.cursor.walk_preorder():
-        if (
-            cursor.kind == CursorKind.FUNCTION_DECL
-            and cursor.is_definition()
-            and cursor.spelling in parser_func_names
-        ):
-            # Extract case statements from this function
-            # This will find dispatchers like par_cmd, and any other function
-            # that has switch statements
-            for token_name, rule_name in _extract_case_statements(cursor):
-                if token_name not in token_to_rules:
-                    token_to_rules[token_name] = []
-                if rule_name not in token_to_rules[token_name]:
-                    token_to_rules[token_name].append(rule_name)
+    for cursor in _find_function_definitions(tu.cursor, parser_func_names):
+        # Extract case statements from this function
+        # This will find dispatchers like par_cmd, and any other function
+        # that has switch statements
+        for token_name, rule_name in _extract_case_statements(cursor):
+            if token_name not in token_to_rules:
+                token_to_rules[token_name] = []
+            if rule_name not in token_to_rules[token_name]:
+                token_to_rules[token_name].append(rule_name)
 
     return token_to_rules
 
@@ -906,6 +1087,11 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     # Phase 3: Build grammar rules from call graph
     grammar_rules = _build_grammar_rules(call_graph, parser_functions)
 
+    # Phase 4.3: Embed lexer state conditions into grammar rules
+    grammar_rules = _embed_lexer_state_conditions(
+        grammar_rules, lexer_states, parser_functions
+    )
+
     # Merge rules into core_symbols
     core_symbols.update(grammar_rules)
 
@@ -963,11 +1149,38 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     # Log lexer state dependencies
     if lexer_states:
         num_funcs = len(lexer_states)
-        print(f'\nLexer state management: {num_funcs} parser functions modify state')
+        print(
+            f'\nLexer state management (Phase 4): '
+            f'{num_funcs} parser functions modify state'
+        )
+        state_case_map: dict[str, str] = {
+            'incmdpos': 'INCMDPOS',
+            'incond': 'INCOND',
+            'inredir': 'INREDIR',
+            'incasepat': 'INCASEPAT',
+            'infor': 'INFOR',
+            'inrepeat': 'INREPEAT',
+            'intypeset': 'INTYPESET',
+            'isnewlin': 'ISNEWLIN',
+            'in_math': 'IN_MATH',
+            'aliasspaceflag': 'ALIASSPACEFLAG',
+            'incomparison': 'INCOMPARISON',
+            'in_array': 'IN_ARRAY',
+            'in_substitution': 'IN_SUBSTITUTION',
+            'in_braceexp': 'IN_BRACEEXP',
+            'in_globpat': 'IN_GLOBPAT',
+        }
         for func, states in sorted(lexer_states.items()):
-            state_str = ', '.join(sorted(states.keys()))
+            uppercase_states: list[str] = []
+            for state_name in states:
+                if state_name in state_case_map:
+                    uppercase_states.append(state_case_map[state_name])
+            state_str = ', '.join(sorted(uppercase_states))
             rule_name = func[4:] if func.startswith('par_') else func[6:]
-            print(f'  {rule_name:20} modifies: {state_str}')
+            print(f'  {rule_name:20} → {state_str}')
+        print(
+            f'\nPhase 4.3: Embedded lexer state variants in {num_funcs} grammar rules'
+        )
     else:
         print('\nNo lexer state changes detected (may require full preprocessing)')
 
