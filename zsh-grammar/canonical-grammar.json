@@ -466,10 +466,10 @@
           "line": 380
         }
       },
-      "Parameter": {
+      "parameter": {
         "union": [
           {
-            "$ref": "Variable"
+            "$ref": "variable"
           },
           {
             "pattern": "*"
@@ -494,8 +494,354 @@
           }
         ]
       },
-      "Variable": {
+      "variable": {
         "pattern": "[a-zA-Z0-9_]+"
+      },
+      "string": {
+        "$ref": "list",
+        "source": {
+          "file": "exec.c",
+          "line": 243,
+          "function": "parse_string"
+        }
+      },
+      "subscript": {
+        "pattern": "[subscript]",
+        "source": {
+          "file": "lex.c",
+          "line": 1675,
+          "function": "parse_subscript"
+        }
+      },
+      "subst_string": {
+        "pattern": "[subst_string]",
+        "source": {
+          "file": "lex.c",
+          "line": 1728,
+          "function": "parse_subst_string"
+        }
+      },
+      "context_save": {
+        "pattern": "[context_save]",
+        "source": {
+          "file": "parse.syms",
+          "line": 18,
+          "function": "parse_context_save"
+        }
+      },
+      "context_restore": {
+        "pattern": "[context_restore]",
+        "source": {
+          "file": "parse.syms",
+          "line": 19,
+          "function": "parse_context_restore"
+        }
+      },
+      "event": {
+        "$ref": "sublist",
+        "source": {
+          "file": "parse.syms",
+          "line": 26,
+          "function": "par_event"
+        }
+      },
+      "list": {
+        "$ref": "sublist",
+        "source": {
+          "file": "parse.syms",
+          "line": 33,
+          "function": "par_list"
+        }
+      },
+      "cond": {
+        "$ref": "cond_1",
+        "source": {
+          "file": "parse.syms",
+          "line": 54,
+          "function": "par_cond"
+        }
+      },
+      "list1": {
+        "$ref": "sublist",
+        "source": {
+          "file": "parse.syms",
+          "line": 34,
+          "function": "par_list1"
+        }
+      },
+      "sublist": {
+        "$ref": "sublist2",
+        "source": {
+          "file": "parse.syms",
+          "line": 35,
+          "function": "par_sublist"
+        }
+      },
+      "sublist2": {
+        "$ref": "pline",
+        "source": {
+          "file": "parse.syms",
+          "line": 36,
+          "function": "par_sublist2"
+        }
+      },
+      "pline": {
+        "$ref": "cmd",
+        "source": {
+          "file": "parse.syms",
+          "line": 37,
+          "function": "par_pline"
+        }
+      },
+      "cmd": {
+        "union": [
+          {
+            "$ref": "case"
+          },
+          {
+            "$ref": "dinbrack"
+          },
+          {
+            "$ref": "for"
+          },
+          {
+            "$ref": "funcdef"
+          },
+          {
+            "$ref": "if"
+          },
+          {
+            "$ref": "repeat"
+          },
+          {
+            "$ref": "simple"
+          },
+          {
+            "$ref": "subsh"
+          },
+          {
+            "$ref": "time"
+          },
+          {
+            "$ref": "while"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 38,
+          "function": "par_cmd"
+        }
+      },
+      "for": {
+        "union": [
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
+          },
+          {
+            "$ref": "nl_wordlist"
+          },
+          {
+            "$ref": "wordlist"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 39,
+          "function": "par_for"
+        }
+      },
+      "case": {
+        "$ref": "list",
+        "source": {
+          "file": "parse.syms",
+          "line": 40,
+          "function": "par_case"
+        }
+      },
+      "if": {
+        "union": [
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 41,
+          "function": "par_if"
+        }
+      },
+      "while": {
+        "union": [
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 42,
+          "function": "par_while"
+        }
+      },
+      "repeat": {
+        "union": [
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 43,
+          "function": "par_repeat"
+        }
+      },
+      "subsh": {
+        "$ref": "list",
+        "source": {
+          "file": "parse.syms",
+          "line": 44,
+          "function": "par_subsh"
+        }
+      },
+      "funcdef": {
+        "union": [
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 45,
+          "function": "par_funcdef"
+        }
+      },
+      "time": {
+        "$ref": "sublist2",
+        "source": {
+          "file": "parse.syms",
+          "line": 46,
+          "function": "par_time"
+        }
+      },
+      "dinbrack": {
+        "$ref": "cond",
+        "source": {
+          "file": "parse.syms",
+          "line": 47,
+          "function": "par_dinbrack"
+        }
+      },
+      "simple": {
+        "union": [
+          {
+            "$ref": "cmd"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "nl_wordlist"
+          },
+          {
+            "$ref": "redir"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 48,
+          "function": "par_simple"
+        }
+      },
+      "redir": {
+        "pattern": "[redir]",
+        "source": {
+          "file": "parse.syms",
+          "line": 49,
+          "function": "par_redir"
+        }
+      },
+      "wordlist": {
+        "pattern": "[wordlist]",
+        "source": {
+          "file": "parse.syms",
+          "line": 51,
+          "function": "par_wordlist"
+        }
+      },
+      "nl_wordlist": {
+        "pattern": "[nl_wordlist]",
+        "source": {
+          "file": "parse.syms",
+          "line": 52,
+          "function": "par_nl_wordlist"
+        }
+      },
+      "cond_1": {
+        "$ref": "cond_2",
+        "source": {
+          "file": "parse.syms",
+          "line": 55,
+          "function": "par_cond_1"
+        }
+      },
+      "cond_2": {
+        "union": [
+          {
+            "$ref": "cond"
+          },
+          {
+            "$ref": "cond_double"
+          },
+          {
+            "$ref": "cond_multi"
+          },
+          {
+            "$ref": "cond_triple"
+          }
+        ],
+        "source": {
+          "file": "parse.syms",
+          "line": 56,
+          "function": "par_cond_2"
+        }
+      },
+      "cond_double": {
+        "pattern": "[cond_double]",
+        "source": {
+          "file": "parse.syms",
+          "line": 57,
+          "function": "par_cond_double"
+        }
+      },
+      "cond_triple": {
+        "pattern": "[cond_triple]",
+        "source": {
+          "file": "parse.syms",
+          "line": 59,
+          "function": "par_cond_triple"
+        }
+      },
+      "cond_multi": {
+        "pattern": "[cond_multi]",
+        "source": {
+          "file": "parse.syms",
+          "line": 60,
+          "function": "par_cond_multi"
+        }
       }
     }
   },

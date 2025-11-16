@@ -12,6 +12,7 @@ classifiers = [
 ]
 dependencies = [
     "clang>=20.0.0",
+    "jsonschema>=4.0.0",
 ]
 
 [project.scripts]

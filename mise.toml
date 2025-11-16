@@ -49,3 +49,11 @@ depends = '//...:build:*'
 [tasks.test]
 description = "Run all tests"
 depends = '//...:test:*'
+
+[tasks.lint]
+description = "Lint all source files"
+depends = '//...:lint'
+
+[tasks.format]
+description = "Format all source files"
+depends = '//...:format'

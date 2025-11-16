@@ -3,9 +3,14 @@
 ## Build/Lint/Test Commands
 
 - **Setup**: `mise run dev` (installs deps for all tools)
-- **Lint JS**: `pnpm run lint` (eslint)
-- **Lint Python**: `ruff check` and `basedpyright`
-- **Format**: `prettier --write .` and `ruff format`
+- **Lint**:
+    - **All projects**: `mise :lint`
+    - **Individual project**: `mise //<project_name>:lint`
+    - **Individual files**: `mise //<project_name>:lint <file1> <file2>` (file1 and file2 must be relative to the project root)
+- **Format**:
+    - **All projects**: `mise :format`
+    - **Individual project**: `mise //<project_name>:format`
+    - **Individual files**: `mise //<project_name>:format <file1> <file2>` (file1 and file2 must be relative to the project root)
 - **Test**: `mise run test` (runs tests across all packages)
 - **Single test**: `cd <package> && pnpm run test` or `cd <package> && python -m pytest <test_file>`
 
@@ -32,11 +37,11 @@
 ## Git Conventions
 
 - **Commit messages**: Use [conventional commits](https://www.conventionalcommits.org/) with 50/72 rule
-  - Format: `<type>(<scope>): <description>`
-  - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
-  - Scope: Optional, e.g., `(parser)`, `(extraction)`, `(grammar)`
-  - **Subject line**: Max 50 characters, lowercase, no period, imperative mood
-  - **Body**: Wrap at 72 characters, add after blank line if explanation needed
-  - **Do not add**: Thread IDs or co-author lines to commits
-  - Example subject: `fix(extraction): handle mod_import_function`
-  - Example body: `Updated regex pattern to accept optional intermediate keywords\nlike 'mod_import_function' in parser function declarations.`
+    - Format: `<type>(<scope>): <description>`
+    - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
+    - Scope: Optional, e.g., `(parser)`, `(extraction)`, `(grammar)`
+    - **Subject line**: Max 50 characters, lowercase, no period, imperative mood
+    - **Body**: Wrap at 72 characters, add after blank line if explanation needed
+    - **Do not add**: Thread IDs or co-author lines to commits
+    - Example subject: `fix(extraction): handle mod_import_function`
+    - Example body: `Updated regex pattern to accept optional intermediate keywords\nlike 'mod_import_function' in parser function declarations.`
