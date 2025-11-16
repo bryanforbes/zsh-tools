@@ -33,6 +33,84 @@ class _FunctionNode(TypedDict):
     line: int
     calls: list[str]
     conditions: NotRequired[list[str]]
+    signature: NotRequired[str]
+    visibility: NotRequired[str]
+
+
+def _extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
+    """
+    Extract parser functions from parse.syms file.
+
+    Parser functions are identified by lines starting with 'L' (static) or 'E' (extern)
+    that contain function declarations for par_* or parse_* functions.
+
+    Format examples:
+    - Lstatic void par_for _((int*cmplx));
+    - Eextern Eprog parse_list _((void));
+
+    Returns a dict mapping function names to _FunctionNode objects containing:
+    - name: function name
+    - file: source file path relative to zsh_src
+    - line: line number in .syms file
+    - visibility: 'static' or 'extern'
+    - signature: function signature (parameters and return type)
+    - calls: empty list (populated later from call graph)
+    """
+    parse_syms = zsh_src / 'parse.syms'
+    if not parse_syms.exists():
+        return {}
+
+    functions: dict[str, _FunctionNode] = {}
+
+    # Pattern to match function declarations in .syms files
+    # Format: Lstatic void par_for _((int*cmplx));
+    # or:     Eextern Eprog parse_list _((void));
+    # or:     Eextern mod_import_function Eprog parse_list _((void));
+    # Pattern explanation:
+    # - [LE] = visibility indicator (static or extern)
+    # - (static|extern) = visibility keyword
+    # - (?:\w+\s+)* = optional intermediate keywords (e.g., mod_import_function)
+    # - (\w+) = return type
+    # - ([a-z_][a-z0-9_]*) = function name
+    # - _\(\(([^)]*)\) = parameters
+    func_pattern = re.compile(
+        r'^[LE](static|extern)\s+(?:\w+\s+)*(\w+)\s+([a-z_][a-z0-9_]*)\s+_\(\(([^)]*)\)\);$'
+    )
+
+    with parse_syms.open() as f:
+        for line_no, line in enumerate(f, 1):
+            line = line.rstrip()
+
+            # Skip preprocessor directives and empty lines
+            if line.startswith(('E#', 'L#')) or not line.strip():
+                continue
+
+            match = func_pattern.match(line)
+            if not match:
+                continue
+
+            visibility, return_type, func_name, params = match.groups()
+
+            # Filter to parser functions only
+            if not func_name.startswith(('par_', 'parse_')):
+                continue
+
+            # Extract visibility
+            vis = 'static' if visibility == 'static' else 'extern'
+
+            # Build signature string
+            signature = f'({params}) → {return_type}'
+
+            functions[func_name] = {
+                'name': func_name,
+                'file': 'parse.syms',
+                'line': line_no,
+                'calls': [],
+                'visibility': vis,
+                'signature': signature,
+            }
+
+    return functions
 
 
 def _detect_conditions(cursor: Cursor, /) -> list[str]:
@@ -288,7 +366,11 @@ def _build_token_mapping(parser: ZshParser, /) -> dict[str, _TokenDef]:
 
 
 def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:
-    parser = ZshParser(zsh_path / 'Src')
+    zsh_src = zsh_path / 'Src'
+    parser = ZshParser(zsh_src)
+
+    # Phase 1: Extract parser functions from .syms files
+    parser_functions = _extract_parser_functions(zsh_src)
 
     token_mapping = _build_token_mapping(parser)
 
@@ -326,6 +408,14 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:
 
     # Parse call graph to build grammar
     # grammar_rules = _build_grammar_rules(call_graph)
+
+    # Log extracted parser functions for debugging
+    if parser_functions:
+        print(f'Extracted {len(parser_functions)} parser functions:')
+        for name, node in sorted(parser_functions.items()):
+            vis = node.get('visibility', 'unknown')
+            sig = node.get('signature', '(...)')
+            print(f'  {name:30} {vis:10} {sig}')
 
     grammar: Grammar = {
         '$schema': './canonical-grammar.schema.json',
