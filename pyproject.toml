@@ -37,6 +37,7 @@ pythonVersion = "3.14"
 strictListInference = true
 strictDictionaryInference = true
 strictSetInference = true
+strictGenericNarrowing = true
 
 reportUnnecessaryTypeIgnoreComment = "warning"
 typeCheckingMode = "strict"

@@ -538,12 +538,7 @@
         "pattern": "[a-zA-Z0-9_]+"
       },
       "string": {
-        "$ref": "list",
-        "source": {
-          "file": "exec.c",
-          "line": 243,
-          "function": "parse_string"
-        }
+        "$ref": "list"
       },
       "subscript": {
         "pattern": "[subscript]",
@@ -923,7 +918,86 @@
             "union": [
               {
                 "optional": {
-                  "$ref": "sublist",
+                  "union": [
+                    {
+                      "sequence": [
+                        {
+                          "$ref": "sublist"
+                        },
+                        {
+                          "$ref": "ENDINPUT"
+                        },
+                        {
+                          "$ref": "SEPER"
+                        },
+                        {
+                          "$ref": "AMPER"
+                        },
+                        {
+                          "$ref": "AMPERBANG"
+                        }
+                      ],
+                      "source": {
+                        "file": "parse.c",
+                        "line": 631,
+                        "function": "par_event"
+                      }
+                    },
+                    {
+                      "sequence": [
+                        {
+                          "$ref": "ENDINPUT"
+                        },
+                        {
+                          "$ref": "SEPER"
+                        },
+                        {
+                          "$ref": "AMPER"
+                        },
+                        {
+                          "$ref": "AMPERBANG"
+                        }
+                      ],
+                      "source": {
+                        "file": "parse.c",
+                        "line": 631,
+                        "function": "par_event"
+                      }
+                    },
+                    {
+                      "sequence": [
+                        {
+                          "$ref": "SEPER"
+                        },
+                        {
+                          "$ref": "AMPER"
+                        },
+                        {
+                          "$ref": "AMPERBANG"
+                        }
+                      ],
+                      "source": {
+                        "file": "parse.c",
+                        "line": 631,
+                        "function": "par_event"
+                      }
+                    },
+                    {
+                      "sequence": [
+                        {
+                          "$ref": "AMPER"
+                        },
+                        {
+                          "$ref": "AMPERBANG"
+                        }
+                      ],
+                      "source": {
+                        "file": "parse.c",
+                        "line": 631,
+                        "function": "par_event"
+                      }
+                    }
+                  ],
                   "source": {
                     "file": "parse.c",
                     "line": 631,
@@ -940,7 +1014,86 @@
               {
                 "variant": {
                   "optional": {
-                    "$ref": "sublist",
+                    "union": [
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "sublist"
+                          },
+                          {
+                            "$ref": "ENDINPUT"
+                          },
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "ENDINPUT"
+                          },
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      }
+                    ],
                     "source": {
                       "file": "parse.c",
                       "line": 631,
@@ -968,7 +1121,86 @@
               {
                 "variant": {
                   "optional": {
-                    "$ref": "sublist",
+                    "union": [
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "sublist"
+                          },
+                          {
+                            "$ref": "ENDINPUT"
+                          },
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "ENDINPUT"
+                          },
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      }
+                    ],
                     "source": {
                       "file": "parse.c",
                       "line": 631,
@@ -1006,7 +1238,86 @@
               "union": [
                 {
                   "optional": {
-                    "$ref": "sublist",
+                    "union": [
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "sublist"
+                          },
+                          {
+                            "$ref": "ENDINPUT"
+                          },
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "ENDINPUT"
+                          },
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "SEPER"
+                          },
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "$ref": "AMPER"
+                          },
+                          {
+                            "$ref": "AMPERBANG"
+                          }
+                        ],
+                        "source": {
+                          "file": "parse.c",
+                          "line": 631,
+                          "function": "par_event"
+                        }
+                      }
+                    ],
                     "source": {
                       "file": "parse.c",
                       "line": 631,
@@ -1023,7 +1334,86 @@
                 {
                   "variant": {
                     "optional": {
-                      "$ref": "sublist",
+                      "union": [
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "sublist"
+                            },
+                            {
+                              "$ref": "ENDINPUT"
+                            },
+                            {
+                              "$ref": "SEPER"
+                            },
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        },
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "ENDINPUT"
+                            },
+                            {
+                              "$ref": "SEPER"
+                            },
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        },
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "SEPER"
+                            },
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        },
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        }
+                      ],
                       "source": {
                         "file": "parse.c",
                         "line": 631,
@@ -1051,7 +1441,86 @@
                 {
                   "variant": {
                     "optional": {
-                      "$ref": "sublist",
+                      "union": [
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "sublist"
+                            },
+                            {
+                              "$ref": "ENDINPUT"
+                            },
+                            {
+                              "$ref": "SEPER"
+                            },
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        },
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "ENDINPUT"
+                            },
+                            {
+                              "$ref": "SEPER"
+                            },
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        },
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "SEPER"
+                            },
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        },
+                        {
+                          "sequence": [
+                            {
+                              "$ref": "AMPER"
+                            },
+                            {
+                              "$ref": "AMPERBANG"
+                            }
+                          ],
+                          "source": {
+                            "file": "parse.c",
+                            "line": 631,
+                            "function": "par_event"
+                          }
+                        }
+                      ],
                       "source": {
                         "file": "parse.c",
                         "line": 631,
@@ -1106,7 +1575,65 @@
       "list": {
         "union": [
           {
-            "$ref": "sublist",
+            "union": [
+              {
+                "sequence": [
+                  {
+                    "$ref": "sublist"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  },
+                  {
+                    "$ref": "AMPER"
+                  },
+                  {
+                    "$ref": "AMPERBANG"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  },
+                  {
+                    "$ref": "AMPER"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 767,
+                  "function": "par_list"
+                }
+              },
+              {
+                "sequence": [
+                  {
+                    "$ref": "SEPER"
+                  },
+                  {
+                    "$ref": "AMPER"
+                  },
+                  {
+                    "$ref": "AMPERBANG"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  },
+                  {
+                    "$ref": "AMPER"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 767,
+                  "function": "par_list"
+                }
+              }
+            ],
             "source": {
               "file": "parse.c",
               "line": 767,
@@ -1115,7 +1642,65 @@
           },
           {
             "variant": {
-              "$ref": "sublist",
+              "union": [
+                {
+                  "sequence": [
+                    {
+                      "$ref": "sublist"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "AMPER"
+                    },
+                    {
+                      "$ref": "AMPERBANG"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "AMPER"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 767,
+                    "function": "par_list"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "AMPER"
+                    },
+                    {
+                      "$ref": "AMPERBANG"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "AMPER"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 767,
+                    "function": "par_list"
+                  }
+                }
+              ],
               "source": {
                 "file": "parse.c",
                 "line": 767,
@@ -1143,7 +1728,20 @@
       },
       "cond": {
         "optional": {
-          "$ref": "cond_1",
+          "sequence": [
+            {
+              "$ref": "cond_1"
+            },
+            {
+              "$ref": "SEPER"
+            },
+            {
+              "$ref": "DBAR"
+            },
+            {
+              "$ref": "SEPER"
+            }
+          ],
           "source": {
             "file": "parse.c",
             "line": 2397,
@@ -1158,12 +1756,7 @@
         }
       },
       "list1": {
-        "$ref": "sublist",
-        "source": {
-          "file": "parse.c",
-          "line": 804,
-          "function": "par_list1"
-        }
+        "$ref": "sublist"
       },
       "sublist": {
         "$ref": "sublist2",
@@ -1175,7 +1768,14 @@
       },
       "sublist2": {
         "optional": {
-          "$ref": "pline",
+          "sequence": [
+            {
+              "$ref": "COPROC"
+            },
+            {
+              "$ref": "BANG"
+            }
+          ],
           "source": {
             "file": "parse.c",
             "line": 865,
@@ -1191,7 +1791,44 @@
       },
       "pline": {
         "optional": {
-          "$ref": "cmd",
+          "union": [
+            {
+              "sequence": [
+                {
+                  "$ref": "BAR"
+                },
+                {
+                  "$ref": "SEPER"
+                },
+                {
+                  "$ref": "BARAMP"
+                },
+                {
+                  "$ref": "SEPER"
+                }
+              ],
+              "source": {
+                "file": "parse.c",
+                "line": 890,
+                "function": "par_pline"
+              }
+            },
+            {
+              "sequence": [
+                {
+                  "$ref": "BARAMP"
+                },
+                {
+                  "$ref": "SEPER"
+                }
+              ],
+              "source": {
+                "file": "parse.c",
+                "line": 890,
+                "function": "par_pline"
+              }
+            }
+          ],
           "source": {
             "file": "parse.c",
             "line": 890,
@@ -1211,37 +1848,184 @@
             "optional": {
               "union": [
                 {
-                  "$ref": "INBRACE"
+                  "sequence": [
+                    {
+                      "$ref": "FOR"
+                    },
+                    {
+                      "$ref": "for"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
                 },
                 {
-                  "$ref": "case"
+                  "sequence": [
+                    {
+                      "$ref": "FOREACH"
+                    },
+                    {
+                      "$ref": "for"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
                 },
                 {
-                  "$ref": "dinbrack"
+                  "sequence": [
+                    {
+                      "$ref": "SELECT"
+                    },
+                    {
+                      "$ref": "for"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
                 },
                 {
-                  "$ref": "for"
+                  "sequence": [
+                    {
+                      "$ref": "CASE"
+                    },
+                    {
+                      "$ref": "case"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "IF"
+                    },
+                    {
+                      "$ref": "if"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "WHILE"
+                    },
+                    {
+                      "$ref": "while"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "UNTIL"
+                    },
+                    {
+                      "$ref": "while"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "REPEAT"
+                    },
+                    {
+                      "$ref": "repeat"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INPAR"
+                    },
+                    {
+                      "$ref": "subsh"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "subsh"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
                 },
                 {
                   "$ref": "funcdef"
                 },
                 {
-                  "$ref": "if"
+                  "$ref": "dinbrack"
                 },
                 {
-                  "$ref": "repeat"
+                  "$ref": "DINPAR"
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "time"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "simple"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 954,
+                    "function": "par_cmd"
+                  }
                 },
                 {
                   "$ref": "simple"
-                },
-                {
-                  "$ref": "subsh"
-                },
-                {
-                  "$ref": "time"
-                },
-                {
-                  "$ref": "while"
                 }
               ],
               "source": {
@@ -1262,37 +2046,184 @@
               "optional": {
                 "union": [
                   {
-                    "$ref": "INBRACE"
+                    "sequence": [
+                      {
+                        "$ref": "FOR"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "case"
+                    "sequence": [
+                      {
+                        "$ref": "FOREACH"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "dinbrack"
+                    "sequence": [
+                      {
+                        "$ref": "SELECT"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "for"
+                    "sequence": [
+                      {
+                        "$ref": "CASE"
+                      },
+                      {
+                        "$ref": "case"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "IF"
+                      },
+                      {
+                        "$ref": "if"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "WHILE"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "UNTIL"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "REPEAT"
+                      },
+                      {
+                        "$ref": "repeat"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INPAR"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "funcdef"
                   },
                   {
-                    "$ref": "if"
+                    "$ref": "dinbrack"
                   },
                   {
-                    "$ref": "repeat"
+                    "$ref": "DINPAR"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "time"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "simple"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "simple"
-                  },
-                  {
-                    "$ref": "subsh"
-                  },
-                  {
-                    "$ref": "time"
-                  },
-                  {
-                    "$ref": "while"
                   }
                 ],
                 "source": {
@@ -1324,37 +2255,184 @@
               "optional": {
                 "union": [
                   {
-                    "$ref": "INBRACE"
+                    "sequence": [
+                      {
+                        "$ref": "FOR"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "case"
+                    "sequence": [
+                      {
+                        "$ref": "FOREACH"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "dinbrack"
+                    "sequence": [
+                      {
+                        "$ref": "SELECT"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "for"
+                    "sequence": [
+                      {
+                        "$ref": "CASE"
+                      },
+                      {
+                        "$ref": "case"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "IF"
+                      },
+                      {
+                        "$ref": "if"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "WHILE"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "UNTIL"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "REPEAT"
+                      },
+                      {
+                        "$ref": "repeat"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INPAR"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "funcdef"
                   },
                   {
-                    "$ref": "if"
+                    "$ref": "dinbrack"
                   },
                   {
-                    "$ref": "repeat"
+                    "$ref": "DINPAR"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "time"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "simple"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "simple"
-                  },
-                  {
-                    "$ref": "subsh"
-                  },
-                  {
-                    "$ref": "time"
-                  },
-                  {
-                    "$ref": "while"
                   }
                 ],
                 "source": {
@@ -1386,37 +2464,184 @@
               "optional": {
                 "union": [
                   {
-                    "$ref": "INBRACE"
+                    "sequence": [
+                      {
+                        "$ref": "FOR"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "case"
+                    "sequence": [
+                      {
+                        "$ref": "FOREACH"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "dinbrack"
+                    "sequence": [
+                      {
+                        "$ref": "SELECT"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "for"
+                    "sequence": [
+                      {
+                        "$ref": "CASE"
+                      },
+                      {
+                        "$ref": "case"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "IF"
+                      },
+                      {
+                        "$ref": "if"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "WHILE"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "UNTIL"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "REPEAT"
+                      },
+                      {
+                        "$ref": "repeat"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INPAR"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "funcdef"
                   },
                   {
-                    "$ref": "if"
+                    "$ref": "dinbrack"
                   },
                   {
-                    "$ref": "repeat"
+                    "$ref": "DINPAR"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "time"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "simple"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "simple"
-                  },
-                  {
-                    "$ref": "subsh"
-                  },
-                  {
-                    "$ref": "time"
-                  },
-                  {
-                    "$ref": "while"
                   }
                 ],
                 "source": {
@@ -1448,37 +2673,184 @@
               "optional": {
                 "union": [
                   {
-                    "$ref": "INBRACE"
+                    "sequence": [
+                      {
+                        "$ref": "FOR"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "case"
+                    "sequence": [
+                      {
+                        "$ref": "FOREACH"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "dinbrack"
+                    "sequence": [
+                      {
+                        "$ref": "SELECT"
+                      },
+                      {
+                        "$ref": "for"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
-                    "$ref": "for"
+                    "sequence": [
+                      {
+                        "$ref": "CASE"
+                      },
+                      {
+                        "$ref": "case"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "IF"
+                      },
+                      {
+                        "$ref": "if"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "WHILE"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "UNTIL"
+                      },
+                      {
+                        "$ref": "while"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "REPEAT"
+                      },
+                      {
+                        "$ref": "repeat"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INPAR"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "subsh"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "funcdef"
                   },
                   {
-                    "$ref": "if"
+                    "$ref": "dinbrack"
                   },
                   {
-                    "$ref": "repeat"
+                    "$ref": "DINPAR"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "time"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "simple"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 954,
+                      "function": "par_cmd"
+                    }
                   },
                   {
                     "$ref": "simple"
-                  },
-                  {
-                    "$ref": "subsh"
-                  },
-                  {
-                    "$ref": "time"
-                  },
-                  {
-                    "$ref": "while"
                   }
                 ],
                 "source": {
@@ -1518,25 +2890,58 @@
           {
             "union": [
               {
-                "$ref": "SELECT"
-              },
-              {
-                "$ref": "FOREACH"
-              },
-              {
-                "$ref": "FOR"
+                "sequence": [
+                  {
+                    "$ref": "DOLOOP"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1083,
+                  "function": "par_for"
+                }
               },
               {
                 "$ref": "list"
               },
               {
-                "$ref": "list1"
+                "sequence": [
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1083,
+                  "function": "par_for"
+                }
               },
               {
-                "$ref": "nl_wordlist"
+                "$ref": "list"
               },
               {
-                "$ref": "wordlist"
+                "$ref": "list"
+              },
+              {
+                "$ref": "list"
               }
             ],
             "source": {
@@ -1549,25 +2954,58 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "SELECT"
-                },
-                {
-                  "$ref": "FOREACH"
-                },
-                {
-                  "$ref": "FOR"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
-                  "$ref": "nl_wordlist"
+                  "$ref": "list"
                 },
                 {
-                  "$ref": "wordlist"
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -1591,25 +3029,58 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "SELECT"
-                },
-                {
-                  "$ref": "FOREACH"
-                },
-                {
-                  "$ref": "FOR"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
-                  "$ref": "nl_wordlist"
+                  "$ref": "list"
                 },
                 {
-                  "$ref": "wordlist"
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -1633,25 +3104,58 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "SELECT"
-                },
-                {
-                  "$ref": "FOREACH"
-                },
-                {
-                  "$ref": "FOR"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
-                  "$ref": "nl_wordlist"
+                  "$ref": "list"
                 },
                 {
-                  "$ref": "wordlist"
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -1675,25 +3179,58 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "SELECT"
-                },
-                {
-                  "$ref": "FOREACH"
-                },
-                {
-                  "$ref": "FOR"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1083,
+                    "function": "par_for"
+                  }
                 },
                 {
-                  "$ref": "nl_wordlist"
+                  "$ref": "list"
                 },
                 {
-                  "$ref": "wordlist"
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -1725,7 +3262,56 @@
         "union": [
           {
             "repeat": {
-              "$ref": "list",
+              "union": [
+                {
+                  "$ref": "BAR"
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "OUTPAR"
+                    },
+                    {
+                      "$ref": "BAR"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1205,
+                    "function": "par_case"
+                  }
+                },
+                {
+                  "$ref": "BAR"
+                },
+                {
+                  "$ref": "STRING"
+                },
+                {
+                  "$ref": "OUTPAR"
+                },
+                {
+                  "$ref": "BAR"
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "SEMIAMP"
+                    },
+                    {
+                      "$ref": "SEMIBAR"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1205,
+                    "function": "par_case"
+                  }
+                }
+              ],
               "source": {
                 "file": "parse.c",
                 "line": 1205,
@@ -1743,7 +3329,56 @@
           {
             "variant": {
               "repeat": {
-                "$ref": "list",
+                "union": [
+                  {
+                    "$ref": "BAR"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTPAR"
+                      },
+                      {
+                        "$ref": "BAR"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1205,
+                      "function": "par_case"
+                    }
+                  },
+                  {
+                    "$ref": "BAR"
+                  },
+                  {
+                    "$ref": "STRING"
+                  },
+                  {
+                    "$ref": "OUTPAR"
+                  },
+                  {
+                    "$ref": "BAR"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "SEMIAMP"
+                      },
+                      {
+                        "$ref": "SEMIBAR"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1205,
+                      "function": "par_case"
+                    }
+                  }
+                ],
                 "source": {
                   "file": "parse.c",
                   "line": 1205,
@@ -1772,7 +3407,56 @@
           {
             "variant": {
               "repeat": {
-                "$ref": "list",
+                "union": [
+                  {
+                    "$ref": "BAR"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTPAR"
+                      },
+                      {
+                        "$ref": "BAR"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1205,
+                      "function": "par_case"
+                    }
+                  },
+                  {
+                    "$ref": "BAR"
+                  },
+                  {
+                    "$ref": "STRING"
+                  },
+                  {
+                    "$ref": "OUTPAR"
+                  },
+                  {
+                    "$ref": "BAR"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "SEMIAMP"
+                      },
+                      {
+                        "$ref": "SEMIBAR"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1205,
+                      "function": "par_case"
+                    }
+                  }
+                ],
                 "source": {
                   "file": "parse.c",
                   "line": 1205,
@@ -1812,13 +3496,103 @@
             "repeat": {
               "union": [
                 {
-                  "$ref": "IF"
+                  "$ref": "list"
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "THEN"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1407,
+                    "function": "par_if"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1407,
+                    "function": "par_if"
+                  }
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "ELSE"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1407,
+                    "function": "par_if"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1407,
+                    "function": "par_if"
+                  }
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -1840,13 +3614,103 @@
               "repeat": {
                 "union": [
                   {
-                    "$ref": "IF"
+                    "$ref": "list"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "THEN"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
                   },
                   {
                     "$ref": "list"
                   },
                   {
-                    "$ref": "list1"
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "ELSE"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "list"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "list"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
                   }
                 ],
                 "source": {
@@ -1879,13 +3743,103 @@
               "repeat": {
                 "union": [
                   {
-                    "$ref": "IF"
+                    "$ref": "list"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "THEN"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
                   },
                   {
                     "$ref": "list"
                   },
                   {
-                    "$ref": "list1"
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "ELSE"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "list"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "list"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1407,
+                      "function": "par_if"
+                    }
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
                   }
                 ],
                 "source": {
@@ -1926,16 +3880,61 @@
           {
             "union": [
               {
-                "$ref": "WHILE"
+                "$ref": "list"
               },
               {
-                "$ref": "UNTIL"
+                "sequence": [
+                  {
+                    "$ref": "DOLOOP"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1517,
+                  "function": "par_while"
+                }
               },
               {
                 "$ref": "list"
               },
               {
-                "$ref": "list1"
+                "sequence": [
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1517,
+                  "function": "par_while"
+                }
+              },
+              {
+                "$ref": "list"
+              },
+              {
+                "$ref": "list"
+              },
+              {
+                "$ref": "list"
               }
             ],
             "source": {
@@ -1948,16 +3947,61 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "WHILE"
+                  "$ref": "list"
                 },
                 {
-                  "$ref": "UNTIL"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1517,
+                    "function": "par_while"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1517,
+                    "function": "par_while"
+                  }
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -1981,16 +4025,61 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "WHILE"
+                  "$ref": "list"
                 },
                 {
-                  "$ref": "UNTIL"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1517,
+                    "function": "par_while"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1517,
+                    "function": "par_while"
+                  }
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -2023,13 +4112,58 @@
           {
             "union": [
               {
-                "$ref": "REPEAT"
+                "sequence": [
+                  {
+                    "$ref": "DOLOOP"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1561,
+                  "function": "par_repeat"
+                }
               },
               {
                 "$ref": "list"
               },
               {
-                "$ref": "list1"
+                "sequence": [
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1561,
+                  "function": "par_repeat"
+                }
+              },
+              {
+                "$ref": "list"
+              },
+              {
+                "$ref": "list"
+              },
+              {
+                "$ref": "list"
               }
             ],
             "source": {
@@ -2042,13 +4176,58 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "REPEAT"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1561,
+                    "function": "par_repeat"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1561,
+                    "function": "par_repeat"
+                  }
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -2072,13 +4251,58 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "REPEAT"
+                  "sequence": [
+                    {
+                      "$ref": "DOLOOP"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1561,
+                    "function": "par_repeat"
+                  }
                 },
                 {
                   "$ref": "list"
                 },
                 {
-                  "$ref": "list1"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1561,
+                    "function": "par_repeat"
+                  }
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
+                },
+                {
+                  "$ref": "list"
                 }
               ],
               "source": {
@@ -2109,7 +4333,38 @@
       "subsh": {
         "union": [
           {
-            "$ref": "list",
+            "union": [
+              {
+                "sequence": [
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "STRING"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "SEPER"
+                  },
+                  {
+                    "$ref": "INPAR"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1615,
+                  "function": "par_subsh"
+                }
+              },
+              {
+                "$ref": "list"
+              }
+            ],
             "source": {
               "file": "parse.c",
               "line": 1615,
@@ -2118,7 +4373,38 @@
           },
           {
             "variant": {
-              "$ref": "list",
+              "union": [
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INPAR"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1615,
+                    "function": "par_subsh"
+                  }
+                },
+                {
+                  "$ref": "list"
+                }
+              ],
               "source": {
                 "file": "parse.c",
                 "line": 1615,
@@ -2138,7 +4424,38 @@
           },
           {
             "variant": {
-              "$ref": "list",
+              "union": [
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INPAR"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1615,
+                    "function": "par_subsh"
+                  }
+                },
+                {
+                  "$ref": "list"
+                }
+              ],
               "source": {
                 "file": "parse.c",
                 "line": 1615,
@@ -2169,10 +4486,22 @@
           {
             "union": [
               {
-                "$ref": "FUNC"
-              },
-              {
-                "$ref": "list"
+                "sequence": [
+                  {
+                    "$ref": "INBRACE"
+                  },
+                  {
+                    "$ref": "list"
+                  },
+                  {
+                    "$ref": "list1"
+                  }
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1668,
+                  "function": "par_funcdef"
+                }
               },
               {
                 "$ref": "list1"
@@ -2188,10 +4517,22 @@
             "variant": {
               "union": [
                 {
-                  "$ref": "FUNC"
-                },
-                {
-                  "$ref": "list"
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "list1"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1668,
+                    "function": "par_funcdef"
+                  }
                 },
                 {
                   "$ref": "list1"
@@ -2223,31 +4564,16 @@
         }
       },
       "time": {
-        "$ref": "sublist2",
-        "source": {
-          "file": "parse.c",
-          "line": 1783,
-          "function": "par_time"
-        }
+        "$ref": "sublist2"
       },
       "dinbrack": {
         "union": [
           {
-            "$ref": "cond",
-            "source": {
-              "file": "parse.c",
-              "line": 1806,
-              "function": "par_dinbrack"
-            }
+            "$ref": "cond"
           },
           {
             "variant": {
-              "$ref": "cond",
-              "source": {
-                "file": "parse.c",
-                "line": 1806,
-                "function": "par_dinbrack"
-              }
+              "$ref": "cond"
             },
             "condition": {
               "lexstate": "INCMDPOS"
@@ -2262,12 +4588,7 @@
           },
           {
             "variant": {
-              "$ref": "cond",
-              "source": {
-                "file": "parse.c",
-                "line": 1806,
-                "function": "par_dinbrack"
-              }
+              "$ref": "cond"
             },
             "condition": {
               "lexstate": "INCOND"
@@ -2281,12 +4602,7 @@
             }
           }
         ],
-        "description": "dinbrack (modifies lexer states: INCOND, INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 1806,
-          "function": "par_dinbrack"
-        }
+        "description": "dinbrack (modifies lexer states: INCOND, INCMDPOS)"
       },
       "simple": {
         "union": [
@@ -2294,16 +4610,388 @@
             "repeat": {
               "union": [
                 {
-                  "$ref": "cmd"
+                  "sequence": [
+                    {
+                      "$ref": "NOCORRECT"
+                    },
+                    {
+                      "$ref": "ENVSTRING"
+                    },
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
                 },
                 {
-                  "$ref": "list"
+                  "sequence": [
+                    {
+                      "$ref": "ENVSTRING"
+                    },
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
                 },
                 {
-                  "$ref": "nl_wordlist"
+                  "sequence": [
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
                 },
                 {
-                  "$ref": "redir"
+                  "$ref": "OUTANG"
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "TYPESET"
+                    },
+                    {
+                      "$ref": "TYPESET"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "redir"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "ENVSTRING"
+                    },
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "INOUTPAR"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "cmd"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "STRING"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "redir"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "redir"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "redir"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "redir"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "ENVSTRING"
+                    },
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "INOUTPAR"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "cmd"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "STRING"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "ENVSTRING"
+                    },
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "INOUTPAR"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "cmd"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "STRING"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "ENVARRAY"
+                    },
+                    {
+                      "$ref": "nl_wordlist"
+                    },
+                    {
+                      "$ref": "INOUTPAR"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "cmd"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "STRING"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INOUTPAR"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "cmd"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "STRING"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "INBRACE"
+                    },
+                    {
+                      "$ref": "list"
+                    },
+                    {
+                      "$ref": "cmd"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "sequence": [
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "OUTANG"
+                    },
+                    {
+                      "$ref": "STRING"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 1832,
+                    "function": "par_simple"
+                  }
+                },
+                {
+                  "$ref": "STRING"
                 }
               ],
               "source": {
@@ -2325,16 +5013,388 @@
               "repeat": {
                 "union": [
                   {
-                    "$ref": "cmd"
+                    "sequence": [
+                      {
+                        "$ref": "NOCORRECT"
+                      },
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
                   },
                   {
-                    "$ref": "list"
+                    "sequence": [
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
                   },
                   {
-                    "$ref": "nl_wordlist"
+                    "sequence": [
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
                   },
                   {
-                    "$ref": "redir"
+                    "$ref": "OUTANG"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "TYPESET"
+                      },
+                      {
+                        "$ref": "TYPESET"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "$ref": "STRING"
                   }
                 ],
                 "source": {
@@ -2367,16 +5427,388 @@
               "repeat": {
                 "union": [
                   {
-                    "$ref": "cmd"
+                    "sequence": [
+                      {
+                        "$ref": "NOCORRECT"
+                      },
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
                   },
                   {
-                    "$ref": "list"
+                    "sequence": [
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
                   },
                   {
-                    "$ref": "nl_wordlist"
+                    "sequence": [
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
                   },
                   {
-                    "$ref": "redir"
+                    "$ref": "OUTANG"
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "TYPESET"
+                      },
+                      {
+                        "$ref": "TYPESET"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "redir"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "ENVSTRING"
+                      },
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "ENVARRAY"
+                      },
+                      {
+                        "$ref": "nl_wordlist"
+                      },
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INOUTPAR"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "INBRACE"
+                      },
+                      {
+                        "$ref": "list"
+                      },
+                      {
+                        "$ref": "cmd"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "OUTANG"
+                      },
+                      {
+                        "$ref": "STRING"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 1832,
+                      "function": "par_simple"
+                    }
+                  },
+                  {
+                    "$ref": "STRING"
                   }
                 ],
                 "source": {
@@ -2415,21 +5847,11 @@
       "redir": {
         "union": [
           {
-            "pattern": "[redir]",
-            "source": {
-              "file": "parse.c",
-              "line": 2220,
-              "function": "par_redir"
-            }
+            "$ref": "OUTANG"
           },
           {
             "variant": {
-              "pattern": "[redir]",
-              "source": {
-                "file": "parse.c",
-                "line": 2220,
-                "function": "par_redir"
-              }
+              "$ref": "OUTANG"
             },
             "condition": {
               "lexstate": "INCMDPOS"
@@ -2443,23 +5865,20 @@
             }
           }
         ],
-        "description": "redir (modifies lexer states: INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 2220,
-          "function": "par_redir"
-        }
+        "description": "redir (modifies lexer states: INCMDPOS)"
       },
       "wordlist": {
-        "pattern": "[wordlist]",
-        "source": {
-          "file": "parse.c",
-          "line": 2350,
-          "function": "par_wordlist"
-        }
+        "$ref": "STRING"
       },
       "nl_wordlist": {
-        "pattern": "[nl_wordlist]",
+        "sequence": [
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "SEPER"
+          }
+        ],
         "source": {
           "file": "parse.c",
           "line": 2367,
@@ -2468,7 +5887,20 @@
       },
       "cond_1": {
         "optional": {
-          "$ref": "cond_2",
+          "sequence": [
+            {
+              "$ref": "cond_2"
+            },
+            {
+              "$ref": "SEPER"
+            },
+            {
+              "$ref": "DAMPER"
+            },
+            {
+              "$ref": "SEPER"
+            }
+          ],
           "source": {
             "file": "parse.c",
             "line": 2422,
@@ -2488,19 +5920,106 @@
             "optional": {
               "union": [
                 {
-                  "$ref": "BANG"
+                  "sequence": [
+                    {
+                      "$ref": "NULLTOK"
+                    },
+                    {
+                      "$ref": "cond_double"
+                    },
+                    {
+                      "$ref": "cond_double"
+                    },
+                    {
+                      "$ref": "cond_double"
+                    },
+                    {
+                      "$ref": "cond_triple"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 2464,
+                    "function": "par_cond_2"
+                  }
                 },
                 {
-                  "$ref": "cond"
+                  "sequence": [
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 2464,
+                    "function": "par_cond_2"
+                  }
                 },
                 {
-                  "$ref": "cond_double"
+                  "sequence": [
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "cond_multi"
+                    },
+                    {
+                      "$ref": "cond_triple"
+                    },
+                    {
+                      "$ref": "cond_double"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 2464,
+                    "function": "par_cond_2"
+                  }
                 },
                 {
-                  "$ref": "cond_multi"
-                },
-                {
-                  "$ref": "cond_triple"
+                  "sequence": [
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "STRING"
+                    },
+                    {
+                      "$ref": "SEPER"
+                    },
+                    {
+                      "$ref": "cond_multi"
+                    },
+                    {
+                      "$ref": "cond_triple"
+                    }
+                  ],
+                  "source": {
+                    "file": "parse.c",
+                    "line": 2464,
+                    "function": "par_cond_2"
+                  }
                 }
               ],
               "source": {
@@ -2521,19 +6040,106 @@
               "optional": {
                 "union": [
                   {
-                    "$ref": "BANG"
+                    "sequence": [
+                      {
+                        "$ref": "NULLTOK"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      },
+                      {
+                        "$ref": "cond_triple"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   },
                   {
-                    "$ref": "cond"
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   },
                   {
-                    "$ref": "cond_double"
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "cond_multi"
+                      },
+                      {
+                        "$ref": "cond_triple"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   },
                   {
-                    "$ref": "cond_multi"
-                  },
-                  {
-                    "$ref": "cond_triple"
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "cond_multi"
+                      },
+                      {
+                        "$ref": "cond_triple"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   }
                 ],
                 "source": {
@@ -2565,19 +6171,106 @@
               "optional": {
                 "union": [
                   {
-                    "$ref": "BANG"
+                    "sequence": [
+                      {
+                        "$ref": "NULLTOK"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      },
+                      {
+                        "$ref": "cond_triple"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   },
                   {
-                    "$ref": "cond"
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   },
                   {
-                    "$ref": "cond_double"
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "cond_multi"
+                      },
+                      {
+                        "$ref": "cond_triple"
+                      },
+                      {
+                        "$ref": "cond_double"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   },
                   {
-                    "$ref": "cond_multi"
-                  },
-                  {
-                    "$ref": "cond_triple"
+                    "sequence": [
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "STRING"
+                      },
+                      {
+                        "$ref": "SEPER"
+                      },
+                      {
+                        "$ref": "cond_multi"
+                      },
+                      {
+                        "$ref": "cond_triple"
+                      }
+                    ],
+                    "source": {
+                      "file": "parse.c",
+                      "line": 2464,
+                      "function": "par_cond_2"
+                    }
                   }
                 ],
                 "source": {

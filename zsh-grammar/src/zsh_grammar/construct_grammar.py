@@ -9,13 +9,14 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Final, Literal, NotRequired, TypedDict, cast
 
 import jsonschema
-from clang.cindex import Cursor, CursorKind, StorageClass
+from clang.cindex import Cursor, CursorKind, StorageClass, Token
 
 from zsh_grammar.grammar_utils import (
     create_lex_state,
     create_optional,
     create_ref,
     create_repeat,
+    create_sequence,
     create_source,
     create_terminal,
     create_token,
@@ -27,7 +28,7 @@ from zsh_grammar.source_parser import ZshParser
 if TYPE_CHECKING:
     from collections.abc import Callable, Iterator
 
-    from zsh_grammar._types import Grammar, GrammarNode, Language
+    from zsh_grammar._types import Grammar, GrammarNode, Language, LexState, Source
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
 
@@ -130,12 +131,66 @@ class _TokenEdge(TypedDict):
         position: 'before' (prefix), 'after' (suffix), or 'inline' (no function call)
         line: Line number in source where token check occurs
         context: Optional context description (e.g., 'guard condition', 'required')
+
+    DEPRECATED: Use _TokenCheck instead (Phase 2.4.1 redesign)
     """
 
     token_name: str
     position: Literal['before', 'after', 'inline']
     line: int
     context: NotRequired[str]
+
+
+class _TokenCheck(TypedDict):
+    """Phase 2.4.1: Token check in control flow sequence.
+
+    Attributes:
+        kind: Discriminator - always 'token'
+        token_name: Token name (SCREAMING_SNAKE_CASE)
+        line: Line number in source
+        is_negated: Whether this is a `tok != TOKEN` check
+    """
+
+    kind: Literal['token']
+    token_name: str
+    line: int
+    is_negated: bool
+
+
+class _FunctionCall(TypedDict):
+    """Phase 2.4.1: Function call in control flow sequence.
+
+    Attributes:
+        kind: Discriminator - always 'call'
+        func_name: Function name (par_* or parse_*)
+        line: Line number in source
+    """
+
+    kind: Literal['call']
+    func_name: str
+    line: int
+
+
+class _SyntheticToken(TypedDict):
+    """Phase 2.4.1: Synthetic token from string matching condition.
+
+    Example: `tok == STRING && !strcmp(tokstr, "always")` → ALWAYS token
+
+    Attributes:
+        kind: Discriminator - always 'synthetic_token'
+        token_name: Generated token name (SCREAMING_SNAKE_CASE)
+        line: Line number in source
+        condition: Description of matching condition
+    """
+
+    kind: Literal['synthetic_token']
+    token_name: str
+    line: int
+    condition: str
+
+
+# Phase 2.4.1: Token sequence items (discriminated union)
+TokenOrCall = _TokenCheck | _FunctionCall | _SyntheticToken
 
 
 class _FunctionNode(TypedDict):
@@ -146,7 +201,10 @@ class _FunctionNode(TypedDict):
     conditions: NotRequired[list[str]]
     signature: NotRequired[str]
     visibility: NotRequired[str]
-    token_edges: NotRequired[list[_TokenEdge]]  # Phase 2.4: Token consumption patterns
+    token_edges: NotRequired[list[_TokenEdge]]  # DEPRECATED - use token_sequences
+    token_sequences: NotRequired[
+        list[list[TokenOrCall]]
+    ]  # Phase 2.4.1: Ordered token+call sequences per branch
 
 
 class _ControlFlowPattern(TypedDict):
@@ -245,32 +303,20 @@ def _extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
     return functions
 
 
-def _extract_token_consumption_patterns(
+def _extract_token_sequences_old(  # pyright: ignore[reportUnusedFunction]
     cursor: Cursor, func_name: str = ''
 ) -> list[_TokenEdge]:
     """
-    Extract direct token consumption patterns from a parser function body.
+    DEPRECATED: Phase 2.4 implementation (replaced by Phase 2.4.1).
 
-    Phase 2.4 implementation: Analyzes AST to find:
-    1. Token checks via tok == TOKEN_NAME (binary operators)
-    2. Token checks via if (tok == ...) (if statement conditions)
-    3. zshlex() calls that advance the token stream
-    4. Sequencing of token checks and function calls
+    This function extracted individual tokens without ordering or control flow context.
+    Use _extract_token_sequences() instead.
 
-    Returns list of _TokenEdge objects representing token consumption.
-
-    Args:
-        cursor: Function definition cursor
-        func_name: Function name for context in descriptions
-
-    Returns:
-        List of _TokenEdge objects with token patterns
+    Kept for compatibility during transition period.
     """
     token_edges: list[_TokenEdge] = []
     token_names: set[str] = set()
 
-    # Common token names to look for (SCREAMING_SNAKE_CASE)
-    # Based on zsh.h token definitions
     common_tokens = {
         'INPAR',
         'OUTPAR',
@@ -303,9 +349,7 @@ def _extract_token_consumption_patterns(
         'ALWAYS',
     }
 
-    # Walk the function body looking for token patterns
     for node in cursor.walk_preorder():
-        # Pattern 1: tok == TOKEN_NAME in binary operators
         if (
             node.kind == CursorKind.BINARY_OPERATOR
             and (tokens := list(node.get_tokens()))
@@ -317,25 +361,406 @@ def _extract_token_consumption_patterns(
             if token_name.isupper() and len(token_name) > 2:
                 token_names.add(token_name)
 
-        # Pattern 3: Direct token reference in conditions (e.g., tok == INPAR)
         if node.kind == CursorKind.DECL_REF_EXPR and node.spelling in common_tokens:
             token_names.add(node.spelling)
 
-    # For each discovered token, create an edge entry
-    # Classify position based on frequency heuristic
-    # (tokens appearing early = prefix, late = suffix)
     for token_name in sorted(token_names):
         token_edges.append(
             _TokenEdge(
                 token_name=token_name,
-                # Default position; will be refined in grammar rule generation
                 position='inline',
-                line=0,  # Will be set from actual AST node location
+                line=0,
                 context=f'token check in {func_name}',
             )
         )
 
     return token_edges
+
+
+def _extract_branch_items(
+    items: list[TokenOrCall], start_line: int, end_line: int, /
+) -> list[TokenOrCall]:
+    """Extract items that fall within a line range (branch)."""
+    return [item for item in items if start_line <= item['line'] <= end_line]
+
+
+def _is_error_check_condition(condition_tokens: list[str], /) -> bool:
+    """
+    Detect if an if condition is primarily for error checking.
+
+    Error-checking conditions typically:
+    - Use != (inequality) operators
+    - Check tok against expected token values without positive && conditions
+    - Contain YYERROR, YYERRORV, or similar error macros
+    - Are guards with no semantic alternatives (no matching positive condition)
+
+    Conversely, semantic conditions often:
+    - Use == with && chains: (tok == STRING && !strcmp(...))
+    - Have positive checks for alternatives: (otok == INBRACE && tok == STRING)
+
+    Args:
+        condition_tokens: List of token spellings from condition
+
+    Returns:
+        True if this appears to be an error check, False if semantic alternative
+    """
+    condition_str = ' '.join(condition_tokens)
+
+    # Check for semantic condition patterns first (higher priority)
+    # If we have positive equality checks with &&, it's likely semantic
+    # e.g., (otok == INBRACE && tok == STRING && !strcmp(...))
+    if '==' in condition_tokens and '&&' in condition_tokens:
+        # This could be semantic - check if it's mostly positive checks
+        return False
+
+    # Pure inequality checks without semantic alternatives are error checks
+    # e.g., if (tok != OUTPAR) YYERRORV(...)
+    if '!=' in condition_tokens and '&&' not in condition_tokens:
+        return True
+
+    # Single != operator is almost always error checking
+    if condition_tokens.count('!=') > 0 and condition_tokens.count('==') == 0:
+        return True
+
+    # Check for common error handling macros/functions in condition
+    return any(kw in condition_str for kw in ['YYERROR', 'YYERRORV'])
+
+
+def _has_else_block(if_stmt: Cursor, /) -> bool:
+    """Check if an if statement has an else clause."""
+    tokens = list(if_stmt.get_tokens())
+    token_spellings = [t.spelling for t in tokens]
+    return 'else' in token_spellings
+
+
+def _has_semantic_context(tokens: list[Token], /) -> bool:
+    """
+    Check if a token check has semantic context (part of a compound condition).
+
+    A pure error check like `tok != OUTPAR` without semantic context is a guard.
+    A semantic check like `tok == STRING && !strcmp(...)` has context.
+
+    Args:
+        tokens: Token list from binary operator
+
+    Returns:
+        True if this appears to be part of a semantic alternative, False for guards
+    """
+    token_spellings = [t.spelling for t in tokens]
+    # If there's && or ||, it's part of a compound condition (semantic)
+    return '&&' in token_spellings or '||' in token_spellings
+
+
+def _extract_if_branches(
+    cursor: Cursor, items: list[TokenOrCall], /
+) -> list[tuple[int, int, str, list[TokenOrCall]]]:
+    """
+    Extract IF statement branches, distinguishing semantic from error-checking.
+
+    Strategy:
+    1. Identify error-checking if statements (tok != expected, YYERROR)
+    2. Skip extracting those as separate branches (they're guards)
+    3. Extract only if statements with semantic alternatives (else blocks with calls)
+    4. For nested if statements, keep only top-level semantic branches
+
+    Returns branches only for true semantic alternatives.
+    """
+    branches: list[tuple[int, int, str, list[TokenOrCall]]] = []
+
+    if_stmts = list(_walk_and_filter(cursor, CursorKind.IF_STMT))
+
+    for if_stmt in if_stmts:
+        if_start = if_stmt.extent.start.line
+        if_end = if_stmt.extent.end.line
+
+        # Get condition tokens for analysis
+        tokens = list(if_stmt.get_tokens())
+        condition_tokens = [t.spelling for t in tokens[:15]]  # First 15 tokens
+        condition_str = ' '.join(condition_tokens)
+
+        # Skip error-checking if statements
+        # These should be guards/descriptions, not alternatives
+        if _is_error_check_condition(condition_tokens):
+            continue
+
+        # Only extract if statements with else clauses
+        # These represent true semantic alternatives
+        if not _has_else_block(if_stmt):
+            # If there's no else and it looks like a guard, skip it
+            continue
+
+        # Collect items within this if statement's range
+        if_items = _extract_branch_items(items, if_start, if_end)
+
+        if if_items:
+            branches.append((if_start, if_end, f'if: {condition_str}', if_items))
+
+    return branches
+
+
+def _extract_switch_branches(
+    cursor: Cursor, items: list[TokenOrCall], /
+) -> list[tuple[int, int, str, list[TokenOrCall]]]:
+    """Extract SWITCH statement cases and their items."""
+    branches: list[tuple[int, int, str, list[TokenOrCall]]] = []
+
+    switch_stmts = list(_walk_and_filter(cursor, CursorKind.SWITCH_STMT))
+    for switch_stmt in switch_stmts:
+        switch_end = switch_stmt.extent.end.line
+
+        # Find all CASE clauses within this switch
+        case_stmts = list(_walk_and_filter(switch_stmt, CursorKind.CASE_STMT))
+
+        for i, case_stmt in enumerate(case_stmts):
+            case_start = case_stmt.extent.start.line
+            # End is either next case or end of switch
+            case_end = (
+                case_stmts[i + 1].extent.start.line - 1
+                if i + 1 < len(case_stmts)
+                else switch_end
+            )
+
+            # Get case condition
+            case_tokens = list(case_stmt.get_tokens())
+            case_label = ' '.join(t.spelling for t in case_tokens[:5])
+
+            # Collect items in this case
+            case_items = _extract_branch_items(items, case_start, case_end)
+
+            if case_items:
+                branches.append(
+                    (case_start, case_end, f'case: {case_label}', case_items)
+                )
+
+    return branches
+
+
+def _is_error_branch(branch_items: list[TokenOrCall], /) -> bool:
+    """
+    Detect if a branch is an error-handling path.
+
+    Since LEXERR tokens are filtered at extraction time, this function
+    now checks for other error indicators:
+    - Empty branches (no tokens or calls)
+    - Branches with only non-semantic references
+
+    Args:
+        branch_items: Items in a potential error branch
+
+    Returns:
+        True if branch appears to be error-only, False if it has semantic content
+    """
+    # Empty branches are not useful
+    if not branch_items:
+        return True
+
+    # If branch has parser calls, it's semantic (not error-only)
+    for item in branch_items:
+        if item['kind'] == 'call':
+            return False
+
+    # Branches with only tokens (no calls) are often control flow checks
+    # Keep them unless they're truly trivial
+    return len(branch_items) == 0
+
+
+def _extract_token_sequences(  # noqa: C901, PLR0912
+    cursor: Cursor, func_name: str = ''
+) -> list[list[TokenOrCall]]:
+    """
+    Phase 2.4.1c: Extract ordered token sequences with improved branch analysis.
+
+    Analyzes AST to extract token and function call sequences, properly grouping
+    them by control flow branches while distinguishing error-checking blocks from
+    true semantic alternatives.
+
+    Returns a list of sequences where:
+    - Each sequence is a list[TokenOrCall] representing one execution path
+    - Multiple sequences indicate if/else/switch branches (true alternatives only)
+    - Items within each sequence are ordered by execution
+    - Error-checking if statements (tok != X, YYERROR) are skipped as branches
+    - Error-handling branches are filtered out
+
+    Strategy:
+    1. Walk AST and collect all items first (tokens and calls with locations)
+    2. Identify semantic branches (if/else with both branches having semantic content)
+    3. Skip error-checking if statements (they become guards, not alternatives)
+    4. Extract switch/case statements (these always create alternatives)
+    5. Group items by branch body
+    6. Create separate sequence per semantic branch
+    7. Fall back to single sequence if no clear branching detected
+
+    Args:
+        cursor: Function definition cursor
+        func_name: Function name for context and debugging
+
+    Returns:
+        List of sequences; each sequence is list[TokenOrCall] in execution order.
+        Empty list means no token/call sequences detected.
+    """
+    sequences: list[list[TokenOrCall]] = []
+
+    # Token name set (SCREAMING_SNAKE_CASE)
+    # Note: LEXERR is intentionally excluded - it only appears in error paths
+    common_tokens = {
+        'INPAR',
+        'OUTPAR',
+        'INBRACE',
+        'OUTBRACE',
+        'SEPER',
+        'SEMI',
+        'DSEMI',
+        'STRING',
+        'FOR',
+        'FOREACH',
+        'SELECT',
+        'CASE',
+        'ESAC',
+        'IF',
+        'THEN',
+        'ELSE',
+        'ELIF',
+        'FI',
+        'WHILE',
+        'UNTIL',
+        'REPEAT',
+        'DO',
+        'DONE',
+        'DINPAR',
+        'DOUTPAR',
+        'BAR',
+        'OUTANG',
+        'INANG',
+        'ALWAYS',
+        'ENVSTRING',
+        'ENVARRAY',
+        'NULLTOK',
+        'WORD',
+    }
+
+    items: list[TokenOrCall] = []
+    seen: set[tuple[str, int]] = set()  # Avoid duplicate items (token_name, line)
+    error_check_lines: set[int] = set()  # Track lines with error-checking conditions
+
+    # Pre-pass: identify error-checking if statements
+    # These use patterns like: if (tok != EXPECTED) YYERRORV(...)
+    # We'll exclude items from these patterns later
+    if_stmts = list(_walk_and_filter(cursor, CursorKind.IF_STMT))
+    for if_stmt in if_stmts:
+        tokens = list(if_stmt.get_tokens())
+        condition_tokens = [t.spelling for t in tokens[:15]]
+
+        # If this is an error-checking condition, mark all lines in this if block
+        if _is_error_check_condition(condition_tokens):
+            if_start = if_stmt.extent.start.line
+            if_end = if_stmt.extent.end.line
+            for line_num in range(if_start, if_end + 1):
+                error_check_lines.add(line_num)
+
+    # First pass: collect all items with their line numbers
+    # Note: Filter out error tokens (LEXERR) and error-checking conditions
+    for node in cursor.walk_preorder():
+        # Skip nodes in error-checking branches
+        if node.location.line in error_check_lines:
+            continue
+
+        # Pattern 1: tok == TOKEN_NAME in binary operators
+        if (
+            node.kind == CursorKind.BINARY_OPERATOR
+            and (tokens := list(node.get_tokens()))
+            and len(tokens) >= 3
+            and tokens[0].spelling == 'tok'
+        ):
+            op = tokens[1].spelling
+            token_name = tokens[2].spelling
+
+            # Skip error tokens (LEXERR) - they only appear in error paths
+            # Also skip pure inequality checks (tok != EXPECTED) as guards
+            if (
+                op in ('==', '!=')
+                and token_name.isupper()
+                and len(token_name) > 2
+                and token_name != 'LEXERR'  # noqa: S105
+            ):
+                # Skip pure inequality checks (no semantic content)
+                if op == '!=' and not _has_semantic_context(tokens):
+                    continue
+
+                key = (token_name, node.location.line)
+                if key not in seen:
+                    seen.add(key)
+                    items.append(
+                        _TokenCheck(
+                            kind='token',
+                            token_name=token_name,
+                            line=node.location.line,
+                            is_negated=(op == '!='),
+                        )
+                    )
+
+        # Pattern 2: Direct parser function calls (non-recursive)
+        elif (
+            node.kind == CursorKind.CALL_EXPR
+            and _is_parser_function(node.spelling)
+            and node.spelling != func_name  # Don't include self-recursion here yet
+        ):
+            key = (node.spelling, node.location.line)
+            if key not in seen:
+                seen.add(key)
+                items.append(
+                    _FunctionCall(
+                        kind='call',
+                        func_name=node.spelling,
+                        line=node.location.line,
+                    )
+                )
+
+        # Pattern 3: Direct token reference (e.g., in enum comparisons)
+        # Skip LEXERR token references as they only appear in error paths
+        elif (
+            node.kind == CursorKind.DECL_REF_EXPR
+            and node.spelling in common_tokens
+            and node.spelling != 'LEXERR'
+        ):
+            key = (node.spelling, node.location.line)
+            if key not in seen:
+                seen.add(key)
+                items.append(
+                    _TokenCheck(
+                        kind='token',
+                        token_name=node.spelling,
+                        line=node.location.line,
+                        is_negated=False,
+                    )
+                )
+
+    # Second pass: analyze control flow structure
+    # Phase 2.4.1c: Improved branch extraction strategy
+    # Only extract branches for true semantic alternatives, not error checks
+    branches: list[tuple[int, int, str, list[TokenOrCall]]] = []
+    branches.extend(_extract_if_branches(cursor, items))  # Now skips error checks
+    branches.extend(_extract_switch_branches(cursor, items))
+
+    # Filter branches:
+    # 1. Keep branches with significant content (calls or semantic tokens)
+    # 2. Exclude error-only branches (no calls and only guard tokens)
+    valid_branches = [
+        (s, e, c, branch_items)
+        for s, e, c, branch_items in branches
+        if not _is_error_branch(branch_items)
+        and sum(1 for item in branch_items if item['kind'] in ('call', 'token')) > 0
+    ]
+
+    # If we found valid branches with content, use them as alternatives
+    if valid_branches:
+        for _, _, _, branch_items in sorted(valid_branches):
+            if branch_items:
+                sequences.append(branch_items)
+    # Otherwise, add all items as single sequence (if not error-only)
+    elif items and not _is_error_branch(items):
+        sequences.append(items)
+
+    return sequences
 
 
 def _detect_conditions(cursor: Cursor, /) -> list[str]:
@@ -358,12 +783,12 @@ def _detect_conditions(cursor: Cursor, /) -> list[str]:
 
 def _build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
     """
-    Build call graph with Phase 2.4 token consumption patterns.
+    Build call graph with Phase 2.4.1 token sequences.
 
     For each function, extract:
     1. Function calls (existing)
     2. Conditions (existing)
-    3. Token consumption patterns via tok == checks (Phase 2.4)
+    3. Token sequences via Phase 2.4.1 (ordered tokens + calls per branch)
     """
     call_graph: dict[str, _FunctionNode] = {}
 
@@ -391,13 +816,13 @@ def _build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
             if conditions:
                 node['conditions'] = conditions
 
-            # Phase 2.4: Extract token consumption patterns
+            # Phase 2.4.1: Extract ordered token sequences with control flow branches
             if _is_parser_function(function_name):
-                token_edges = _extract_token_consumption_patterns(
+                token_sequences = _extract_token_sequences(
                     cursor, func_name=function_name
                 )
-                if token_edges:
-                    node['token_edges'] = token_edges
+                if token_sequences:
+                    node['token_sequences'] = token_sequences
 
     return call_graph
 
@@ -721,7 +1146,7 @@ def _analyze_all_control_flows(
     return control_flows
 
 
-def _integrate_token_patterns_into_rule(
+def _integrate_token_patterns_into_rule(  # pyright: ignore[reportUnusedFunction]
     base_rule: GrammarNode,
     token_edges: list[_TokenEdge] | None,
     func_name: str = '',
@@ -768,6 +1193,92 @@ def _integrate_token_patterns_into_rule(
     return base_rule
 
 
+def _sequence_to_rule(
+    sequence: list[TokenOrCall],
+    func_name: str = '',
+    source_info: Source | None = None,
+) -> GrammarNode:
+    """
+    Phase 2.4.1c: Convert a token sequence to a grammar rule.
+
+    Converts a list of TokenOrCall items (extracted from function body) into
+    a GrammarNode representing the rule structure.
+
+    Strategy:
+    1. Convert each item to a ref (token, call, or synthetic token)
+    2. Group items into a sequence
+    3. Detect patterns:
+       - Single item: return ref directly
+       - Multiple items: wrap in sequence
+       - Negated tokens: currently pass through (future: use negative lookahead)
+
+    Args:
+        sequence: List of _TokenCheck, _FunctionCall, _SyntheticToken items
+        func_name: Function name for context
+        source_info: Source location info to attach to rule (Source TypedDict)
+
+    Returns:
+        GrammarNode representing the sequence (Terminal, Ref, Sequence, etc.)
+    """
+    if not sequence:
+        # Empty sequence: return placeholder terminal
+        if source_info is not None:
+            return create_terminal(f'[{func_name}]', source=source_info)
+        return create_terminal(f'[{func_name}]')
+
+    # Collect references for this sequence, preserving order and structure
+    refs: list[GrammarNode] = []
+
+    for item in sequence:
+        if item['kind'] == 'token':
+            # Token reference (may be negated for negative checks)
+            token_check = item  # Already typed as _TokenCheck by discriminated union
+            token_name = token_check['token_name']
+            is_negated = token_check.get('is_negated', False)
+
+            # Create reference with description for negated checks
+            if is_negated:
+                ref = create_ref(
+                    token_name,
+                    description=f'NOT {token_name}',
+                )
+            else:
+                ref = create_ref(token_name)
+            refs.append(ref)
+
+        elif item['kind'] == 'call':
+            # Function call - reference to called rule
+            call = item  # Already typed as _FunctionCall by discriminated union
+            rule_name = _function_to_rule_name(call['func_name'])
+            ref = create_ref(rule_name)
+            refs.append(ref)
+
+        elif item['kind'] == 'synthetic_token':
+            # Synthetic token from string matching
+            synth = item  # Already typed as _SyntheticToken by discriminated union
+            token_name = synth['token_name']
+            condition = synth.get('condition', '')
+
+            if condition:
+                ref = create_ref(
+                    token_name,
+                    description=f'Synthetic: {condition}',
+                )
+            else:
+                ref = create_ref(token_name)
+            refs.append(ref)
+
+    # Convert refs to rule structure
+    if len(refs) == 1:
+        # Single item: return unwrapped
+        return refs[0]
+
+    # Multiple items: wrap in sequence with source info
+    if source_info is not None:
+        return create_sequence(refs, source=source_info)
+    return create_sequence(refs)
+
+
 def _build_grammar_rules(  # noqa: C901, PLR0912, PLR0915
     call_graph: dict[str, _FunctionNode],
     parser_functions: dict[str, _FunctionNode],
@@ -776,25 +1287,17 @@ def _build_grammar_rules(  # noqa: C901, PLR0912, PLR0915
     /,
 ) -> Language:
     """
-    Infer grammar rules from the call graph using call pattern heuristics.
+    Phase 2.4.1d: Build grammar rules from token sequences with fallback.
 
-    Strategy:
-    1. Identify core parsing functions (par_* and parse_* functions)
-    2. For each function, extract unique parse function calls
-    3. Classify based on:
-        - No calls: leaf/terminal
-        - 1 call: direct delegation (reference)
-        - Multiple calls: union (alternatives/dispatch)
-    4. Apply control flow analysis (Phase 3.3):
-        - Wrap optional references in Optional nodes
-        - Wrap repeating patterns in Repeat nodes
-    5. Apply token dispatch integration (Phase 3.2):
-        - For dispatcher rules, include token references in unions
-    6. Handle cycles by using references (breaking circular dependencies)
-
-    Cycles are handled by detecting them and using $ref to break cycles
-    rather than inlining definitions. This allows the grammar to remain acyclic
-    while accurately representing recursive parsing patterns.
+    Strategy (token-sequence-centric):
+    1. For each parser function, check for token_sequences (Phase 2.4.1)
+    2. If token_sequences present:
+       - Single sequence: convert via _sequence_to_rule()
+       - Multiple sequences: create union of alternatives
+       - Apply control flow analysis (optional/repeat)
+    3. If no token_sequences (fallback to call-graph-based):
+       - Use old logic (for functions with no direct token checks)
+       - Classify by unique parser function calls
 
     Args:
         call_graph: Function call graph from AST analysis
@@ -825,15 +1328,6 @@ def _build_grammar_rules(  # noqa: C901, PLR0912, PLR0915
     for func_name, node in core_parse_funcs.items():
         rule_name = _function_to_rule_name(func_name)
 
-        # Extract unique parse function calls
-        called_funcs = node['calls']
-        unique_parse_calls = sorted(
-            {f for f in called_funcs if _is_parser_function(f) and f != func_name}
-        )
-
-        # Convert called function names to rule refs
-        rule_refs = [create_ref(_function_to_rule_name(f)) for f in unique_parse_calls]
-
         # Build source info from parser_functions if available
         if func_name in parser_functions:
             pf = parser_functions[func_name]
@@ -842,25 +1336,30 @@ def _build_grammar_rules(  # noqa: C901, PLR0912, PLR0915
             # Fallback from call_graph
             source_info = create_source(node['file'], node['line'], function=func_name)
 
-        # Classify rule based on unique calls
-        if not unique_parse_calls:
-            # No parse function calls -> leaf/terminal
-            # These are typically token consumers (par_getword, etc.)
-            rules[rule_name] = create_terminal(f'[{rule_name}]', source=source_info)
-        elif len(unique_parse_calls) == 1:
-            # Single unique parse call -> direct delegation/reference
-            # Don't wrap single refs in a sequence (sequences need 2+ elements)
-            ref_name = _function_to_rule_name(unique_parse_calls[0])
-            base_rule = create_ref(ref_name, source=source_info)
-
-            # Phase 2.4: Integrate token patterns if present
-            token_edges = node.get('token_edges')
-            if token_edges:
-                base_rule = _integrate_token_patterns_into_rule(
-                    base_rule, token_edges, func_name=func_name
+        # Phase 2.4.1d: Check for token_sequences first (primary path)
+        token_sequences = node.get('token_sequences')
+        if token_sequences:
+            # Token-sequence-based rule generation (PRIMARY)
+            if len(token_sequences) == 1:
+                # Single sequence: convert directly
+                base_rule = _sequence_to_rule(
+                    token_sequences[0],
+                    func_name=func_name,
+                    source_info=source_info,
                 )
+            else:
+                # Multiple sequences: create union of alternatives
+                sequence_rules = [
+                    _sequence_to_rule(
+                        seq,
+                        func_name=func_name,
+                        source_info=source_info,
+                    )
+                    for seq in token_sequences
+                ]
+                base_rule = create_union(sequence_rules, source=source_info)
 
-            # Phase 3.3: Apply control flow analysis
+            # Phase 3.3: Apply control flow analysis (optional/repeat)
             if control_flows and func_name in control_flows:
                 flow = control_flows[func_name]
                 if flow['pattern_type'] == 'optional':
@@ -879,48 +1378,85 @@ def _build_grammar_rules(  # noqa: C901, PLR0912, PLR0915
                     )
 
             rules[rule_name] = base_rule
+
         else:
-            # Multiple unique calls -> union/alternatives
-            # (typically via switch/if statements with mutually exclusive branches)
-            # Cycles are naturally broken because we use refs, not inlining
+            # Fallback: call-graph-based rule generation (SECONDARY)
+            # For functions without token sequences
+            # Extract unique parse function calls
+            called_funcs = node['calls']
+            unique_parse_calls = sorted(
+                {f for f in called_funcs if _is_parser_function(f) and f != func_name}
+            )
 
-            # Phase 2.4: Integrate token patterns if present
-            token_edges = node.get('token_edges')
-            if token_edges:
-                # Wrap union alternatives with token patterns
-                # This is a placeholder; full implementation would create
-                # separate alternatives for each token pattern variant
-                pass
+            # Convert called function names to rule refs
+            rule_refs = [
+                create_ref(_function_to_rule_name(f)) for f in unique_parse_calls
+            ]
 
-            # Phase 3.2: Integrate token dispatch into union
-            union_nodes: list[GrammarNode] = list(rule_refs)
-            if rule_name in rule_to_tokens:
-                # This rule is a dispatcher: include token references in the union
-                tokens = sorted(rule_to_tokens[rule_name])
-                for token_name in tokens:
-                    union_nodes.insert(0, create_ref(token_name))
+            # Classify rule based on unique calls
+            if not unique_parse_calls:
+                # No parse function calls -> leaf/terminal
+                # These are typically token consumers (par_getword, etc.)
+                rules[rule_name] = create_terminal(f'[{rule_name}]', source=source_info)
+            elif len(unique_parse_calls) == 1:
+                # Single unique parse call -> direct delegation/reference
+                # Don't wrap single refs in a sequence (sequences need 2+ elements)
+                ref_name = _function_to_rule_name(unique_parse_calls[0])
+                base_rule = create_ref(ref_name, source=source_info)
 
-            union_rule = create_union(union_nodes, source=source_info)
+                # Phase 3.3: Apply control flow analysis
+                if control_flows and func_name in control_flows:
+                    flow = control_flows[func_name]
+                    if flow['pattern_type'] == 'optional':
+                        base_rule = create_optional(
+                            base_rule,
+                            description=flow['reason'],
+                            source=source_info,
+                        )
+                    elif flow['pattern_type'] == 'repeat':
+                        min_iter = flow.get('min_iterations', 0)
+                        base_rule = create_repeat(
+                            base_rule,
+                            min=min_iter,
+                            description=flow['reason'],
+                            source=source_info,
+                        )
 
-            # Phase 3.3: Apply control flow analysis to union
-            if control_flows and func_name in control_flows:
-                flow = control_flows[func_name]
-                if flow['pattern_type'] == 'optional':
-                    union_rule = create_optional(
-                        union_rule,
-                        description=flow['reason'],
-                        source=source_info,
-                    )
-                elif flow['pattern_type'] == 'repeat':
-                    min_iter = flow.get('min_iterations', 0)
-                    union_rule = create_repeat(
-                        union_rule,
-                        min=min_iter,
-                        description=flow['reason'],
-                        source=source_info,
-                    )
+                rules[rule_name] = base_rule
+            else:
+                # Multiple unique calls -> union/alternatives
+                # (typically via switch/if statements with mutually exclusive branches)
+                # Cycles are naturally broken because we use refs, not inlining
 
-            rules[rule_name] = union_rule
+                # Phase 3.2: Integrate token dispatch into union
+                union_nodes: list[GrammarNode] = list(rule_refs)
+                if rule_name in rule_to_tokens:
+                    # This rule is a dispatcher: include token references in the union
+                    tokens = sorted(rule_to_tokens[rule_name])
+                    for token_name in tokens:
+                        union_nodes.insert(0, create_ref(token_name))
+
+                union_rule = create_union(union_nodes, source=source_info)
+
+                # Phase 3.3: Apply control flow analysis to union
+                if control_flows and func_name in control_flows:
+                    flow = control_flows[func_name]
+                    if flow['pattern_type'] == 'optional':
+                        union_rule = create_optional(
+                            union_rule,
+                            description=flow['reason'],
+                            source=source_info,
+                        )
+                    elif flow['pattern_type'] == 'repeat':
+                        min_iter = flow.get('min_iterations', 0)
+                        union_rule = create_repeat(
+                            union_rule,
+                            min=min_iter,
+                            description=flow['reason'],
+                            source=source_info,
+                        )
+
+                rules[rule_name] = union_rule
 
     return rules
 
@@ -1012,7 +1548,7 @@ def _embed_lexer_state_conditions(
                 # Note: lex_state is validated at runtime via state_case_map
                 variant = create_variant(
                     base_rule,
-                    create_lex_state(lex_state),  # pyright: ignore[reportArgumentType]
+                    create_lex_state(cast('LexState', lex_state)),
                     source=variant_source,
                     description=f'{rule_name} sets lexer state {lex_state}',
                 )
@@ -1021,14 +1557,23 @@ def _embed_lexer_state_conditions(
             # Replace rule with union containing base rule and all state variants
             # This allows rule matching unconditionally OR with specific state context
             source_info = rules[rule_name].get('source')
-            enhanced_rules[rule_name] = create_union(
-                [base_rule, *variant_list],
-                source=source_info,  # pyright: ignore[reportArgumentType]
-                description=(
-                    f'{rule_name} '
-                    f'(modifies lexer states: {", ".join(uppercase_states)})'
-                ),
-            )
+            if source_info is not None:
+                enhanced_rules[rule_name] = create_union(
+                    [base_rule, *variant_list],
+                    source=source_info,
+                    description=(
+                        f'{rule_name} '
+                        f'(modifies lexer states: {", ".join(uppercase_states)})'
+                    ),
+                )
+            else:
+                enhanced_rules[rule_name] = create_union(
+                    [base_rule, *variant_list],
+                    description=(
+                        f'{rule_name} '
+                        f'(modifies lexer states: {", ".join(uppercase_states)})'
+                    ),
+                )
 
     return enhanced_rules
 
@@ -1969,37 +2514,49 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     else:
         print('\nControl flow analysis (Phase 3.3): No patterns detected')
 
-    # Log Phase 2.4 token consumption patterns
-    print('\nToken consumption patterns (Phase 2.4):')
-    funcs_with_tokens = 0
-    total_tokens = 0
-    token_by_func: dict[str, list[str]] = {}
+    # Log Phase 2.4.1 token sequences
+    print('\nToken sequences (Phase 2.4.1):')
+    funcs_with_sequences = 0
+    total_items = 0
+    sequences_by_func: dict[str, int] = {}
 
     for func_name, func_node in call_graph.items():
         if _is_parser_function(func_name):
-            token_edges = func_node.get('token_edges')
-            if token_edges:
-                funcs_with_tokens += 1
-                tokens = [te['token_name'] for te in token_edges]
-                total_tokens += len(tokens)
-                token_by_func[func_name] = sorted(set(tokens))
+            token_sequences = func_node.get('token_sequences')
+            if token_sequences:
+                funcs_with_sequences += 1
+                # Count total items across all sequences
+                total_sequence_items = sum(len(seq) for seq in token_sequences)
+                total_items += total_sequence_items
+                sequences_by_func[func_name] = len(token_sequences)
 
-    if token_by_func:
-        print(
-            f'  {funcs_with_tokens} parser functions with {total_tokens} '
-            'token checks detected'
+    if sequences_by_func:
+        # Count total sequences across all functions
+        total_sequences = sum(
+            len(call_graph[f].get('token_sequences', [])) for f in sequences_by_func
         )
-        for func_name in sorted(token_by_func.keys()):
-            tokens = token_by_func[func_name]
-            rule_name = func_name[4:] if func_name.startswith('par_') else func_name[6:]
-            print(f'    {func_name:30} → {rule_name:20} uses {", ".join(tokens)}')
         print(
-            '\n  Phase 2.4 infrastructure complete. '
-            'Token sequence wrapping (Phase 2.4.1) pending.'
+            f'  {funcs_with_sequences} parser functions extracted with '
+            f'{total_sequences} sequences'
+        )
+        for func_name in sorted(sequences_by_func.keys()):
+            num_sequences = sequences_by_func[func_name]
+            sequences = call_graph[func_name].get('token_sequences', [])
+            total_seq_items = sum(len(seq) for seq in sequences)
+            rule_name = _function_to_rule_name(func_name)
+            seq_plural = 'sequence' if num_sequences == 1 else 'sequences'
+            print(
+                f'    {func_name:30} → {rule_name:20} '
+                f'{num_sequences} {seq_plural} ({total_seq_items} items)'
+            )
+        print(
+            '\n  Phase 2.4.1: Token sequences extracted and ready for rule generation.'
         )
     else:
-        print('  No direct token consumption patterns detected')
-        print('  (May indicate tokens consumed indirectly or in conditional guards)')
+        print('  No token sequences detected')
+        print(
+            '  (May indicate functions with no direct token checks or call sequences)'
+        )
 
     # Log call graph analysis
     if call_graph:
