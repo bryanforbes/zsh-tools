@@ -1,3 +1,7 @@
+[[tools.hk]]
+version = "1.21.0"
+backend = "aqua:jdx/hk"
+
 [[tools.node]]
 version = "24.11.1"
 backend = "core:node"
@@ -10,6 +14,10 @@ url = "https://nodejs.org/dist/v24.11.1/node-v24.11.1-darwin-arm64.tar.gz"
 [[tools."pipx:basedpyright"]]
 version = "1.33.0"
 backend = "pipx:basedpyright"
+
+[[tools.pkl]]
+version = "0.30.0"
+backend = "aqua:apple/pkl"
 
 [[tools.ruff]]
 version = "0.14.5"

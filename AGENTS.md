@@ -4,14 +4,13 @@
 
 - **Setup**: `mise run dev` (installs deps for all tools)
 - **Lint**:
-    - **All projects**: `mise :lint`
-    - **Individual project**: `mise //<project_name>:lint`
-    - **Individual files**: `mise //<project_name>:lint <file1> <file2>` (file1 and file2 must be relative to the project root)
+    - **All files**: `mise :lint --all`
+    - **Individual project**: `mise :lint <project_dir>`
+    - **Individual files**: `mise :lint <file1> <file2>`
 - **Format**:
-    - **All projects**: `mise :format`
-    - **Documentation**: `mise :format:docs`
-    - **Individual project**: `mise //<project_name>:format`
-    - **Individual files**: `mise //<project_name>:format <file1> <file2>` (file1 and file2 must be relative to the project root)
+    - **All projects**: `mise :format --all`
+    - **Individual project**: `mise :format <project_dir>`
+    - **Individual files**: `mise :format <file1> <file2>`
 - **Test**:
     - **All projects**: `mise run test`
     - **Individual project**: `mise //<project_name>:test`

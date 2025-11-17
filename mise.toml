@@ -18,9 +18,12 @@ node = '24'
 uv = 'latest'
 'pipx:basedpyright' = 'latest'
 ruff = 'latest'
+hk = "latest"
+pkl = "latest"
 
 [hooks]
 postinstall = '''
+hk install --mise
 corepack enable
 mise run :dev
 '''
@@ -42,6 +45,9 @@ outputs = ['node_modules/.pnpm/lock.yaml']
 description = "Initialize uv"
 run = 'uv sync --all-extras'
 
+[tasks.pre-commit]
+run = 'hk run pre-commit'
+
 [tasks.build]
 description = "Build everything"
 depends = '//...:build:*'
@@ -51,13 +57,9 @@ description = "Run all tests"
 depends = '//...:test:*'
 
 [tasks.lint]
-description = "Lint all source files"
-depends = '//...:lint'
+description = "Lint source files"
+run = 'hk check'
 
 [tasks.format]
-description = "Format all source files"
-depends = ['//...:format', ':format:docs']
-
-[tasks."format:docs"]
-description = "Format documentation files"
-run = 'pnpm prettier --write "**/*.md"'
+description = "Format source files"
+run = 'hk fix --step prettier --step ruff_format --step newlines'
