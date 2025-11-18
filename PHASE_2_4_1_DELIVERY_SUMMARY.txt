@@ -369,7 +369,7 @@ During Implementation:
   1. Keep QUICK_REFERENCE.md open
   2. Write tests before implementation
   3. Follow pseudocode closely
-  4. Type check frequently (mypy/basedpyright)
+  4. Type check frequently (basedpyright)
   5. Post blockers early (don't get stuck)
   6. Weekly progress updates
 

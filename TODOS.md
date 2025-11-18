@@ -27,6 +27,18 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 ## In Progress / Remaining
 
+### Phase 2.4.1 Planning: REVIEWED ✅
+
+- [x] **PHASE_2_4_1_PLANNING_COMPLETE.md** — Reviewed (5-10 min overview)
+- [x] **PHASE_2_4_1_ARCHITECTURE_SHIFT.md** — Reviewed (technical justification)
+- [x] **PHASE_2_4_1_REDESIGN_PLAN.md** — Reviewed (detailed implementation specs)
+- [x] **PHASE_2_4_1_QUICK_REFERENCE.md** — Reviewed (sub-agent workflow guide)
+- [x] **PHASE_2_4_1_INDEX.md** — Reviewed (navigation index)
+
+**Status**: All planning documents reviewed and ready for implementation. Stage 0 ready to begin.
+
+---
+
 ### Critical Priority 🔴🔴
 
 #### FUNDAMENTAL ISSUE: Function-Centric vs Token-Sequence-Centric Grammar
@@ -43,52 +55,177 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 #### Phase 2.4.1: Token-Sequence-Based Grammar Extraction (REDESIGN)
 
-- **Status**: REQUIRES COMPLETE RETHINK - infrastructure insufficient
-- **Current Issue**:
-    - `_extract_token_consumption_patterns()` collects tokens but loses ordering/sequencing information
-    - `TokenEdge` only records individual token names, not control flow context
-    - `_build_grammar_rules()` uses call graph to determine structure; token information is unused
-    - Result: Token extraction infrastructure exists but is never used to build rules
-- **Required Redesign**:
-    1. **Extract Token-to-Call Timeline** (NEW):
-        - Walk AST and record ordered sequence of all `tok == TOKEN` checks and `par_*()` calls
-        - Build per-branch timelines for if/else/switch statements
-        - Example: `[tok==INPAR, par_list(), tok==OUTPAR] | [tok==INBRACE, par_list(), tok==OUTBRACE]`
-    2. **Reconstruct Control Flow Branches** (NEW):
-        - Group tokens by control flow branch (each if/else/case arm becomes separate sequence)
-        - Identify token-based dispatch: `if (tok == INPAR) ... else if (tok == INBRACE) ...`
-        - Map to Union with alternatives per token pattern, not per function
-    3. **Handle String Matching as Synthetic Tokens** (NEW):
-        - `tok == STRING && !strcmp(tokstr, "always")` → create synthetic token `ALWAYS`
-        - Model optional blocks with synthetic token conditions
-        - Document provenance of synthetic tokens
-    4. **Preserve Execution Order** (CRITICAL):
-        - Do NOT reorder tokens; AST order determines semantics
-        - `tok==A, par_foo(), tok==B` must model as `Sequence[A, foo, B]`, not Union
-    5. **Modify Rule Generation**:
-        - Change `_build_grammar_rules()` to consume `token_sequences` instead of call graph
-        - Call graph is secondary; use it only for validation that functions are called as expected
-        - Build rules directly from token sequences
+**Overall Status**: Ready for implementation (6 stages, 8-12 sprints estimated)
 
-- **Data Structure Changes**:
-    - Replace/enhance `TokenEdge` to include control flow branch identifier
-    - Add new `token_sequences: list[list[TokenOrCall]]` field to `FunctionNode`
-    - Where `TokenOrCall = {'token': str} | {'call': str} | {'optional': [...]} | {'union': [...]}`
-    - Document synthetic tokens in separate metadata
+**Critical Facts:**
 
-- **Implementation Path**:
-    1. Rewrite AST walker to extract ordered timelines (replace current preorder walk)
-    2. Implement control flow branch grouping (separate code paths into alternatives)
-    3. Extend `FunctionNode` with `token_sequences` field
-    4. Rewrite `_build_grammar_rules()` to use `token_sequences` as primary input
-    5. Use call graph only for validation/cycle detection
+- Current extraction is function-centric (call graphs), needs token-sequence-centric
+- Token infrastructure exists but is unused dead code
+- Redesign requires ~40-60% rewrite of extraction logic (not incremental)
+- Can be parallelized across 3-4 independent sub-agents
+- Success criteria: ≥80% of functions reconstruct semantic grammar comments
 
-- **Files**: `construct_grammar.py` - complete refactor of Phase 2.4 extraction and Phase 3 rule building
-- **Success Criteria**:
-    - `par_subsh` rule: `Union[Sequence[INPAR, list, OUTPAR], Sequence[INBRACE, list, OUTBRACE, Optional[...]]]`
-    - Grammar comments like "INPAR list OUTPAR | INBRACE list OUTBRACE" are accurately reconstructed
-    - ≥80% of parser functions reconstruct documented semantic grammar from comments
-    - Call graph validation confirms all extracted functions are actually called
+---
+
+##### Stage 0: Data Structure Redesign & Validation Framework
+
+- **Status**: NOT STARTED
+- **Duration**: 1-2 sprints
+- **Dependencies**: None (can start immediately)
+- **Agent Role**: Data architect + Test setup
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 0 (sections 0.1-0.3)
+- **Deliverables**:
+    - [ ] 0.1: TypedDict structures (TokenCheckEnhanced, ControlFlowBranch, FunctionNodeEnhanced)
+    - [ ] 0.2: Test harness (test_par_subsh_token_sequences, test_par_if_token_sequences, test_par_case_token_sequences)
+    - [ ] 0.3: Validation framework (TokenSequenceValidator class)
+- **Output Files**:
+    - Modified: `zsh_grammar/src/_types.py`
+    - New: `zsh_grammar/tests/test_data_structures.py`
+    - New: `zsh_grammar/tests/test_token_sequence_extraction.py`
+    - New: `zsh_grammar/token_sequence_validators.py`
+
+---
+
+##### Stage 1: Branch Extraction & AST Analysis
+
+- **Status**: NOT STARTED
+- **Duration**: 2-3 sprints
+- **Dependencies**: Stage 0
+- **Agent Role**: AST analysis specialist
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 1 (sections 1.1-1.2)
+- **Deliverables**:
+    - [ ] 1.1: Identify control flow branches in AST
+    - [ ] 1.2: Extract branch conditions
+- **Output Files**:
+    - New: `zsh_grammar/branch_extractor.py`
+    - New: `zsh_grammar/tests/test_branch_extractor.py`
+
+---
+
+##### Stage 2: Token & Call Sequence Extraction
+
+- **Status**: NOT STARTED
+- **Duration**: 2-3 sprints
+- **Dependencies**: Stage 0, Stage 1
+- **Agent Role**: Token extraction specialist
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 2 (sections 2.1-2.3)
+- **Deliverables**:
+    - [ ] 2.1: Extract tokens and calls in order for each branch
+    - [ ] 2.2: Handle synthetic tokens from string matching
+    - [ ] 2.3: Merge branch items with sequence indices
+- **Output Files**:
+    - Modified: `zsh_grammar/token_extractors.py`
+    - New: `zsh_grammar/tests/test_token_extraction_advanced.py`
+
+---
+
+##### Stage 3: Enhanced Call Graph Construction
+
+- **Status**: NOT STARTED
+- **Duration**: 1-2 sprints
+- **Dependencies**: Stage 0, Stage 1, Stage 2
+- **Agent Role**: Integration specialist
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 3 (sections 3.1-3.3)
+- **Deliverables**:
+    - [ ] 3.1: Build enhanced call graph with token_sequences
+    - [ ] 3.2: Validate extracted sequences
+    - [ ] 3.3: Compare enhanced graph with old call graph
+- **Output Files**:
+    - Modified: `zsh_grammar/control_flow.py`
+    - New: `zsh_grammar/tests/test_enhanced_call_graph.py`
+
+---
+
+##### Stage 4: Rule Generation from Token Sequences
+
+- **Status**: NOT STARTED
+- **Duration**: 2-3 sprints
+- **Dependencies**: Stage 0, Stage 3
+- **Agent Role**: Grammar generator
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 4 (sections 4.1-4.4)
+- **Deliverables**:
+    - [ ] 4.1: Rewrite \_build_grammar_rules to consume token_sequences
+    - [ ] 4.2: Model control flow branches as Union alternatives
+    - [ ] 4.3: Model token sequences as Sequence nodes
+    - [ ] 4.4: Model loops as Repeat; optional blocks as Optional
+- **Output Files**:
+    - Modified: `zsh_grammar/grammar_rules.py`
+    - Modified: `zsh_grammar/construct_grammar.py`
+    - New: `zsh_grammar/tests/test_grammar_rules_advanced.py`
+
+---
+
+##### Stage 5: Semantic Grammar Validation & Comparison
+
+- **Status**: NOT STARTED
+- **Duration**: 2-3 sprints
+- **Dependencies**: Stage 0, Stage 4
+- **Agent Role**: QA/Validation specialist
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 5 (sections 5.1-5.3)
+- **Deliverables**:
+    - [ ] 5.1: Extract semantic grammar comments from parse.c
+    - [ ] 5.2: Compare extracted rules against documented grammar
+    - [ ] 5.3: Generate validation report with coverage metrics
+- **Output Files**:
+    - New: `zsh_grammar/semantic_grammar_extractor.py`
+    - New: `zsh_grammar/rule_comparison.py`
+    - New: `zsh_grammar/validation_reporter.py`
+    - New: `zsh_grammar/tests/test_semantic_grammar_extractor.py`
+    - New: `zsh_grammar/tests/test_rule_comparison.py`
+    - Report: `PHASE_2_4_1_VALIDATION_REPORT.md` (generated, committed)
+
+---
+
+##### Stage 6: Documentation & Integration
+
+- **Status**: NOT STARTED
+- **Duration**: 1 sprint
+- **Dependencies**: All previous stages
+- **Agent Role**: Documentation specialist
+- **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 6 (section 6.1)
+- **Deliverables**:
+    - [ ] 6.1: Update TODOS.md (mark Phase 2.4.1 complete, document metrics)
+    - [ ] 6.2: Update AGENTS.md (add Phase 2.4.1 workflow if needed)
+    - [ ] 6.3: Create PHASE_2_4_1_COMPLETION.md (migration guide, before/after examples)
+- **Output Files**:
+    - Modified: `TODOS.md`
+    - Modified: `AGENTS.md`
+    - New: `PHASE_2_4_1_COMPLETION.md`
+
+---
+
+**Stage Dependencies:**
+
+```
+Stage 0 (required)
+├── Stage 1 (AST analysis)
+├── Stage 2 (token extraction)
+│   └── Depends on: Stage 0, Stage 1
+├── Stage 3 (integration)
+│   └── Depends on: Stage 0, Stage 1, Stage 2
+├── Stage 4 (rule generation)
+│   └── Depends on: Stage 0, Stage 3
+├── Stage 5 (validation)
+│   └── Depends on: Stage 0, Stage 4
+└── Stage 6 (documentation)
+    └── Depends on: All previous
+```
+
+**Parallel Work Possible:**
+
+- Stages 1-2 can run in parallel (both depend on Stage 0)
+- Stage 3 can start once Stage 2 completes
+- Stage 4 and 5 can run in parallel (both depend on Stage 3/0)
+- Stage 6 only after all others complete
+
+---
+
+**Critical Success Criteria:**
+
+- ✓ par_subsh rule: `Union[Sequence[INPAR, list, OUTPAR], Sequence[INBRACE, list, OUTBRACE, ...]]`
+- ✓ Grammar comments from parse.c reconstructed in ≥80% of functions
+- ✓ Call graph validation confirms all extracted functions are called
+- ✓ Schema validation passing; no breaking changes
 
 ### High Priority 🔴
 

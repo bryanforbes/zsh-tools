@@ -2026,7 +2026,7 @@ def generate_validation_report(
 
 | Stage | Metric                 | Target          | Validation                       |
 | ----- | ---------------------- | --------------- | -------------------------------- |
-| 0     | Type defs valid        | 100%            | mypy/basedpyright passes         |
+| 0     | Type defs valid        | 100%            | basedpyright passes              |
 | 1     | Branches extracted     | 31/31 functions | All have ≥1 branch               |
 | 2     | Tokens extracted       | ≥50             | Per-branch items non-empty       |
 | 3     | Enhanced call graph    | Complete        | All functions populated          |
@@ -2168,7 +2168,7 @@ Each stage can be assigned to 1-2 sub-agents:
 
 1. Create feature branch: `feat/phase-2.4.1-stage-N`
 2. Commit frequently with clear messages
-3. Keep types strict (mypy/basedpyright)
+3. Keep types strict (basedpyright)
 4. Document unclear logic with comments
 
 **After Stage:**
@@ -2202,7 +2202,7 @@ Each stage can be assigned to 1-2 sub-agents:
 ✅ **Code quality:**
 
 - 0 linting errors (ruff)
-- 0 type errors (mypy/basedpyright)
+- 0 type errors (basedpyright)
 - All test cases passing
 - Schema validation passing
 

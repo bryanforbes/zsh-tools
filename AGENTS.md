@@ -73,3 +73,68 @@
     - Dual-mode functions (test builtin vs [[...]])
     - Error guard filtering (NULLTOK, synthetic tokens)
     - Context-sensitive token filtering (STRING semantic in par_cond_2)
+
+## Phase 2.4.1 Implementation Strategy
+
+### Documentation Organization
+
+**Source of Truth**: `PHASE_2_4_1_REDESIGN_PLAN.md`
+
+- Contains detailed specifications (algorithms, pseudocode, test cases)
+- Update this when the plan changes or when implementation reveals architectural issues
+- Each stage section (0-6) has complete algorithm descriptions
+
+**Execution Tracker**: `TODOS.md`
+
+- Tracks stage status (NOT STARTED → IN PROGRESS → COMPLETED)
+- Deliverable checkboxes for progress visibility
+- References plan document sections, does not duplicate content
+- Update this to reflect progress and blockers
+
+### Sync Protocol
+
+1. **Plan Changes**: Update `PHASE_2_4_1_REDESIGN_PLAN.md` only
+    - TODOS.md references it via cross-links (e.g., "See Stage N in REDESIGN_PLAN.md")
+    - No need to update TODOS.md unless complexity metrics change
+
+2. **Implementation Issues**: Post in thread, then update both
+    - Document decision in REDESIGN_PLAN.md
+    - Update stage status in TODOS.md (add notes if needed)
+    - Include thread reference in commit message
+
+3. **Stage Completion**: Update TODOS.md only
+    - Check deliverable boxes as they complete
+    - Add test coverage % and validation metrics
+    - Keep one line summary of results
+
+4. **PR Review Checklist**:
+    - Verify implementation matches stage spec in REDESIGN_PLAN.md
+    - Confirm all test cases from plan are implemented
+    - Check TODOS.md stage is marked complete
+    - Document any architectural deviations in PR body
+
+### Stage Handoff
+
+Before assigning a stage to a sub-agent:
+
+1. Ensure previous stages are complete (check TODOS.md)
+2. Point agent to their stage section in REDESIGN_PLAN.md
+3. Point agent to QUICK_REFERENCE.md for workflow
+4. Create feature branch: `feat/phase-2.4.1-stage-N`
+
+During implementation, agent should:
+
+1. Write tests first (pseudocode and test cases provided in plan)
+2. Run: `mise //:ruff-format <file>`, `mise //:ruff --fix <file>`, `mise //:basedpyright <file>`
+3. Run: `mise //<project_name>:test` to validate test suite
+4. Post daily progress in thread with: stage, tasks completed, blockers (if any), test % coverage
+
+### Key Files
+
+| File                             | Purpose                   | When to Update                           |
+| -------------------------------- | ------------------------- | ---------------------------------------- |
+| `PHASE_2_4_1_REDESIGN_PLAN.md`   | Complete specification    | Plan changes, architectural decisions    |
+| `PHASE_2_4_1_QUICK_REFERENCE.md` | Sub-agent workflow guide  | New patterns/tips discovered             |
+| `PHASE_2_4_1_INDEX.md`           | Navigation index          | Document references change               |
+| `TODOS.md`                       | Progress tracking         | After each deliverable, stage completion |
+| `AGENTS.md`                      | This file (sync strategy) | Workflow improvements                    |

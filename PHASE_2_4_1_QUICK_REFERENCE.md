@@ -127,9 +127,6 @@ Examples:
 ### 1. Before You Start
 
 ```bash
-# Update to latest
-git pull origin main
-
 # Create feature branch
 git checkout -b feat/phase-2.4.1-stage-N
 

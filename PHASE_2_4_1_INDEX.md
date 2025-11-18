@@ -346,7 +346,7 @@ PHASE_2_4_1_ARCHITECTURE_SHIFT.md
 - [ ] All four planning documents reviewed by team
 - [ ] Team alignment on scope and timeline
 - [ ] Stage 0 sub-agent identified
-- [ ] Test infrastructure verified (pytest, mypy, ruff)
+- [ ] Test infrastructure verified (pytest, basedpyright, ruff)
 - [ ] CI/CD ready for test running
 
 ### Before Sub-Agent Starts
@@ -362,7 +362,7 @@ PHASE_2_4_1_ARCHITECTURE_SHIFT.md
 - [ ] Test cases written first (TDD)
 - [ ] Code follows pseudocode structure
 - [ ] Validation checkpoints addressed
-- [ ] Type checking clean (mypy/basedpyright)
+- [ ] Type checking clean (basedpyright)
 - [ ] Linting clean (ruff)
 - [ ] Formatting applied (prettier/ruff-format)
 
