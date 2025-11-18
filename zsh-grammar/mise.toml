@@ -1,3 +1,7 @@
 [tasks.construct-zsh-grammar]
 description = "Construct zsh grammar files"
 run = 'uv run construct-zsh-grammar'
+
+[tasks.test]
+description = "Run the test suite"
+run = 'uv run pytest'

@@ -24,7 +24,7 @@
     - **JS/TS**: `mise //:eslint [--fix] [<file1> <file2>]`
     - **All files**: `mise //:lint`
 - **Test**:
-    - **All projects**: `mise run test`
+    - **All projects**: `mise run //:test`
     - **Individual project**: `mise //<project_name>:test`
     - **Individual files**: `mise //<project_name>:test <file1> <file2>` (file1 and file2 must be relative to the project root)
 - **Single test**: `cd <package> && pnpm run test` or `cd <package> && python -m pytest <test_file>`

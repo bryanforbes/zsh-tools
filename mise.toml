@@ -43,7 +43,7 @@ outputs = ['node_modules/.pnpm/lock.yaml']
 
 [tasks."dev:uv"]
 description = "Initialize uv"
-run = 'uv sync --all-extras'
+run = 'uv sync --all-packages'
 
 [tasks.pre-commit]
 run = 'hk run pre-commit'
@@ -54,7 +54,7 @@ depends = '//...:build:*'
 
 [tasks.test]
 description = "Run all tests"
-depends = '//...:test:*'
+depends = '//...:test'
 
 [tasks.prettier]
 description = "Format with Prettier"

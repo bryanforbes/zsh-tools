@@ -4,7 +4,7 @@ import prettier from 'eslint-config-prettier';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig(
-  globalIgnores(['vendor/']),
+  globalIgnores(['vendor/', '.venv/', 'htmlcov/']),
   {
     ignores: ['tree-sitter-zsh/**'],
     extends: [eslint.configs.recommended],
