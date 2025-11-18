@@ -50,11 +50,24 @@
 ## Git Conventions
 
 - **Commit messages**: Use [conventional commits](https://www.conventionalcommits.org/) with 50/72 rule
-    - **DO NOT ADD**: Thread IDs or co-author lines to commits
     - Format: `<type>(<scope>): <description>`
     - Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`
     - Scope: Optional, e.g., `(parser)`, `(extraction)`, `(grammar)`
     - **Subject line**: Max 50 characters, lowercase, no period, imperative mood
     - **Body**: Wrap at 72 characters, add after blank line if explanation needed
+    - **Amp analysis commits**: Include thread reference and co-author at end of message:
+        - `Amp-Thread-ID: https://ampcode.com/threads/T-<uuid>`
+        - `Co-authored-by: Amp <amp@ampcode.com>`
     - Example subject: `fix(extraction): handle mod_import_function`
     - Example body: `Updated regex pattern to accept optional intermediate keywords\nlike 'mod_import_function' in parser function declarations.`
+
+## Analysis Documentation
+
+- **Phase documentation**: Analysis documents (CONDITIONAL_ANALYSIS.md, PHASE_3_ANALYSIS_INDEX.md, etc.) track research progress and findings
+- **Status synchronization**: Always update EXTRACTION_STATUS.md and PARSER_FUNCTION_AUDIT.md when validation results change
+- **Pre/post-fix tracking**: Distinguish between predicted outcomes in analysis and actual implementation results
+- **Key patterns identified**:
+    - Operator precedence hierarchies (recursive descent reliable)
+    - Dual-mode functions (test builtin vs [[...]])
+    - Error guard filtering (NULLTOK, synthetic tokens)
+    - Context-sensitive token filtering (STRING semantic in par_cond_2)

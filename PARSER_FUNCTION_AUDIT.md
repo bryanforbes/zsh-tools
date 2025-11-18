@@ -3,10 +3,10 @@
 ## Summary
 
 - **Total parser functions in parse.c**: 31
-- **Validated**: 17 (54.8%)
-- **Missing validation**: 14 (45.2%)
+- **Validated**: 20 (64.5%)
+- **Missing validation**: 11 (35.5%)
 
-## Validated Functions (17)
+## Validated Functions (20)
 
 ✅ **Core parsing constructs** (14 functions at 100% confidence):
 
@@ -25,11 +25,21 @@
 13. `par_time` - Time command parsing (PHASE 2a)
 14. `par_redir` - Redirection parsing (PHASE 2b)
 
-⚠️ **Architectural limitations** (3 functions at 77-80% confidence): 15. `par_if` (80%) - If/elif/else parsing (missing INPAR/OUTPAR) 16. `par_while` (77.8%) - While/until parsing (missing INPAR/OUTPAR) 17. `par_subsh` (80%) - Subshell parsing (missing OUTPAR)
+✅ **Conditional expression hierarchy** (3 functions at 100% confidence, PHASE 3):
 
-**Overall confidence**: 96.34% (up from 96.11%)
+15. `par_cond` - Conditional expression parsing OR level (||)
+16. `par_cond_1` - Conditional AND expressions (&&)
+17. `par_cond_2` - Conditional base expressions (!, (), <, >, unary, comparisons)
 
-## Missing Functions with Semantic Grammar (11)
+⚠️ **Architectural limitations** (3 functions at 77-80% confidence):
+
+18. `par_if` (80%) - If/elif/else parsing (missing INPAR/OUTPAR)
+19. `par_while` (77.8%) - While/until parsing (missing INPAR/OUTPAR)
+20. `par_subsh` (80%) - Subshell parsing (missing OUTPAR)
+
+**Overall confidence**: 96.89% (up from 96.34%)
+
+## Missing Functions with Semantic Grammar (8)
 
 ### Core Language Constructs
 
@@ -47,40 +57,11 @@
 
 3. **`parse_cond`** - Conditional parsing wrapper
    **Priority**: MEDIUM
-   **Reason**: Entry point for [[...]] expressions
-
-4. **`par_cond`** - Conditional expression parsing
-
-    ```
-    cond : cond_1 { SEPER } [ DBAR { SEPER } cond ]
-    ```
-
-    **Priority**: MEDIUM
-    **Reason**: Top-level conditional logic
-
-5. **`par_cond_1`** - Conditional AND expressions
-
-    ```
-    cond_1 : cond_2 { SEPER } [ DAMPER { SEPER } cond_1 ]
-    ```
-
-    **Priority**: MEDIUM
-    **Reason**: Handles && in conditionals
-
-6. **`par_cond_2`** - Conditional base expressions
-    ```
-    cond_2 : BANG cond_2
-           | INPAR { SEPER } cond_2 { SEPER } OUTPAR
-           | STRING STRING STRING
-           | STRING STRING
-           | STRING ( INANG | OUTANG ) STRING
-    ```
-    **Priority**: MEDIUM
-    **Reason**: Base conditional tests
+   **Reason**: Entry point for [[...]] expressions (complement to par_cond)
 
 ### Utility Functions
 
-7. **`par_wordlist`** - Word list parsing
+4. **`par_wordlist`** - Word list parsing
 
     ```
     wordlist : { STRING }
@@ -89,7 +70,7 @@
     **Priority**: LOW
     **Reason**: Simple utility for parsing word lists
 
-8. **`par_nl_wordlist`** - Word list with separators
+5. **`par_nl_wordlist`** - Word list with separators
     ```
     nl_wordlist : { STRING | SEPER }
     ```

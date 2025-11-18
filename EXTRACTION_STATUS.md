@@ -2,8 +2,8 @@
 
 ## Overall Metrics
 
-- **Overall Confidence**: 96.34%
-- **Excellent Functions** (≥90%): 14
+- **Overall Confidence**: 96.89%
+- **Excellent Functions** (≥90%): 17
 - **Good Functions** (70-89%): 3
 - **Partial Functions** (1-69%): 0
 - **Poor Functions** (0%): 0
@@ -75,6 +75,32 @@
     - Key finding: IS_REDIROP is a macro checking token range, not explicit comparisons
     - Solution: Simplified tokens_in_rule to representative token, noted macro limitation
     - Note: Other redirection operators (APPANG, HEREDOC, etc.) handled by same IS_REDIROP macro
+
+### Phase 3: Conditional Expression Hierarchy (PHASE 3)
+
+15. **par_cond** - Conditional expression parsing (OR level)
+    - Tokens: SEPER, DBAR
+    - Grammar: `cond : cond_1 { SEPER } [ DBAR { SEPER } cond ]`
+    - Status: Complete semantic match (100%)
+    - Key finding: Recursive descent pattern for operator precedence works reliably
+    - Pattern: Calls par_cond_1 recursively, checks DBAR (||) token
+
+16. **par_cond_1** - Conditional AND expressions
+    - Tokens: SEPER, DAMPER
+    - Grammar: `cond_1 : cond_2 { SEPER } [ DAMPER { SEPER } cond_1 ]`
+    - Status: Complete semantic match (100%)
+    - Key finding: Second level of operator precedence hierarchy
+    - Pattern: Calls par_cond_2 recursively, checks DAMPER (&&) token
+
+17. **par_cond_2** - Conditional base expressions
+    - Tokens: BANG, INPAR, OUTPAR, INANG, OUTANG, STRING, SEPER
+    - Grammar: `cond_2 : BANG cond_2 | INPAR { SEPER } cond_2 { SEPER } OUTPAR | STRING STRING STRING | STRING STRING | STRING ( INANG | OUTANG ) STRING`
+    - Status: Complete semantic match (100%)
+    - Key findings:
+        - Implements 5 alternatives: negation (!), parenthesized expr, three-arg test, two-arg test, comparison (<, >)
+        - Dual-mode function supporting both [[...]] and [ ... ] (POSIX test builtin)
+        - Applied filters: NULLTOK (error guard for test mode only), INPUT tokens (synthetic/corrupted), STRING kept semantic
+    - Pattern: Complex alternation via if-else chains, serves as base case in precedence hierarchy
 
 ## Good Functions (80%+ Confidence)
 
