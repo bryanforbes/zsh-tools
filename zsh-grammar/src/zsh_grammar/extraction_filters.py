@@ -72,13 +72,13 @@ def is_data_token(token_name: str, func_name: str) -> bool:  # noqa: PLR0911
         return True
 
     # par_cond_2: NULLTOK is error guard for test builtin only
-    # Phase 3c implementation: Context-sensitive filtering for dual-mode conditional parser
+    # Phase 3c: Context-sensitive filtering for dual-mode conditional parser
     if token_name == 'NULLTOK' and func_name == 'par_cond_2':  # noqa: S105
         # Line 2472: if (n_testargs) { if (tok == NULLTOK) ...
-        # par_cond_2 implements both [[...]] (semantic-test mode) and [ ... ] (POSIX test builtin)
-        # NULLTOK appears only in the test builtin code path, not in [[...]] parsing
-        # Therefore filtered as non-semantic data token
-        # Semantic grammar documents [[...]] behavior, which doesn't use NULLTOK
+        # par_cond_2 implements both [[...]] (semantic mode) and [ ... ]
+        # (POSIX test builtin). NULLTOK appears only in test builtin code,
+        # not in [[...]] parsing. Therefore filtered as non-semantic.
+        # Semantic grammar documents [[...]] behavior, no NULLTOK.
         return True
 
     # INPUT token appears to be synthetic/corrupted extraction artifact
