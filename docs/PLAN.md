@@ -51,7 +51,7 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
     - Simple commands: `par_simple()`, `par_redir()`, `par_wordlist()`, `par_nl_wordlist()`
     - Conditionals: `par_cond()`, `par_cond_1()`, `par_cond_2()`, `par_cond_double()`, `par_cond_triple()`, `par_cond_multi()`
 
-**Output**: List of `_FunctionNode` objects with name, file, line, signature, and visibility.
+**Output**: List of `FunctionNode` objects with name, file, line, signature, and visibility.
 
 ### 1.2 Identify Grammar Symbols from Switch/Case Statements
 
@@ -195,7 +195,7 @@ This task will generate the necessary `.syms` files from the Zsh source code, en
 4. Filter to keep only internal `par_*` and `parse_*` calls
 5. Detect conditional context (calls inside `if`, `switch`, `while` blocks)
 
-**Output**: Call graph as `dict[str, _FunctionNode]` with `calls` list.
+**Output**: Call graph as `dict[str, FunctionNode]` with `calls` list.
 
 ### 2.2 Analyze Call Patterns
 
@@ -341,11 +341,11 @@ Where `ALWAYS` is a synthetic token derived from STRING matching "always".
     - Pattern: `if (tok == ALWAYS) { ... par_list() ... }` → Optional sequence
     - Pattern: `while (tok == SEPER) { ... }` → Repeated sequence of tokens
 3. Enhance call graph representation:
-    - Extend `_FunctionNode` with new fields:
+    - Extend `FunctionNode` with new fields:
         - `token_prefix`: List of tokens consumed before nested call
         - `token_suffix`: List of tokens consumed after nested call
         - `token_checks`: List of conditional token checks affecting control flow
-    - Create `_TokenEdge` type to represent direct token consumption (separate from function calls)
+    - Create `TokenEdge` type to represent direct token consumption (separate from function calls)
 4. Integrate tokens into grammar rules:
     - When building rules from call graph, prepend/append token sequences
     - Convert token sequences to Sequence or Repeat nodes in grammar

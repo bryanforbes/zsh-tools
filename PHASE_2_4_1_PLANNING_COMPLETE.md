@@ -108,13 +108,13 @@ NEW: Parse.c → Token Sequences → Grammar Rules {Sequence|Union|Repeat}
 
 ```python
 # OLD
-_FunctionNode = {
+FunctionNode = {
     calls: ['par_list'],
     token_edges: [...]  # UNUSED
 }
 
 # NEW
-_FunctionNodeEnhanced = {
+FunctionNodeEnhanced = {
     calls: ['par_list'],  # Kept for validation
     token_sequences: [
         {branch_id: 'if_1', items: [
@@ -132,8 +132,8 @@ _FunctionNodeEnhanced = {
 
 ### Stage 0: Data Structures (1-2 sprints)
 
-- Define `_TokenCheckEnhanced`, `_FunctionCallEnhanced`, `_SyntheticTokenEnhanced`
-- Create `_ControlFlowBranch` and `_FunctionNodeEnhanced` TypedDicts
+- Define `TokenCheckEnhanced`, `FunctionCallEnhanced`, `SyntheticTokenEnhanced`
+- Create `ControlFlowBranch` and `FunctionNodeEnhanced` TypedDicts
 - Build test harness with examples from parse.c
 - Validation framework setup
 
@@ -154,7 +154,7 @@ _FunctionNodeEnhanced = {
 
 ### Stage 3: Enhanced Call Graph (1-2 sprints)
 
-- Combine branches + tokens into `_FunctionNodeEnhanced`
+- Combine branches + tokens into `FunctionNodeEnhanced`
 - Build enhanced call graph for all parser functions
 - Validate completeness (all branches populated)
 - Consistency checks

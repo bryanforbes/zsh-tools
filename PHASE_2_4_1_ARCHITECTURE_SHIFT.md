@@ -317,7 +317,7 @@ static void par_subsh(int *cmplx) {
 ### Current (Phase 1-3)
 
 ```python
-class _FunctionNode(TypedDict):
+class FunctionNode(TypedDict):
     name: str
     file: str
     line: int
@@ -325,7 +325,7 @@ class _FunctionNode(TypedDict):
     conditions: NotRequired[list[str]]
 
     # DEAD CODE (never used):
-    token_edges: NotRequired[list[_TokenEdge]]
+    token_edges: NotRequired[list[TokenEdge]]
 
 # What we get:
 # par_subsh = {
@@ -337,7 +337,7 @@ class _FunctionNode(TypedDict):
 ### New (Phase 2.4.1)
 
 ```python
-class _ControlFlowBranch(TypedDict):
+class ControlFlowBranch(TypedDict):
     branch_id: str  # 'if_1', 'else_if_1', 'loop'
     branch_type: Literal['if', 'else_if', 'else', 'switch_case', 'loop', 'sequential']
     condition: NotRequired[str]  # 'tok == INPAR' for if branches
@@ -345,14 +345,14 @@ class _ControlFlowBranch(TypedDict):
     end_line: int
     items: list[TokenOrCallEnhanced]  # ORDERED!
 
-class _FunctionNodeEnhanced(TypedDict):
+class FunctionNodeEnhanced(TypedDict):
     name: str
     file: str
     line: int
     calls: list[str]  # For validation
 
     # PRIMARY INPUT (NEW):
-    token_sequences: list[_ControlFlowBranch]
+    token_sequences: list[ControlFlowBranch]
     has_loops: bool
     is_optional: bool
 

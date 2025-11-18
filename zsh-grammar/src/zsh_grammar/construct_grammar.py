@@ -7,7 +7,7 @@ import subprocess
 from argparse import ArgumentParser
 from collections.abc import Callable, Iterator  # noqa: TC003
 from pathlib import Path
-from typing import TYPE_CHECKING, Final, Literal, NotRequired, TypedDict, cast
+from typing import TYPE_CHECKING, Final, TypedDict, cast
 
 import jsonschema
 from clang.cindex import Cursor, CursorKind, StorageClass
@@ -35,18 +35,16 @@ from zsh_grammar.source_parser import ZshParser
 from zsh_grammar.validation import validate_semantic_grammar
 
 if TYPE_CHECKING:
-    from zsh_grammar._types import Grammar, GrammarNode, Language, Source
+    from zsh_grammar._types import (
+        FunctionNode,
+        Grammar,
+        GrammarNode,
+        Language,
+        Source,
+        TokenOrCall,
+    )
 
 PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
-
-__all__ = [
-    '_FunctionCall',
-    '_FunctionNode',
-    '_SemanticGrammarRule',
-    '_SyntheticToken',
-    '_TokenCheck',
-    '_TokenEdge',
-]
 
 
 # Import helper for internal use
@@ -68,110 +66,6 @@ def _is_parser_function(name: str, /) -> bool:
         'par_list1',
     }
     return name.startswith(('par_', 'parse_')) and name not in internal_helpers
-
-
-class _TokenEdge(TypedDict):
-    """Represents a direct token consumption edge in a parser function.
-
-    Attributes:
-        token_name: Name of the token (e.g., 'INPAR', 'OUTPAR')
-        position: 'before' (prefix), 'after' (suffix), or 'inline' (no function call)
-        line: Line number in source where token check occurs
-        context: Optional context description (e.g., 'guard condition', 'required')
-
-    DEPRECATED: Use _TokenCheck instead (Phase 2.4.1 redesign)
-    """
-
-    token_name: str
-    position: Literal['before', 'after', 'inline']
-    line: int
-    context: NotRequired[str]
-
-
-class _TokenCheck(TypedDict):
-    """Phase 2.4.1: Token check in control flow sequence.
-
-    Attributes:
-        kind: Discriminator - always 'token'
-        token_name: Token name (SCREAMING_SNAKE_CASE)
-        line: Line number in source
-        is_negated: Whether this is a `tok != TOKEN` check
-    """
-
-    kind: Literal['token']
-    token_name: str
-    line: int
-    is_negated: bool
-
-
-class _FunctionCall(TypedDict):
-    """Phase 2.4.1: Function call in control flow sequence.
-
-    Attributes:
-        kind: Discriminator - always 'call'
-        func_name: Function name (par_* or parse_*)
-        line: Line number in source
-    """
-
-    kind: Literal['call']
-    func_name: str
-    line: int
-
-
-class _SyntheticToken(TypedDict):
-    """Phase 2.4.1: Synthetic token from string matching condition.
-
-    Example: `tok == STRING && !strcmp(tokstr, "always")` → ALWAYS token
-
-    Attributes:
-        kind: Discriminator - always 'synthetic_token'
-        token_name: Generated token name (SCREAMING_SNAKE_CASE)
-        line: Line number in source
-        condition: Description of matching condition
-    """
-
-    kind: Literal['synthetic_token']
-    token_name: str
-    line: int
-    condition: str
-
-
-# Phase 2.4.1: Token sequence items (discriminated union)
-TokenOrCall = _TokenCheck | _FunctionCall | _SyntheticToken
-
-
-class _FunctionNode(TypedDict):
-    name: str
-    file: str
-    line: int
-    calls: list[str]
-    conditions: NotRequired[list[str]]
-    signature: NotRequired[str]
-    visibility: NotRequired[str]
-    token_edges: NotRequired[list[_TokenEdge]]  # DEPRECATED - use token_sequences
-    token_sequences: NotRequired[
-        list[list[TokenOrCall]]
-    ]  # Phase 2.4.1: Ordered token+call sequences per branch
-
-
-class _SemanticGrammarRule(TypedDict):
-    """Semantic grammar rule extracted from parse.c comments.
-
-    Attributes:
-        func_name: Parser function name (e.g., 'par_for', 'par_case')
-        line_no: Line number in parse.c where rule is documented
-        rule: Raw grammar rule text from comment (e.g., 'for : FOR ... { SEPER } ...')
-        alternatives: List of alternative productions identified in rule
-        tokens_in_rule: Set of token names mentioned in the rule
-        description: Human-readable description of the production
-    """
-
-    func_name: str
-    line_no: int
-    rule: str
-    alternatives: list[str]
-    tokens_in_rule: set[str]
-    description: str
 
 
 # ============================================================================
@@ -373,7 +267,7 @@ def _extract_tokens_from_expression(expr: Cursor, /) -> set[str]:
 
 
 def _map_tokens_to_rules(
-    parser: ZshParser, parser_functions: dict[str, _FunctionNode], /
+    parser: ZshParser, parser_functions: dict[str, FunctionNode], /
 ) -> dict[str, list[str]]:
     """
     Extract token-to-rule mappings from both switch and inline conditional statements.
@@ -508,8 +402,8 @@ def _validate_token_references(
 
 def _validate_completeness(  # noqa: C901, PLR0912
     token_to_rules: dict[str, list[str]],
-    parser_functions: dict[str, _FunctionNode],
-    call_graph: dict[str, _FunctionNode] | None = None,
+    parser_functions: dict[str, FunctionNode],
+    call_graph: dict[str, FunctionNode] | None = None,
     /,
 ) -> dict[str, list[str]]:
     """

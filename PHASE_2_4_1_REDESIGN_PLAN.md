@@ -66,16 +66,16 @@ Validation {call graph confirms semantic structure}
 
 **Current Issues:**
 
-- `_TokenEdge`: Records isolated tokens, loses branch/sequence context
-- `_FunctionNode`: Has `token_edges` but `_build_grammar_rules()` ignores it
+- `TokenEdge`: Records isolated tokens, loses branch/sequence context
+- `FunctionNode`: Has `token_edges` but `_build_grammar_rules()` ignores it
 - No representation for ordered sequences with control flow context
 
 **New Data Structures:**
 
 ```python
-# In construct_grammar.py, replace/enhance existing types:
+# In _types.py, replace/enhance existing types:
 
-class _TokenCheckEnhanced(TypedDict):
+class TokenCheckEnhanced(TypedDict):
     """Token check in ordered sequence with branch context."""
     kind: Literal['token']
     token_name: str
@@ -84,7 +84,7 @@ class _TokenCheckEnhanced(TypedDict):
     branch_id: str  # NEW: identifies which control flow branch
     sequence_index: int  # NEW: position in ordered sequence
 
-class _FunctionCallEnhanced(TypedDict):
+class FunctionCallEnhanced(TypedDict):
     """Function call in sequence."""
     kind: Literal['call']
     func_name: str
@@ -92,7 +92,7 @@ class _FunctionCallEnhanced(TypedDict):
     branch_id: str  # NEW
     sequence_index: int  # NEW
 
-class _SyntheticTokenEnhanced(TypedDict):
+class SyntheticTokenEnhanced(TypedDict):
     """Synthetic token from string matching."""
     kind: Literal['synthetic_token']
     token_name: str
@@ -103,9 +103,9 @@ class _SyntheticTokenEnhanced(TypedDict):
     is_optional: bool  # NEW: controls whether to wrap in Optional
 
 # Ordered sequence: mix of tokens and calls
-TokenOrCallEnhanced = _TokenCheckEnhanced | _FunctionCallEnhanced | _SyntheticTokenEnhanced
+type TokenOrCallEnhanced = TokenCheckEnhanced | FunctionCallEnhanced | SyntheticTokenEnhanced
 
-class _ControlFlowBranch(TypedDict):
+class ControlFlowBranch(TypedDict):
     """Represents one alternative (if branch, switch case, loop body, etc.)."""
     branch_id: str  # e.g., 'if_1', 'else_if_2', 'switch_case_3', 'loop'
     branch_type: Literal['if', 'else_if', 'else', 'switch_case', 'loop', 'sequential']
@@ -115,7 +115,7 @@ class _ControlFlowBranch(TypedDict):
     end_line: int
     items: list[TokenOrCallEnhanced]  # Ordered sequence for this branch
 
-class _FunctionNodeEnhanced(TypedDict):
+class FunctionNodeEnhanced(TypedDict):
     """Enhanced function node with token-sequence metadata."""
     name: str
     file: str
@@ -123,7 +123,7 @@ class _FunctionNodeEnhanced(TypedDict):
     calls: list[str]  # Kept for validation; primary input is token_sequences
 
     # Phase 2.4.1: Token sequence data (NEW)
-    token_sequences: list[_ControlFlowBranch]  # Multiple branches
+    token_sequences: list[ControlFlowBranch]  # Multiple branches
     has_loops: bool  # while/for detected
     loop_type: NotRequired[str]  # 'while', 'for', or None
     is_optional: bool  # if statement without else
@@ -138,7 +138,7 @@ class _FunctionNodeEnhanced(TypedDict):
 
 - ✓ All new fields have clear type definitions
 - ✓ `TokenOrCallEnhanced` is valid discriminated union
-- ✓ `_ControlFlowBranch` accurately represents AST branches
+- ✓ `ControlFlowBranch` accurately represents AST branches
 - ✓ No breaking changes to output schema (old fields preserved)
 
 **Test Cases:**
@@ -146,8 +146,8 @@ class _FunctionNodeEnhanced(TypedDict):
 ```python
 # Tests in zsh_grammar/tests/test_data_structures.py
 def test_token_check_enhanced():
-    """Validate _TokenCheckEnhanced structure."""
-    item: _TokenCheckEnhanced = {
+    """Validate TokenCheckEnhanced structure."""
+    item: TokenCheckEnhanced = {
         'kind': 'token',
         'token_name': 'INPAR',
         'line': 1234,
@@ -159,8 +159,8 @@ def test_token_check_enhanced():
     assert item['branch_id'] == 'if_1'
 
 def test_control_flow_branch():
-    """Validate _ControlFlowBranch structure."""
-    branch: _ControlFlowBranch = {
+    """Validate ControlFlowBranch structure."""
+    branch: ControlFlowBranch = {
         'branch_id': 'if_1',
         'branch_type': 'if',
         'condition': 'tok == INPAR',
@@ -180,7 +180,7 @@ def test_control_flow_branch():
     assert len(branch['items']) == 3
 ```
 
-**Output Artifact:** `zsh_grammar/_types_enhanced.py` or append to `_types.py`
+**Output Artifact:** `append to `\_types.py`
 
 ---
 
@@ -300,7 +300,7 @@ def test_par_case_token_sequences():
 class TokenSequenceValidator:
     """Validates extracted token sequences against constraints."""
 
-    def validate_branch(self, branch: _ControlFlowBranch) -> list[str]:
+    def validate_branch(self, branch: ControlFlowBranch) -> list[str]:
         """
         Check:
         1. All tokens exist in token_mapping
@@ -325,9 +325,9 @@ class TokenSequenceValidator:
         return errors
 
     def validate_all_sequences(self,
-        node: _FunctionNodeEnhanced,
+        node: FunctionNodeEnhanced,
         token_mapping: dict[str, _TokenDef],
-        parser_functions: dict[str, _FunctionNode]
+        parser_functions: dict[str, FunctionNode]
     ) -> dict[str, list[str]]:
         """Validate all branches for a function."""
         errors_by_branch: dict[str, list[str]] = {}
@@ -405,19 +405,19 @@ For each parser function:
      - Record condition (e.g., 'tok == INPAR' for if branches)
      - Record AST span (start_line, end_line)
      - Mark branch_type (if, else_if, else, switch_case, loop, sequential)
-  4. Return list of _ControlFlowBranch stubs (without items yet)
+  4. Return list of ControlFlowBranch stubs (without items yet)
 ```
 
 **Implementation Pseudocode:**
 
 ```python
-def extract_control_flow_branches(cursor: Cursor, func_name: str) -> list[_ControlFlowBranch]:
+def extract_control_flow_branches(cursor: Cursor, func_name: str) -> list[ControlFlowBranch]:
     """
     Extract control flow branches from function body.
 
     Returns branches with metadata but without token/call items (those come in Stage 2).
     """
-    branches: list[_ControlFlowBranch] = []
+    branches: list[ControlFlowBranch] = []
 
     # Collect all control structures
     for node in cursor.walk_preorder():
@@ -442,9 +442,9 @@ def extract_control_flow_branches(cursor: Cursor, func_name: str) -> list[_Contr
 
     return branches
 
-def _extract_if_chain(if_stmt: Cursor) -> list[_ControlFlowBranch]:
+def _extract_if_chain(if_stmt: Cursor) -> list[ControlFlowBranch]:
     """Extract if/else-if/else as multiple branches."""
-    branches: list[_ControlFlowBranch] = []
+    branches: list[ControlFlowBranch] = []
     counter = 0
 
     current = if_stmt
@@ -481,9 +481,9 @@ def _extract_if_chain(if_stmt: Cursor) -> list[_ControlFlowBranch]:
 
     return branches
 
-def _extract_switch_cases(switch_stmt: Cursor) -> list[_ControlFlowBranch]:
+def _extract_switch_cases(switch_stmt: Cursor) -> list[ControlFlowBranch]:
     """Extract switch cases as separate branches."""
-    branches: list[_ControlFlowBranch] = []
+    branches: list[ControlFlowBranch] = []
 
     for case_stmt in walk_and_filter(switch_stmt, CursorKind.CASE_STMT):
         # Each case is one branch
@@ -501,7 +501,7 @@ def _extract_switch_cases(switch_stmt: Cursor) -> list[_ControlFlowBranch]:
 
     return branches
 
-def _extract_loop(loop_stmt: Cursor) -> _ControlFlowBranch:
+def _extract_loop(loop_stmt: Cursor) -> ControlFlowBranch:
     """Extract loop (while/for) as single branch."""
     loop_type = 'while' if loop_stmt.kind == CursorKind.WHILE_STMT else 'for'
 
@@ -513,7 +513,7 @@ def _extract_loop(loop_stmt: Cursor) -> _ControlFlowBranch:
         'items': [],  # Body filled in Stage 2
     }
 
-def _extract_sequential_body(cursor: Cursor) -> _ControlFlowBranch:
+def _extract_sequential_body(cursor: Cursor) -> ControlFlowBranch:
     """Treat entire function body as sequential (no control structures)."""
     body = _find_child_cursors(cursor, lambda c: c.kind == CursorKind.COMPOUND_STMT)
 
@@ -586,7 +586,7 @@ For each if/switch branch:
 **Implementation:**
 
 ```python
-def extract_branch_conditions(branch: _ControlFlowBranch, cursor: Cursor) -> _ControlFlowBranch:
+def extract_branch_conditions(branch: ControlFlowBranch, cursor: Cursor) -> ControlFlowBranch:
     """
     Enhance branch with extracted condition information.
 
@@ -673,7 +673,7 @@ For each control flow branch:
 ```python
 def extract_tokens_and_calls_for_branch(
     cursor: Cursor,
-    branch: _ControlFlowBranch,
+    branch: ControlFlowBranch,
     func_name: str,
 ) -> list[TokenOrCallEnhanced]:
     """
@@ -850,15 +850,15 @@ For each compound condition with strcmp:
 ```python
 def extract_synthetic_tokens_for_branch(
     cursor: Cursor,
-    branch: _ControlFlowBranch,
+    branch: ControlFlowBranch,
     items: list[TokenOrCallEnhanced],
-) -> list[_SyntheticTokenEnhanced]:
+) -> list[SyntheticTokenEnhanced]:
     """
     Extract synthetic tokens from string matching conditions within a branch.
 
     Example: tok == STRING && !strcmp(tokstr, "always") → ALWAYS synthetic token
     """
-    synthetics: list[_SyntheticTokenEnhanced] = []
+    synthetics: list[SyntheticTokenEnhanced] = []
     seen: set[tuple[str, int]] = set()
 
     start_line = branch['start_line']
@@ -976,7 +976,7 @@ For a branch:
 ```python
 def merge_branch_items(
     tokens: list[TokenOrCallEnhanced],
-    synthetics: list[_SyntheticTokenEnhanced],
+    synthetics: list[SyntheticTokenEnhanced],
 ) -> list[TokenOrCallEnhanced]:
     """Merge and reindex branch items."""
     all_items: list[TokenOrCallEnhanced] = tokens + synthetics
@@ -1018,7 +1018,7 @@ def test_merge_maintains_order():
 **Agent Role**: Integration specialist  
 **Duration**: 1-2 sprints  
 **Dependencies**: Stage 0, 1, 2  
-**Deliverable**: \_FunctionNodeEnhanced with complete token_sequences
+**Deliverable**: FunctionNodeEnhanced with complete token_sequences
 
 #### 3.1: Build Enhanced Call Graph
 
@@ -1036,20 +1036,20 @@ For each parser function:
   3. Detect control flow patterns:
      - Loop present → set has_loops=True, loop_type='while'|'for'
      - If without else → set is_optional=True
-  4. Build _FunctionNodeEnhanced with all fields
+  4. Build FunctionNodeEnhanced with all fields
   5. Return enhanced call graph
 ```
 
 **Implementation:**
 
 ```python
-def build_call_graph_enhanced(parser: ZshParser, /) -> dict[str, _FunctionNodeEnhanced]:
+def build_call_graph_enhanced(parser: ZshParser, /) -> dict[str, FunctionNodeEnhanced]:
     """
     Build enhanced call graph with token sequences.
 
     This is the primary replacement for build_call_graph() in control_flow.py
     """
-    call_graph: dict[str, _FunctionNodeEnhanced] = {}
+    call_graph: dict[str, FunctionNodeEnhanced] = {}
 
     for file, tu in parser.parse_files('*.c'):
         if tu.cursor is None:
@@ -1067,7 +1067,7 @@ def build_call_graph_enhanced(parser: ZshParser, /) -> dict[str, _FunctionNodeEn
 
             # NEW: Extract branches and token sequences
             branches = extract_control_flow_branches(cursor, function_name)
-            token_sequences: list[_ControlFlowBranch] = []
+            token_sequences: list[ControlFlowBranch] = []
 
             for branch in branches:
                 # Extract tokens and calls for this branch
@@ -1095,7 +1095,7 @@ def build_call_graph_enhanced(parser: ZshParser, /) -> dict[str, _FunctionNodeEn
             ) for b in token_sequences)
 
             # Build enhanced node
-            node: _FunctionNodeEnhanced = {
+            node: FunctionNodeEnhanced = {
                 'name': function_name,
                 'file': str(file.relative_to(parser.zsh_src)),
                 'line': cursor.location.line,
@@ -1169,9 +1169,9 @@ def test_call_graph_enhanced_optional():
 
 ```python
 def validate_enhanced_call_graph(
-    call_graph: dict[str, _FunctionNodeEnhanced],
+    call_graph: dict[str, FunctionNodeEnhanced],
     token_mapping: dict[str, _TokenDef],
-    parser_functions: dict[str, _FunctionNode],
+    parser_functions: dict[str, FunctionNode],
 ) -> dict[str, list[str]]:
     """
     Comprehensive validation of enhanced call graph.
@@ -1223,9 +1223,9 @@ def validate_enhanced_call_graph(
     return errors_by_func
 
 def _validate_branch(
-    branch: _ControlFlowBranch,
+    branch: ControlFlowBranch,
     token_mapping: dict[str, _TokenDef],
-    parser_functions: dict[str, _FunctionNode],
+    parser_functions: dict[str, FunctionNode],
 ) -> list[str]:
     """Validate a single branch."""
     errors: list[str] = []
@@ -1311,7 +1311,7 @@ For each branch with items=[tok1, call1, tok2, call2, ...]:
 
 ```python
 def build_grammar_rules(
-    call_graph: dict[str, _FunctionNodeEnhanced],
+    call_graph: dict[str, FunctionNodeEnhanced],
     control_flows: dict[str, ControlFlowPattern | None],
 ) -> dict[str, GrammarNode]:
     """
@@ -1334,7 +1334,7 @@ def build_grammar_rules(
 
 def _convert_node_to_rule(
     func_name: str,
-    node: _FunctionNodeEnhanced,
+    node: FunctionNodeEnhanced,
     control_flows: dict[str, ControlFlowPattern | None],
 ) -> GrammarNode | None:
     """Convert enhanced function node to grammar rule."""
@@ -1365,7 +1365,7 @@ def _convert_node_to_rule(
 
 def _convert_branch_to_rule(
     func_name: str,
-    branch: _ControlFlowBranch,
+    branch: ControlFlowBranch,
     control_flows: dict[str, ControlFlowPattern | None],
 ) -> GrammarNode:
     """Convert one branch to grammar node."""
@@ -1536,7 +1536,7 @@ def test_repeat_wrapping():
 **Integration Points:**
 
 1. **Call Graph Integration**:
-    - New `build_call_graph_enhanced()` returns `_FunctionNodeEnhanced`
+    - New `build_call_graph_enhanced()` returns `FunctionNodeEnhanced`
     - Old `build_call_graph()` still exists for validation
     - In `construct_grammar()`, call both and compare:
 
@@ -2011,9 +2011,9 @@ def generate_validation_report(
 
 **Key Concepts:**
 
-- \_ControlFlowBranch: Represents single AST alternative (if/else/switch case/loop)
+- ControlFlowBranch: Represents single AST alternative (if/else/switch case/loop)
 - TokenOrCallEnhanced: Discriminated union with branch context
-- \_FunctionNodeEnhanced: Call graph node with token_sequences field
+- FunctionNodeEnhanced: Call graph node with token_sequences field
 - Token sequences ordered by line number (preserves execution order)
 - Synthetic tokens from strcmp patterns
 ```
@@ -2111,12 +2111,12 @@ def _construct_grammar(zsh_path: Path, version: str, /) -> Grammar:
 
 ```python
 # OLD function (keep for now, marked deprecated)
-def build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
+def build_call_graph(parser: ZshParser, /) -> dict[str, FunctionNode]:
     """Deprecated: Use build_call_graph_enhanced instead."""
     # ... existing implementation ...
 
 # NEW function (primary)
-def build_call_graph_enhanced(parser: ZshParser, /) -> dict[str, _FunctionNodeEnhanced]:
+def build_call_graph_enhanced(parser: ZshParser, /) -> dict[str, FunctionNodeEnhanced]:
     """Build enhanced call graph with token sequences."""
     # ... new implementation from Stage 3 ...
 ```
@@ -2132,7 +2132,7 @@ def extract_token_sequences(cursor: Cursor, func_name: str = '') -> list[TokenOr
 # NEW function for enhanced extraction
 def extract_tokens_and_calls_for_branch(
     cursor: Cursor,
-    branch: _ControlFlowBranch,
+    branch: ControlFlowBranch,
     func_name: str,
 ) -> list[TokenOrCallEnhanced]:
     """Extract tokens for specific branch."""
@@ -2240,7 +2240,6 @@ Each stage can be assigned to 1-2 sub-agents:
 
 ```
 zsh-grammar/src/zsh_grammar/
-├── _types_enhanced.py          # NEW: Enhanced TypedDicts
 ├── ast_utilities.py             # Existing
 ├── branch_extractor.py          # NEW: Stage 1.1-1.2
 ├── control_flow.py              # MODIFIED: Add build_call_graph_enhanced

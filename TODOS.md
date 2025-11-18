@@ -21,7 +21,7 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
     - [x] Token deduplication in extraction (Phase 1.4 enhancement)
     - Result: 30 explicit tokens, 23 dispatcher rules with embedded token references
 - [x] **Phase 3.3**: Control Flow Analysis for Optional/Repeat Patterns - 12 patterns detected (9 optional, 3 repeat), AST control flow visitor implemented
-- [x] **Phase 2.4 Infrastructure**: Token consumption pattern extraction - `_TokenEdge` type created, `_extract_token_consumption_patterns()` analyzes tok == checks, `_integrate_token_patterns_into_rule()` prepared for phase 2.4.1, call graph extended with token_edges field
+- [x] **Phase 2.4 Infrastructure**: Token consumption pattern extraction - `TokenEdge` type created, `_extract_token_consumption_patterns()` analyzes tok == checks, `_integrate_token_patterns_into_rule()` prepared for phase 2.4.1, call graph extended with token_edges field
 - [x] **Phase 4.3**: Embed Lexer State Changes as Conditions - 20 parser functions identified, Variant nodes embedded with lexer state conditions, descriptions auto-generated
 - [x] **Phase 5.2**: Schema validation - Generated grammar passes JSON schema validation
 
@@ -46,7 +46,7 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 - **Status**: REQUIRES COMPLETE RETHINK - infrastructure insufficient
 - **Current Issue**:
     - `_extract_token_consumption_patterns()` collects tokens but loses ordering/sequencing information
-    - `_TokenEdge` only records individual token names, not control flow context
+    - `TokenEdge` only records individual token names, not control flow context
     - `_build_grammar_rules()` uses call graph to determine structure; token information is unused
     - Result: Token extraction infrastructure exists but is never used to build rules
 - **Required Redesign**:
@@ -71,15 +71,15 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
         - Build rules directly from token sequences
 
 - **Data Structure Changes**:
-    - Replace/enhance `_TokenEdge` to include control flow branch identifier
-    - Add new `token_sequences: list[list[TokenOrCall]]` field to `_FunctionNode`
+    - Replace/enhance `TokenEdge` to include control flow branch identifier
+    - Add new `token_sequences: list[list[TokenOrCall]]` field to `FunctionNode`
     - Where `TokenOrCall = {'token': str} | {'call': str} | {'optional': [...]} | {'union': [...]}`
     - Document synthetic tokens in separate metadata
 
 - **Implementation Path**:
     1. Rewrite AST walker to extract ordered timelines (replace current preorder walk)
     2. Implement control flow branch grouping (separate code paths into alternatives)
-    3. Extend `_FunctionNode` with `token_sequences` field
+    3. Extend `FunctionNode` with `token_sequences` field
     4. Rewrite `_build_grammar_rules()` to use `token_sequences` as primary input
     5. Use call graph only for validation/cycle detection
 
@@ -182,7 +182,7 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
     - Result: Grammar cannot be parsed by anyone unfamiliar with Zsh internals
 - **Token sequences extracted but never used**:
     - `_extract_token_consumption_patterns()` collects tokens
-    - `_TokenEdge` records token names
+    - `TokenEdge` records token names
     - But `_build_grammar_rules()` ignores all this and builds rules from call graph only
     - Infrastructure exists but is dead code
 - **Cannot reconstruct semantic grammar comments**:
@@ -241,7 +241,7 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 - **Token Deduplication**: Phase 1.4 enhancement prevents duplicate entries in token text arrays during extraction from multiple sources.
 
 - **Phase 2.4 Infrastructure INCOMPLETE (Dead Code)**:
-    - `_TokenEdge` TypedDict defines token consumption metadata (token_name, position, line, context)
+    - `TokenEdge` TypedDict defines token consumption metadata (token_name, position, line, context)
     - `_extract_token_consumption_patterns()` walks AST analyzing tok == TOKEN_NAME checks
     - Collected tokens stored in call_graph[func_name]['token_edges'] field
     - `_build_call_graph()` calls token extraction for all parser functions

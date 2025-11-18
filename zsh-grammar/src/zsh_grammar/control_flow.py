@@ -18,7 +18,7 @@ from zsh_grammar.token_extractors import extract_token_sequences
 if TYPE_CHECKING:
     from clang.cindex import Cursor
 
-    from zsh_grammar.construct_grammar import TokenOrCall, _FunctionNode
+    from zsh_grammar._types import FunctionNode, TokenOrCall
     from zsh_grammar.source_parser import ZshParser
 
 
@@ -65,7 +65,7 @@ def analyze_control_flow(  # noqa: C901, PLR0912
         func_name: Function name for description
 
     Returns:
-        _ControlFlowPattern if a clear pattern is detected, None if sequential/neutral
+        ControlFlowPattern if a clear pattern is detected, None if sequential/neutral
     """
     # Collect control flow structures
     while_stmts: list[Cursor] = []
@@ -178,7 +178,7 @@ def analyze_all_control_flows(
         extracted_tokens: Dict mapping function names to extracted token sequences
 
     Returns:
-        Dict mapping function names to _ControlFlowPattern (or None if sequential)
+        Dict mapping function names to ControlFlowPattern (or None if sequential)
     """
     patterns: dict[str, ControlFlowPattern | None] = {}
 
@@ -196,7 +196,7 @@ def analyze_all_control_flows(
     return patterns
 
 
-def build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
+def build_call_graph(parser: ZshParser, /) -> dict[str, FunctionNode]:
     """
     Build call graph with Phase 2.4.1 token sequences.
 
@@ -205,7 +205,7 @@ def build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
     2. Conditions (existing)
     3. Token sequences via Phase 2.4.1 (ordered tokens + calls per branch)
     """
-    call_graph: dict[str, _FunctionNode] = {}
+    call_graph: dict[str, FunctionNode] = {}
 
     for file, tu in parser.parse_files('*.c'):
         if tu.cursor is None:
@@ -220,7 +220,7 @@ def build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
                 if callee_name != function_name:
                     calls.append(callee_name)
 
-            node: _FunctionNode = {
+            node: FunctionNode = {
                 'name': function_name,
                 'file': str(file.relative_to(parser.zsh_src)),
                 'line': cursor.location.line,
@@ -244,9 +244,7 @@ def build_call_graph(parser: ZshParser, /) -> dict[str, _FunctionNode]:
     return call_graph
 
 
-def detect_cycles(
-    call_graph: dict[str, _FunctionNode], /
-) -> dict[str, list[list[str]]]:
+def detect_cycles(call_graph: dict[str, FunctionNode], /) -> dict[str, list[list[str]]]:
     """
     Detect all cycles in the call graph.
 
@@ -300,7 +298,7 @@ def detect_cycles(
 
 
 def extract_lexer_state_changes(
-    parser: ZshParser, parser_functions: dict[str, _FunctionNode], /
+    parser: ZshParser, parser_functions: dict[str, FunctionNode], /
 ) -> dict[str, dict[str, list[int]]]:
     """
     Extract lexer state changes from parser functions.

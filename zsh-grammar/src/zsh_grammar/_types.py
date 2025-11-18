@@ -137,3 +137,107 @@ class Grammar(TypedDict, extra_items=str):
     zsh_version: NotRequired[str]
     zsh_revision: NotRequired[str]
     generated_at: NotRequired[str]
+
+
+class TokenEdge(TypedDict):
+    """Represents a direct token consumption edge in a parser function.
+
+    Attributes:
+        token_name: Name of the token (e.g., 'INPAR', 'OUTPAR')
+        position: 'before' (prefix), 'after' (suffix), or 'inline' (no function call)
+        line: Line number in source where token check occurs
+        context: Optional context description (e.g., 'guard condition', 'required')
+
+    DEPRECATED: Use TokenCheck instead (Phase 2.4.1 redesign)
+    """
+
+    token_name: str
+    position: Literal['before', 'after', 'inline']
+    line: int
+    context: NotRequired[str]
+
+
+class TokenCheck(TypedDict):
+    """Phase 2.4.1: Token check in control flow sequence.
+
+    Attributes:
+        kind: Discriminator - always 'token'
+        token_name: Token name (SCREAMING_SNAKE_CASE)
+        line: Line number in source
+        is_negated: Whether this is a `tok != TOKEN` check
+    """
+
+    kind: Literal['token']
+    token_name: str
+    line: int
+    is_negated: bool
+
+
+class FunctionCall(TypedDict):
+    """Phase 2.4.1: Function call in control flow sequence.
+
+    Attributes:
+        kind: Discriminator - always 'call'
+        func_name: Function name (par_* or parse_*)
+        line: Line number in source
+    """
+
+    kind: Literal['call']
+    func_name: str
+    line: int
+
+
+class SyntheticToken(TypedDict):
+    """Phase 2.4.1: Synthetic token from string matching condition.
+
+    Example: `tok == STRING && !strcmp(tokstr, "always")` → ALWAYS token
+
+    Attributes:
+        kind: Discriminator - always 'synthetic_token'
+        token_name: Generated token name (SCREAMING_SNAKE_CASE)
+        line: Line number in source
+        condition: Description of matching condition
+    """
+
+    kind: Literal['synthetic_token']
+    token_name: str
+    line: int
+    condition: str
+
+
+# Phase 2.4.1: Token sequence items (discriminated union)
+type TokenOrCall = TokenCheck | FunctionCall | SyntheticToken
+
+
+class FunctionNode(TypedDict):
+    name: str
+    file: str
+    line: int
+    calls: list[str]
+    conditions: NotRequired[list[str]]
+    signature: NotRequired[str]
+    visibility: NotRequired[str]
+    token_edges: NotRequired[list[TokenEdge]]  # DEPRECATED - use token_sequences
+    token_sequences: NotRequired[
+        list[list[TokenOrCall]]
+    ]  # Phase 2.4.1: Ordered token+call sequences per branch
+
+
+class SemanticGrammarRule(TypedDict):
+    """Semantic grammar rule extracted from parse.c comments.
+
+    Attributes:
+        func_name: Parser function name (e.g., 'par_for', 'par_case')
+        line_no: Line number in parse.c where rule is documented
+        rule: Raw grammar rule text from comment (e.g., 'for : FOR ... { SEPER } ...')
+        alternatives: List of alternative productions identified in rule
+        tokens_in_rule: Set of token names mentioned in the rule
+        description: Human-readable description of the production
+    """
+
+    func_name: str
+    line_no: int
+    rule: str
+    alternatives: list[str]
+    tokens_in_rule: set[str]
+    description: str

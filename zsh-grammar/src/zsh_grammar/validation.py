@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING, Literal, TypedDict
 from zsh_grammar.grammar_rules import get_semantic_grammar_rules
 
 if TYPE_CHECKING:
-    from zsh_grammar.construct_grammar import _FunctionNode
+    from zsh_grammar._types import FunctionNode
 
 
 class ValidationResult(TypedDict):
@@ -42,8 +42,8 @@ class ValidationResult(TypedDict):
 
 
 def validate_semantic_grammar(  # noqa: PLR0912
-    call_graph: dict[str, _FunctionNode],
-    parser_functions: dict[str, _FunctionNode],
+    call_graph: dict[str, FunctionNode],
+    parser_functions: dict[str, FunctionNode],
     /,
 ) -> tuple[dict[str, ValidationResult], float]:
     """

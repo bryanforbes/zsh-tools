@@ -12,11 +12,12 @@ from zsh_grammar.function_discovery import _is_parser_function
 from zsh_grammar.grammar_utils import create_ref, create_sequence, create_terminal
 
 if TYPE_CHECKING:
-    from zsh_grammar._types import GrammarNode, Source
-    from zsh_grammar.construct_grammar import (
+    from zsh_grammar._types import (
+        FunctionNode,
+        GrammarNode,
+        SemanticGrammarRule,
+        Source,
         TokenOrCall,
-        _FunctionNode,
-        _SemanticGrammarRule,
     )
 
 
@@ -106,7 +107,7 @@ def sequence_to_rule(
     return create_sequence(refs)
 
 
-def get_semantic_grammar_rules() -> dict[str, _SemanticGrammarRule]:
+def get_semantic_grammar_rules() -> dict[str, SemanticGrammarRule]:
     """
     Phase 2.4.1f: Extract semantic grammar rules from parse.c comments.
 
@@ -117,7 +118,7 @@ def get_semantic_grammar_rules() -> dict[str, _SemanticGrammarRule]:
         Dict mapping function names to semantic rules with expected tokens.
     """
 
-    rules: dict[str, _SemanticGrammarRule] = {
+    rules: dict[str, SemanticGrammarRule] = {
         'par_list': {
             'func_name': 'par_list',
             'line_no': 762,
@@ -186,8 +187,8 @@ def get_semantic_grammar_rules() -> dict[str, _SemanticGrammarRule]:
 
 
 def build_grammar_rules(
-    parser_functions: dict[str, _FunctionNode],
-    call_graph: dict[str, _FunctionNode],
+    parser_functions: dict[str, FunctionNode],
+    call_graph: dict[str, FunctionNode],
     extracted_tokens: dict[str, list[TokenOrCall]],
     validation_results: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, GrammarNode]:
@@ -293,7 +294,7 @@ def _function_to_rule_name(func_name: str, /) -> str:
 
 
 def _build_func_to_rule_map(  # pyright: ignore[reportUnusedFunction]
-    parser_functions: dict[str, _FunctionNode], /
+    parser_functions: dict[str, FunctionNode], /
 ) -> dict[str, str]:
     """
     Build a mapping from parser function names to rule names.

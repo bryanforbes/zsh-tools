@@ -91,7 +91,7 @@ subsh : INPAR list OUTPAR |
 ### Token Infrastructure Exists But Is Dead Code
 
 1. **Phase 2.4 infrastructure created:**
-    - `_TokenEdge` TypedDict for token metadata
+    - `TokenEdge` TypedDict for token metadata
     - `_extract_token_consumption_patterns()` walks AST
     - Tokens stored in `call_graph[func_name]['token_edges']`
 

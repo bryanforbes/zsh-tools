@@ -16,7 +16,7 @@ from clang.cindex import CursorKind
 from zsh_grammar.ast_utilities import find_cursor
 
 if TYPE_CHECKING:
-    from zsh_grammar.construct_grammar import _FunctionNode
+    from zsh_grammar._types import FunctionNode
     from zsh_grammar.source_parser import ZshParser
 
 
@@ -53,7 +53,7 @@ def _filter_parser_functions(names: list[str], /) -> list[str]:  # pyright: igno
     return [name for name in names if _is_parser_function(name)]
 
 
-def extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
+def extract_parser_functions(zsh_src: Path, /) -> dict[str, FunctionNode]:
     """
     Extract parser functions from parse.syms file.
 
@@ -64,7 +64,7 @@ def extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
     - Lstatic void par_for _((int*cmplx));
     - Eextern Eprog parse_list _((void));
 
-    Returns a dict mapping function names to _FunctionNode objects containing:
+    Returns a dict mapping function names to FunctionNode objects containing:
     - name: function name
     - file: source file path relative to zsh_src
     - line: line number in .syms file
@@ -76,7 +76,7 @@ def extract_parser_functions(zsh_src: Path, /) -> dict[str, _FunctionNode]:
     if not parse_syms.exists():
         return {}
 
-    functions: dict[str, _FunctionNode] = {}
+    functions: dict[str, FunctionNode] = {}
 
     # Pattern to match function declarations in .syms files
     # Format: Lstatic void par_for _((int*cmplx));

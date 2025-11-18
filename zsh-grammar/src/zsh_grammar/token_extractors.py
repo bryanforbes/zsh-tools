@@ -21,7 +21,7 @@ from zsh_grammar.extraction_filters import (
 if TYPE_CHECKING:
     from clang.cindex import Cursor
 
-    from zsh_grammar.construct_grammar import TokenOrCall, _SyntheticToken, _TokenCheck
+    from zsh_grammar._types import SyntheticToken, TokenCheck, TokenOrCall
 
 
 def extract_token_sequences(cursor: Cursor, func_name: str = '') -> list[TokenOrCall]:  # noqa: C901, PLR0912
@@ -30,8 +30,8 @@ def extract_token_sequences(cursor: Cursor, func_name: str = '') -> list[TokenOr
 
     Walks AST and identifies all semantic tokens and function calls in execution order.
 
-    Returns a list of TokenOrCall items (discriminated union of _TokenCheck,
-    _FunctionCall, _SyntheticToken) ordered by source line number.
+    Returns a list of TokenOrCall items (discriminated union of TokenCheck,
+    _FunctionCall, SyntheticToken) ordered by source line number.
 
     This is the main extraction entry point that combines multiple patterns:
     - Pattern 1: Binary operators (tok == TOKEN checks)
@@ -201,7 +201,7 @@ def extract_token_sequences(cursor: Cursor, func_name: str = '') -> list[TokenOr
 
 def extract_synthetic_tokens(  # noqa: PLR0912
     cursor: Cursor, items: list[TokenOrCall], /
-) -> list[_SyntheticToken]:
+) -> list[SyntheticToken]:
     """
     Phase 2.4.1e: Extract synthetic tokens from compound string matching conditions.
 
@@ -228,9 +228,9 @@ def extract_synthetic_tokens(  # noqa: PLR0912
         items: Current list of collected items (for deduplication)
 
     Returns:
-        List of _SyntheticToken items to add to the token sequence.
+        List of SyntheticToken items to add to the token sequence.
     """
-    synthetics: list[_SyntheticToken] = []
+    synthetics: list[SyntheticToken] = []
     seen_synthetics: set[tuple[str, int]] = set()
 
     # Pattern: Binary logical AND with strcmp for POSITIVE matching
@@ -321,7 +321,7 @@ def extract_synthetic_tokens(  # noqa: PLR0912
         else:
             condition_desc = f'tok == STRING && strcmp(tokstr, "{string_value}")'
 
-        synth: _SyntheticToken = {
+        synth: SyntheticToken = {
             'kind': 'synthetic_token',
             'token_name': synth_token_name,
             'line': node.location.line,
@@ -334,7 +334,7 @@ def extract_synthetic_tokens(  # noqa: PLR0912
 
 def extract_error_guard_tokens(
     cursor: Cursor, func_name: str = '', /
-) -> list[_TokenCheck]:
+) -> list[TokenCheck]:
     """
     Extract semantically important tokens from error-checking guards.
 
@@ -357,7 +357,7 @@ def extract_error_guard_tokens(
         func_name: Function name for context (to check for undocumented tokens)
 
     Returns:
-        List of _TokenCheck items for error-guard tokens
+        List of TokenCheck items for error-guard tokens
     """
     terminator_tokens = {
         'DONE',
@@ -374,7 +374,7 @@ def extract_error_guard_tokens(
         'DOUTPAR',  # C-style for loop terminator (for (;;))
     }
 
-    extracted: list[_TokenCheck] = []
+    extracted: list[TokenCheck] = []
     seen: set[tuple[str, int]] = set()
 
     if_stmts = list(walk_and_filter(cursor, CursorKind.IF_STMT))

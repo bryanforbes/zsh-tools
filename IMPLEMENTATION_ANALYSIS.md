@@ -21,7 +21,7 @@ This analysis cross-references TODOS.md claims against actual code in `construct
     - Extracts 31 parser functions from `parse.syms`
     - Parses pattern: `[LE](static|extern) (?:\w+\s+)*(\w+) ([a-z_][a-z0-9_]*) _\(\(([^)]*)\)\);`
     - Handles intermediate keywords like `mod_import_function`
-    - Returns `_FunctionNode` with visibility, signature, file/line tracking
+    - Returns `FunctionNode` with visibility, signature, file/line tracking
     - Grammar output confirms: 31 rules generated with source traceability
 
 ### **Phase 2: Call Graph Construction**

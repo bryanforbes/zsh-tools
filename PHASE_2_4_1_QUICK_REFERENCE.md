@@ -89,7 +89,7 @@ Example: `if (tok == INPAR) { ... }` is one branch; `else if (tok == INBRACE) { 
 ### TokenOrCallEnhanced (Discriminated Union)
 
 ```python
-TokenOrCallEnhanced = _TokenCheckEnhanced | _FunctionCallEnhanced | _SyntheticTokenEnhanced
+type TokenOrCallEnhanced = TokenCheckEnhanced | FunctionCallEnhanced | SyntheticTokenEnhanced
 ```
 
 Each item has:
@@ -431,9 +431,9 @@ def test_call_graph_backward_compatible():
 
 ```python
 import json
-from zsh_grammar.construct_grammar import _ControlFlowBranch
+from zsh_grammar._types import ControlFlowBranch
 
-branch: _ControlFlowBranch = {...}
+branch: ControlFlowBranch = {...}
 print(json.dumps(branch, indent=2, default=str))
 # Shows structure clearly
 ```
