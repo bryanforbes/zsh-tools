@@ -541,5883 +541,791 @@
         "$ref": "list"
       },
       "subscript": {
-        "pattern": "[subscript]",
-        "source": {
-          "file": "lex.c",
-          "line": 1675,
-          "function": "parse_subscript"
-        }
+        "$ref": "subscript",
+        "description": "Parser function parse_subscript (no sequences extracted)"
       },
       "subst_string": {
-        "pattern": "[subst_string]",
-        "source": {
-          "file": "lex.c",
-          "line": 1728,
-          "function": "parse_subst_string"
-        }
+        "$ref": "subst_string",
+        "description": "Parser function parse_subst_string (no sequences extracted)"
       },
       "context_save": {
-        "union": [
-          {
-            "pattern": "[context_save]",
-            "source": {
-              "file": "parse.c",
-              "line": 295,
-              "function": "parse_context_save"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "ALIASSPACEFLAG"
-            },
-            "description": "context_save sets lexer state ALIASSPACEFLAG",
-            "source": {
-              "file": "parse.c",
-              "line": 300,
-              "function": "parse_context_save",
-              "context": "sets ALIASSPACEFLAG"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "context_save sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 303,
-              "function": "parse_context_save",
-              "context": "sets INCASEPAT"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "context_save sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 299,
-              "function": "parse_context_save",
-              "context": "sets INCMDPOS"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "INCOND"
-            },
-            "description": "context_save sets lexer state INCOND",
-            "source": {
-              "file": "parse.c",
-              "line": 301,
-              "function": "parse_context_save",
-              "context": "sets INCOND"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "INFOR"
-            },
-            "description": "context_save sets lexer state INFOR",
-            "source": {
-              "file": "parse.c",
-              "line": 305,
-              "function": "parse_context_save",
-              "context": "sets INFOR"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "INREDIR"
-            },
-            "description": "context_save sets lexer state INREDIR",
-            "source": {
-              "file": "parse.c",
-              "line": 302,
-              "function": "parse_context_save",
-              "context": "sets INREDIR"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "INTYPESET"
-            },
-            "description": "context_save sets lexer state INTYPESET",
-            "source": {
-              "file": "parse.c",
-              "line": 307,
-              "function": "parse_context_save",
-              "context": "sets INTYPESET"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_save]",
-              "source": {
-                "file": "parse.c",
-                "line": 295,
-                "function": "parse_context_save"
-              }
-            },
-            "condition": {
-              "lexstate": "ISNEWLIN"
-            },
-            "description": "context_save sets lexer state ISNEWLIN",
-            "source": {
-              "file": "parse.c",
-              "line": 304,
-              "function": "parse_context_save",
-              "context": "sets ISNEWLIN"
-            }
-          }
-        ],
-        "description": "context_save (modifies lexer states: INCMDPOS, ALIASSPACEFLAG, INCOND, INREDIR, INCASEPAT, ISNEWLIN, INFOR, INTYPESET)",
-        "source": {
-          "file": "parse.c",
-          "line": 295,
-          "function": "parse_context_save"
-        }
+        "$ref": "context_save",
+        "description": "Parser function parse_context_save (no sequences extracted)"
       },
       "context_restore": {
-        "union": [
-          {
-            "pattern": "[context_restore]",
-            "source": {
-              "file": "parse.c",
-              "line": 326,
-              "function": "parse_context_restore"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "ALIASSPACEFLAG"
-            },
-            "description": "context_restore sets lexer state ALIASSPACEFLAG",
-            "source": {
-              "file": "parse.c",
-              "line": 334,
-              "function": "parse_context_restore",
-              "context": "sets ALIASSPACEFLAG"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "context_restore sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 337,
-              "function": "parse_context_restore",
-              "context": "sets INCASEPAT"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "context_restore sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 333,
-              "function": "parse_context_restore",
-              "context": "sets INCMDPOS"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "INCOND"
-            },
-            "description": "context_restore sets lexer state INCOND",
-            "source": {
-              "file": "parse.c",
-              "line": 335,
-              "function": "parse_context_restore",
-              "context": "sets INCOND"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "INFOR"
-            },
-            "description": "context_restore sets lexer state INFOR",
-            "source": {
-              "file": "parse.c",
-              "line": 339,
-              "function": "parse_context_restore",
-              "context": "sets INFOR"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "INREDIR"
-            },
-            "description": "context_restore sets lexer state INREDIR",
-            "source": {
-              "file": "parse.c",
-              "line": 336,
-              "function": "parse_context_restore",
-              "context": "sets INREDIR"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "INTYPESET"
-            },
-            "description": "context_restore sets lexer state INTYPESET",
-            "source": {
-              "file": "parse.c",
-              "line": 341,
-              "function": "parse_context_restore",
-              "context": "sets INTYPESET"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[context_restore]",
-              "source": {
-                "file": "parse.c",
-                "line": 326,
-                "function": "parse_context_restore"
-              }
-            },
-            "condition": {
-              "lexstate": "ISNEWLIN"
-            },
-            "description": "context_restore sets lexer state ISNEWLIN",
-            "source": {
-              "file": "parse.c",
-              "line": 338,
-              "function": "parse_context_restore",
-              "context": "sets ISNEWLIN"
-            }
-          }
-        ],
-        "description": "context_restore (modifies lexer states: INCMDPOS, ALIASSPACEFLAG, INCOND, INREDIR, INCASEPAT, ISNEWLIN, INFOR, INTYPESET)",
-        "source": {
-          "file": "parse.c",
-          "line": 326,
-          "function": "parse_context_restore"
-        }
+        "$ref": "context_restore",
+        "description": "Parser function parse_context_restore (no sequences extracted)"
       },
       "event": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "optional": {
-                  "union": [
-                    {
-                      "sequence": [
-                        {
-                          "$ref": "sublist"
-                        },
-                        {
-                          "$ref": "ENDINPUT"
-                        },
-                        {
-                          "$ref": "SEPER"
-                        },
-                        {
-                          "$ref": "AMPER"
-                        },
-                        {
-                          "$ref": "AMPERBANG"
-                        }
-                      ],
-                      "source": {
-                        "file": "parse.c",
-                        "line": 631,
-                        "function": "par_event"
-                      }
-                    },
-                    {
-                      "sequence": [
-                        {
-                          "$ref": "ENDINPUT"
-                        },
-                        {
-                          "$ref": "SEPER"
-                        },
-                        {
-                          "$ref": "AMPER"
-                        },
-                        {
-                          "$ref": "AMPERBANG"
-                        }
-                      ],
-                      "source": {
-                        "file": "parse.c",
-                        "line": 631,
-                        "function": "par_event"
-                      }
-                    },
-                    {
-                      "sequence": [
-                        {
-                          "$ref": "SEPER"
-                        },
-                        {
-                          "$ref": "AMPER"
-                        },
-                        {
-                          "$ref": "AMPERBANG"
-                        }
-                      ],
-                      "source": {
-                        "file": "parse.c",
-                        "line": 631,
-                        "function": "par_event"
-                      }
-                    },
-                    {
-                      "sequence": [
-                        {
-                          "$ref": "AMPER"
-                        },
-                        {
-                          "$ref": "AMPERBANG"
-                        }
-                      ],
-                      "source": {
-                        "file": "parse.c",
-                        "line": 631,
-                        "function": "par_event"
-                      }
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 631,
-                    "function": "par_event"
-                  }
-                },
-                "description": "par_event contains if statement without else with parser function calls",
-                "source": {
-                  "file": "parse.c",
-                  "line": 631,
-                  "function": "par_event"
-                }
-              },
-              {
-                "variant": {
-                  "optional": {
-                    "union": [
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "sublist"
-                          },
-                          {
-                            "$ref": "ENDINPUT"
-                          },
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "ENDINPUT"
-                          },
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 631,
-                      "function": "par_event"
-                    }
-                  },
-                  "description": "par_event contains if statement without else with parser function calls",
-                  "source": {
-                    "file": "parse.c",
-                    "line": 631,
-                    "function": "par_event"
-                  }
-                },
-                "condition": {
-                  "lexstate": "ALIASSPACEFLAG"
-                },
-                "description": "event sets lexer state ALIASSPACEFLAG",
-                "source": {
-                  "file": "parse.c",
-                  "line": 614,
-                  "function": "parse_event",
-                  "context": "sets ALIASSPACEFLAG"
-                }
-              },
-              {
-                "variant": {
-                  "optional": {
-                    "union": [
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "sublist"
-                          },
-                          {
-                            "$ref": "ENDINPUT"
-                          },
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "ENDINPUT"
-                          },
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 631,
-                      "function": "par_event"
-                    }
-                  },
-                  "description": "par_event contains if statement without else with parser function calls",
-                  "source": {
-                    "file": "parse.c",
-                    "line": 631,
-                    "function": "par_event"
-                  }
-                },
-                "condition": {
-                  "lexstate": "INCMDPOS"
-                },
-                "description": "event sets lexer state INCMDPOS",
-                "source": {
-                  "file": "parse.c",
-                  "line": 613,
-                  "function": "parse_event",
-                  "context": "sets INCMDPOS"
-                }
-              }
-            ],
-            "description": "event (modifies lexer states: INCMDPOS, ALIASSPACEFLAG)",
-            "source": {
-              "file": "parse.c",
-              "line": 631,
-              "function": "par_event"
-            }
+            "$ref": "SEPER"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "optional": {
-                    "union": [
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "sublist"
-                          },
-                          {
-                            "$ref": "ENDINPUT"
-                          },
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "ENDINPUT"
-                          },
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "SEPER"
-                          },
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      },
-                      {
-                        "sequence": [
-                          {
-                            "$ref": "AMPER"
-                          },
-                          {
-                            "$ref": "AMPERBANG"
-                          }
-                        ],
-                        "source": {
-                          "file": "parse.c",
-                          "line": 631,
-                          "function": "par_event"
-                        }
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 631,
-                      "function": "par_event"
-                    }
-                  },
-                  "description": "par_event contains if statement without else with parser function calls",
-                  "source": {
-                    "file": "parse.c",
-                    "line": 631,
-                    "function": "par_event"
-                  }
-                },
-                {
-                  "variant": {
-                    "optional": {
-                      "union": [
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "sublist"
-                            },
-                            {
-                              "$ref": "ENDINPUT"
-                            },
-                            {
-                              "$ref": "SEPER"
-                            },
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        },
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "ENDINPUT"
-                            },
-                            {
-                              "$ref": "SEPER"
-                            },
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        },
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "SEPER"
-                            },
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        },
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        }
-                      ],
-                      "source": {
-                        "file": "parse.c",
-                        "line": 631,
-                        "function": "par_event"
-                      }
-                    },
-                    "description": "par_event contains if statement without else with parser function calls",
-                    "source": {
-                      "file": "parse.c",
-                      "line": 631,
-                      "function": "par_event"
-                    }
-                  },
-                  "condition": {
-                    "lexstate": "ALIASSPACEFLAG"
-                  },
-                  "description": "event sets lexer state ALIASSPACEFLAG",
-                  "source": {
-                    "file": "parse.c",
-                    "line": 614,
-                    "function": "parse_event",
-                    "context": "sets ALIASSPACEFLAG"
-                  }
-                },
-                {
-                  "variant": {
-                    "optional": {
-                      "union": [
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "sublist"
-                            },
-                            {
-                              "$ref": "ENDINPUT"
-                            },
-                            {
-                              "$ref": "SEPER"
-                            },
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        },
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "ENDINPUT"
-                            },
-                            {
-                              "$ref": "SEPER"
-                            },
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        },
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "SEPER"
-                            },
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        },
-                        {
-                          "sequence": [
-                            {
-                              "$ref": "AMPER"
-                            },
-                            {
-                              "$ref": "AMPERBANG"
-                            }
-                          ],
-                          "source": {
-                            "file": "parse.c",
-                            "line": 631,
-                            "function": "par_event"
-                          }
-                        }
-                      ],
-                      "source": {
-                        "file": "parse.c",
-                        "line": 631,
-                        "function": "par_event"
-                      }
-                    },
-                    "description": "par_event contains if statement without else with parser function calls",
-                    "source": {
-                      "file": "parse.c",
-                      "line": 631,
-                      "function": "par_event"
-                    }
-                  },
-                  "condition": {
-                    "lexstate": "INCMDPOS"
-                  },
-                  "description": "event sets lexer state INCMDPOS",
-                  "source": {
-                    "file": "parse.c",
-                    "line": 613,
-                    "function": "parse_event",
-                    "context": "sets INCMDPOS"
-                  }
-                }
-              ],
-              "description": "event (modifies lexer states: INCMDPOS, ALIASSPACEFLAG)",
-              "source": {
-                "file": "parse.c",
-                "line": 631,
-                "function": "par_event"
-              }
-            },
-            "condition": {
-              "lexstate": "ISNEWLIN"
-            },
-            "description": "event sets lexer state ISNEWLIN",
-            "source": {
-              "file": "parse.c",
-              "line": 636,
-              "function": "par_event",
-              "context": "sets ISNEWLIN"
-            }
+            "$ref": "ENDINPUT"
+          },
+          {
+            "$ref": "sublist"
+          },
+          {
+            "$ref": "ENDINPUT"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "AMPER"
+          },
+          {
+            "$ref": "AMPERBANG"
           }
-        ],
-        "description": "event (modifies lexer states: ISNEWLIN)",
-        "source": {
-          "file": "parse.c",
-          "line": 631,
-          "function": "par_event"
-        }
+        ]
       },
       "list": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "sequence": [
-                  {
-                    "$ref": "sublist"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  },
-                  {
-                    "$ref": "AMPER"
-                  },
-                  {
-                    "$ref": "AMPERBANG"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  },
-                  {
-                    "$ref": "AMPER"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 767,
-                  "function": "par_list"
-                }
-              },
-              {
-                "sequence": [
-                  {
-                    "$ref": "SEPER"
-                  },
-                  {
-                    "$ref": "AMPER"
-                  },
-                  {
-                    "$ref": "AMPERBANG"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  },
-                  {
-                    "$ref": "AMPER"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 767,
-                  "function": "par_list"
-                }
-              }
-            ],
-            "source": {
-              "file": "parse.c",
-              "line": 767,
-              "function": "par_list"
-            }
+            "$ref": "SEPER"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "sublist"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "AMPER"
-                    },
-                    {
-                      "$ref": "AMPERBANG"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "AMPER"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 767,
-                    "function": "par_list"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "AMPER"
-                    },
-                    {
-                      "$ref": "AMPERBANG"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "AMPER"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 767,
-                    "function": "par_list"
-                  }
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 767,
-                "function": "par_list"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "list sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 787,
-              "function": "par_list",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "sublist"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "AMPER"
+          },
+          {
+            "$ref": "AMPERBANG"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "AMPER"
+          },
+          {
+            "$ref": "SEPER"
           }
-        ],
-        "description": "list (modifies lexer states: INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 767,
-          "function": "par_list"
-        }
+        ]
       },
       "cond": {
-        "optional": {
-          "sequence": [
-            {
-              "$ref": "cond_1"
-            },
-            {
-              "$ref": "SEPER"
-            },
-            {
-              "$ref": "DBAR"
-            },
-            {
-              "$ref": "SEPER"
-            }
-          ],
-          "source": {
-            "file": "parse.c",
-            "line": 2397,
-            "function": "par_cond"
+        "sequence": [
+          {
+            "$ref": "cond_1"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "DBAR"
+          },
+          {
+            "$ref": "SEPER"
           }
-        },
-        "description": "par_cond contains if statement without else with parser function calls",
-        "source": {
-          "file": "parse.c",
-          "line": 2397,
-          "function": "par_cond"
-        }
+        ]
       },
       "list1": {
         "$ref": "sublist"
       },
       "sublist": {
-        "$ref": "sublist2",
-        "source": {
-          "file": "parse.c",
-          "line": 821,
-          "function": "par_sublist"
-        }
+        "sequence": [
+          {
+            "$ref": "sublist2"
+          },
+          {
+            "$ref": "DBAR"
+          },
+          {
+            "$ref": "DAMPER"
+          },
+          {
+            "$ref": "DBAR"
+          },
+          {
+            "$ref": "SEPER"
+          }
+        ]
       },
       "sublist2": {
-        "optional": {
-          "sequence": [
-            {
-              "$ref": "COPROC"
-            },
-            {
-              "$ref": "BANG"
-            }
-          ],
-          "source": {
-            "file": "parse.c",
-            "line": 865,
-            "function": "par_sublist2"
+        "sequence": [
+          {
+            "$ref": "COPROC"
+          },
+          {
+            "$ref": "BANG"
+          },
+          {
+            "$ref": "pline"
           }
-        },
-        "description": "par_sublist2 contains if statement without else with parser function calls",
-        "source": {
-          "file": "parse.c",
-          "line": 865,
-          "function": "par_sublist2"
-        }
+        ]
       },
       "pline": {
-        "optional": {
-          "union": [
-            {
-              "sequence": [
-                {
-                  "$ref": "BAR"
-                },
-                {
-                  "$ref": "SEPER"
-                },
-                {
-                  "$ref": "BARAMP"
-                },
-                {
-                  "$ref": "SEPER"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 890,
-                "function": "par_pline"
-              }
-            },
-            {
-              "sequence": [
-                {
-                  "$ref": "BARAMP"
-                },
-                {
-                  "$ref": "SEPER"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 890,
-                "function": "par_pline"
-              }
-            }
-          ],
-          "source": {
-            "file": "parse.c",
-            "line": 890,
-            "function": "par_pline"
+        "sequence": [
+          {
+            "$ref": "cmd"
+          },
+          {
+            "$ref": "BAR"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "BARAMP"
+          },
+          {
+            "$ref": "SEPER"
           }
-        },
-        "description": "par_pline contains if statement without else with parser function calls",
-        "source": {
-          "file": "parse.c",
-          "line": 890,
-          "function": "par_pline"
-        }
+        ]
       },
       "cmd": {
-        "union": [
+        "sequence": [
           {
-            "optional": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "FOR"
-                    },
-                    {
-                      "$ref": "for"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "FOREACH"
-                    },
-                    {
-                      "$ref": "for"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "SELECT"
-                    },
-                    {
-                      "$ref": "for"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "CASE"
-                    },
-                    {
-                      "$ref": "case"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "IF"
-                    },
-                    {
-                      "$ref": "if"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "WHILE"
-                    },
-                    {
-                      "$ref": "while"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "UNTIL"
-                    },
-                    {
-                      "$ref": "while"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "REPEAT"
-                    },
-                    {
-                      "$ref": "repeat"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INPAR"
-                    },
-                    {
-                      "$ref": "subsh"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "subsh"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "$ref": "funcdef"
-                },
-                {
-                  "$ref": "dinbrack"
-                },
-                {
-                  "$ref": "DINPAR"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "time"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "simple"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 954,
-                    "function": "par_cmd"
-                  }
-                },
-                {
-                  "$ref": "simple"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 954,
-                "function": "par_cmd"
-              }
-            },
-            "description": "par_cmd contains if statement without else with parser function calls",
-            "source": {
-              "file": "parse.c",
-              "line": 954,
-              "function": "par_cmd"
-            }
+            "$ref": "OUTANG"
           },
           {
-            "variant": {
-              "optional": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOR"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOREACH"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "SELECT"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "CASE"
-                      },
-                      {
-                        "$ref": "case"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "IF"
-                      },
-                      {
-                        "$ref": "if"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "WHILE"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "UNTIL"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "REPEAT"
-                      },
-                      {
-                        "$ref": "repeat"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INPAR"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "funcdef"
-                  },
-                  {
-                    "$ref": "dinbrack"
-                  },
-                  {
-                    "$ref": "DINPAR"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "time"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "simple"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "simple"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 954,
-                  "function": "par_cmd"
-                }
-              },
-              "description": "par_cmd contains if statement without else with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 954,
-                "function": "par_cmd"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "cmd sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1069,
-              "function": "par_cmd",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "OUTANG"
           },
           {
-            "variant": {
-              "optional": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOR"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOREACH"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "SELECT"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "CASE"
-                      },
-                      {
-                        "$ref": "case"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "IF"
-                      },
-                      {
-                        "$ref": "if"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "WHILE"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "UNTIL"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "REPEAT"
-                      },
-                      {
-                        "$ref": "repeat"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INPAR"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "funcdef"
-                  },
-                  {
-                    "$ref": "dinbrack"
-                  },
-                  {
-                    "$ref": "DINPAR"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "time"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "simple"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "simple"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 954,
-                  "function": "par_cmd"
-                }
-              },
-              "description": "par_cmd contains if statement without else with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 954,
-                "function": "par_cmd"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "cmd sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1068,
-              "function": "par_cmd",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "FOR"
           },
           {
-            "variant": {
-              "optional": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOR"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOREACH"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "SELECT"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "CASE"
-                      },
-                      {
-                        "$ref": "case"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "IF"
-                      },
-                      {
-                        "$ref": "if"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "WHILE"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "UNTIL"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "REPEAT"
-                      },
-                      {
-                        "$ref": "repeat"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INPAR"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "funcdef"
-                  },
-                  {
-                    "$ref": "dinbrack"
-                  },
-                  {
-                    "$ref": "DINPAR"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "time"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "simple"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "simple"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 954,
-                  "function": "par_cmd"
-                }
-              },
-              "description": "par_cmd contains if statement without else with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 954,
-                "function": "par_cmd"
-              }
-            },
-            "condition": {
-              "lexstate": "INCOND"
-            },
-            "description": "cmd sets lexer state INCOND",
-            "source": {
-              "file": "parse.c",
-              "line": 1070,
-              "function": "par_cmd",
-              "context": "sets INCOND"
-            }
+            "$ref": "for"
           },
           {
-            "variant": {
-              "optional": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOR"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "FOREACH"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "SELECT"
-                      },
-                      {
-                        "$ref": "for"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "CASE"
-                      },
-                      {
-                        "$ref": "case"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "IF"
-                      },
-                      {
-                        "$ref": "if"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "WHILE"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "UNTIL"
-                      },
-                      {
-                        "$ref": "while"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "REPEAT"
-                      },
-                      {
-                        "$ref": "repeat"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INPAR"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "subsh"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "funcdef"
-                  },
-                  {
-                    "$ref": "dinbrack"
-                  },
-                  {
-                    "$ref": "DINPAR"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "time"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "simple"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 954,
-                      "function": "par_cmd"
-                    }
-                  },
-                  {
-                    "$ref": "simple"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 954,
-                  "function": "par_cmd"
-                }
-              },
-              "description": "par_cmd contains if statement without else with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 954,
-                "function": "par_cmd"
-              }
-            },
-            "condition": {
-              "lexstate": "INTYPESET"
-            },
-            "description": "cmd sets lexer state INTYPESET",
-            "source": {
-              "file": "parse.c",
-              "line": 1071,
-              "function": "par_cmd",
-              "context": "sets INTYPESET"
-            }
+            "$ref": "FOREACH"
+          },
+          {
+            "$ref": "for"
+          },
+          {
+            "$ref": "SELECT"
+          },
+          {
+            "$ref": "for"
+          },
+          {
+            "$ref": "CASE"
+          },
+          {
+            "$ref": "case"
+          },
+          {
+            "$ref": "IF"
+          },
+          {
+            "$ref": "if"
+          },
+          {
+            "$ref": "WHILE"
+          },
+          {
+            "$ref": "while"
+          },
+          {
+            "$ref": "UNTIL"
+          },
+          {
+            "$ref": "while"
+          },
+          {
+            "$ref": "REPEAT"
+          },
+          {
+            "$ref": "repeat"
+          },
+          {
+            "$ref": "INPAR"
+          },
+          {
+            "$ref": "subsh"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "subsh"
+          },
+          {
+            "$ref": "funcdef"
+          },
+          {
+            "$ref": "dinbrack"
+          },
+          {
+            "$ref": "DINPAR"
+          },
+          {
+            "$ref": "time"
+          },
+          {
+            "$ref": "simple"
+          },
+          {
+            "$ref": "OUTANG"
+          },
+          {
+            "$ref": "OUTANG"
           }
-        ],
-        "description": "cmd (modifies lexer states: INCMDPOS, INCASEPAT, INCOND, INTYPESET)",
-        "source": {
-          "file": "parse.c",
-          "line": 954,
-          "function": "par_cmd"
-        }
+        ]
       },
       "for": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "sequence": [
-                  {
-                    "$ref": "DOLOOP"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1083,
-                  "function": "par_for"
-                }
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "sequence": [
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1083,
-                  "function": "par_for"
-                }
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list"
-              }
-            ],
-            "source": {
-              "file": "parse.c",
-              "line": 1083,
-              "function": "par_for"
-            }
+            "$ref": "FOREACH"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1083,
-                "function": "par_for"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "for sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1168,
-              "function": "par_for",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "SELECT"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1083,
-                "function": "par_for"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "for sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1090,
-              "function": "par_for",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "FOR"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1083,
-                "function": "par_for"
-              }
-            },
-            "condition": {
-              "lexstate": "INFOR"
-            },
-            "description": "for sets lexer state INFOR",
-            "source": {
-              "file": "parse.c",
-              "line": 1091,
-              "function": "par_for",
-              "context": "sets INFOR"
-            }
+            "$ref": "DOUTPAR",
+            "description": "NOT DOUTPAR"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1083,
-                    "function": "par_for"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1083,
-                "function": "par_for"
-              }
-            },
-            "condition": {
-              "lexstate": "ISNEWLIN"
-            },
-            "description": "for sets lexer state ISNEWLIN",
-            "source": {
-              "file": "parse.c",
-              "line": 1137,
-              "function": "par_for",
-              "context": "sets ISNEWLIN"
-            }
+            "$ref": "SEPER",
+            "description": "NOT SEPER"
+          },
+          {
+            "$ref": "SEPER",
+            "description": "NOT SEPER"
+          },
+          {
+            "$ref": "OUTPAR",
+            "description": "NOT OUTPAR"
+          },
+          {
+            "$ref": "OUTPAR",
+            "description": "NOT OUTPAR"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "DOLOOP"
+          },
+          {
+            "$ref": "DONE",
+            "description": "NOT DONE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "DONE",
+            "description": "NOT DONE"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
           }
-        ],
-        "description": "for (modifies lexer states: INCMDPOS, INFOR, ISNEWLIN, INCASEPAT)",
-        "source": {
-          "file": "parse.c",
-          "line": 1083,
-          "function": "par_for"
-        }
+        ]
       },
       "case": {
-        "union": [
+        "sequence": [
           {
-            "repeat": {
-              "union": [
-                {
-                  "$ref": "BAR"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "OUTPAR"
-                    },
-                    {
-                      "$ref": "BAR"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1205,
-                    "function": "par_case"
-                  }
-                },
-                {
-                  "$ref": "BAR"
-                },
-                {
-                  "$ref": "STRING"
-                },
-                {
-                  "$ref": "OUTPAR"
-                },
-                {
-                  "$ref": "BAR"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "SEMIAMP"
-                    },
-                    {
-                      "$ref": "SEMIBAR"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1205,
-                    "function": "par_case"
-                  }
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1205,
-                "function": "par_case"
-              }
-            },
-            "min": 0,
-            "description": "par_case contains for loop with parser function calls",
-            "source": {
-              "file": "parse.c",
-              "line": 1205,
-              "function": "par_case"
-            }
+            "$ref": "SEPER"
           },
           {
-            "variant": {
-              "repeat": {
-                "union": [
-                  {
-                    "$ref": "BAR"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTPAR"
-                      },
-                      {
-                        "$ref": "BAR"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1205,
-                      "function": "par_case"
-                    }
-                  },
-                  {
-                    "$ref": "BAR"
-                  },
-                  {
-                    "$ref": "STRING"
-                  },
-                  {
-                    "$ref": "OUTPAR"
-                  },
-                  {
-                    "$ref": "BAR"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "SEMIAMP"
-                      },
-                      {
-                        "$ref": "SEMIBAR"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1205,
-                      "function": "par_case"
-                    }
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1205,
-                  "function": "par_case"
-                }
-              },
-              "min": 0,
-              "description": "par_case contains for loop with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 1205,
-                "function": "par_case"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "case sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1232,
-              "function": "par_case",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "STRING"
           },
           {
-            "variant": {
-              "repeat": {
-                "union": [
-                  {
-                    "$ref": "BAR"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTPAR"
-                      },
-                      {
-                        "$ref": "BAR"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1205,
-                      "function": "par_case"
-                    }
-                  },
-                  {
-                    "$ref": "BAR"
-                  },
-                  {
-                    "$ref": "STRING"
-                  },
-                  {
-                    "$ref": "OUTPAR"
-                  },
-                  {
-                    "$ref": "BAR"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "SEMIAMP"
-                      },
-                      {
-                        "$ref": "SEMIBAR"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1205,
-                      "function": "par_case"
-                    }
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1205,
-                  "function": "par_case"
-                }
-              },
-              "min": 0,
-              "description": "par_case contains for loop with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 1205,
-                "function": "par_case"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "case sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1212,
-              "function": "par_case",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "OUTBRACE"
+          },
+          {
+            "$ref": "BAR"
+          },
+          {
+            "$ref": "OUTPAR"
+          },
+          {
+            "$ref": "BAR"
+          },
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "OUTPAR"
+          },
+          {
+            "$ref": "BAR"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "SEMIAMP"
+          },
+          {
+            "$ref": "SEMIBAR"
+          },
+          {
+            "$ref": "OUTBRACE"
+          },
+          {
+            "$ref": "DSEMI",
+            "description": "NOT DSEMI"
           }
-        ],
-        "description": "case (modifies lexer states: INCMDPOS, INCASEPAT)",
-        "source": {
-          "file": "parse.c",
-          "line": 1205,
-          "function": "par_case"
-        }
+        ]
       },
       "if": {
-        "union": [
+        "sequence": [
           {
-            "repeat": {
-              "union": [
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "THEN"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1407,
-                    "function": "par_if"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1407,
-                    "function": "par_if"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "ELSE"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1407,
-                    "function": "par_if"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1407,
-                    "function": "par_if"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1407,
-                "function": "par_if"
-              }
-            },
-            "min": 0,
-            "description": "par_if contains for loop with parser function calls",
-            "source": {
-              "file": "parse.c",
-              "line": 1407,
-              "function": "par_if"
-            }
+            "$ref": "IF"
           },
           {
-            "variant": {
-              "repeat": {
-                "union": [
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "THEN"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ELSE"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "list"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "list"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1407,
-                  "function": "par_if"
-                }
-              },
-              "min": 0,
-              "description": "par_if contains for loop with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 1407,
-                "function": "par_if"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "if sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1434,
-              "function": "par_if",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "FI"
           },
           {
-            "variant": {
-              "repeat": {
-                "union": [
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "THEN"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ELSE"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "list"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "list"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1407,
-                      "function": "par_if"
-                    }
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1407,
-                  "function": "par_if"
-                }
-              },
-              "min": 0,
-              "description": "par_if contains for loop with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 1407,
-                "function": "par_if"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "if sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1419,
-              "function": "par_if",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "ELSE"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "IF"
+          },
+          {
+            "$ref": "ELIF"
+          },
+          {
+            "$ref": "IF"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "FI"
+          },
+          {
+            "$ref": "THEN"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "list1"
+          },
+          {
+            "$ref": "ELSE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
           }
-        ],
-        "description": "if (modifies lexer states: INCMDPOS, INCASEPAT)",
-        "source": {
-          "file": "parse.c",
-          "line": 1407,
-          "function": "par_if"
-        }
+        ]
       },
       "while": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "$ref": "list"
-              },
-              {
-                "sequence": [
-                  {
-                    "$ref": "DOLOOP"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1517,
-                  "function": "par_while"
-                }
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "sequence": [
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1517,
-                  "function": "par_while"
-                }
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list"
-              }
-            ],
-            "source": {
-              "file": "parse.c",
-              "line": 1517,
-              "function": "par_while"
-            }
+            "$ref": "UNTIL"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1517,
-                    "function": "par_while"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1517,
-                    "function": "par_while"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1517,
-                "function": "par_while"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "while sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1524,
-              "function": "par_while",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "list"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1517,
-                    "function": "par_while"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1517,
-                    "function": "par_while"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1517,
-                "function": "par_while"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "while sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1525,
-              "function": "par_while",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "DOLOOP"
+          },
+          {
+            "$ref": "DONE",
+            "description": "NOT DONE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "DONE",
+            "description": "NOT DONE"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
           }
-        ],
-        "description": "while (modifies lexer states: INCASEPAT, INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 1517,
-          "function": "par_while"
-        }
+        ]
       },
       "repeat": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "sequence": [
-                  {
-                    "$ref": "DOLOOP"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1561,
-                  "function": "par_repeat"
-                }
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "sequence": [
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1561,
-                  "function": "par_repeat"
-                }
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list"
-              },
-              {
-                "$ref": "list"
-              }
-            ],
-            "source": {
-              "file": "parse.c",
-              "line": 1561,
-              "function": "par_repeat"
-            }
+            "$ref": "STRING",
+            "description": "NOT STRING"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1561,
-                    "function": "par_repeat"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1561,
-                    "function": "par_repeat"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1561,
-                "function": "par_repeat"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "repeat sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1579,
-              "function": "par_repeat",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "SEPER"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "DOLOOP"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1561,
-                    "function": "par_repeat"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1561,
-                    "function": "par_repeat"
-                  }
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1561,
-                "function": "par_repeat"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "repeat sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1568,
-              "function": "par_repeat",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "DOLOOP"
+          },
+          {
+            "$ref": "DONE",
+            "description": "NOT DONE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "DONE",
+            "description": "NOT DONE"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "list1"
           }
-        ],
-        "description": "repeat (modifies lexer states: INCMDPOS, INCASEPAT)",
-        "source": {
-          "file": "parse.c",
-          "line": 1561,
-          "function": "par_repeat"
-        }
+        ]
       },
       "subsh": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "sequence": [
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "STRING"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "SEPER"
-                  },
-                  {
-                    "$ref": "INPAR"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1615,
-                  "function": "par_subsh"
-                }
-              },
-              {
-                "$ref": "list"
-              }
-            ],
-            "source": {
-              "file": "parse.c",
-              "line": 1615,
-              "function": "par_subsh"
-            }
+            "$ref": "list"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INPAR"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1615,
-                    "function": "par_subsh"
-                  }
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1615,
-                "function": "par_subsh"
-              }
-            },
-            "condition": {
-              "lexstate": "INCASEPAT"
-            },
-            "description": "subsh sets lexer state INCASEPAT",
-            "source": {
-              "file": "parse.c",
-              "line": 1645,
-              "function": "par_subsh",
-              "context": "sets INCASEPAT"
-            }
+            "$ref": "INBRACE"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INPAR"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1615,
-                    "function": "par_subsh"
-                  }
-                },
-                {
-                  "$ref": "list"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1615,
-                "function": "par_subsh"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "subsh sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1627,
-              "function": "par_subsh",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "INPAR"
           }
-        ],
-        "description": "subsh (modifies lexer states: INCMDPOS, INCASEPAT)",
-        "source": {
-          "file": "parse.c",
-          "line": 1615,
-          "function": "par_subsh"
-        }
+        ]
       },
       "funcdef": {
-        "union": [
+        "sequence": [
           {
-            "union": [
-              {
-                "sequence": [
-                  {
-                    "$ref": "INBRACE"
-                  },
-                  {
-                    "$ref": "list"
-                  },
-                  {
-                    "$ref": "list1"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1668,
-                  "function": "par_funcdef"
-                }
-              },
-              {
-                "$ref": "list1"
-              }
-            ],
-            "source": {
-              "file": "parse.c",
-              "line": 1668,
-              "function": "par_funcdef"
-            }
+            "$ref": "INBRACE"
           },
           {
-            "variant": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "list1"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1668,
-                    "function": "par_funcdef"
-                  }
-                },
-                {
-                  "$ref": "list1"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1668,
-                "function": "par_funcdef"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "funcdef sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1677,
-              "function": "par_funcdef",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "INOUTPAR"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list1"
           }
-        ],
-        "description": "funcdef (modifies lexer states: INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 1668,
-          "function": "par_funcdef"
-        }
+        ]
       },
       "time": {
         "$ref": "sublist2"
       },
       "dinbrack": {
-        "union": [
-          {
-            "$ref": "cond"
-          },
-          {
-            "variant": {
-              "$ref": "cond"
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "dinbrack sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1811,
-              "function": "par_dinbrack",
-              "context": "sets INCMDPOS"
-            }
-          },
-          {
-            "variant": {
-              "$ref": "cond"
-            },
-            "condition": {
-              "lexstate": "INCOND"
-            },
-            "description": "dinbrack sets lexer state INCOND",
-            "source": {
-              "file": "parse.c",
-              "line": 1810,
-              "function": "par_dinbrack",
-              "context": "sets INCOND"
-            }
-          }
-        ],
-        "description": "dinbrack (modifies lexer states: INCOND, INCMDPOS)"
+        "$ref": "cond"
       },
       "simple": {
-        "union": [
+        "sequence": [
           {
-            "repeat": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "NOCORRECT"
-                    },
-                    {
-                      "$ref": "ENVSTRING"
-                    },
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "ENVSTRING"
-                    },
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "$ref": "OUTANG"
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "TYPESET"
-                    },
-                    {
-                      "$ref": "TYPESET"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "redir"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "ENVSTRING"
-                    },
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "INOUTPAR"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "cmd"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "STRING"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "redir"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "redir"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "redir"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "redir"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "ENVSTRING"
-                    },
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "INOUTPAR"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "cmd"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "STRING"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "ENVSTRING"
-                    },
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "INOUTPAR"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "cmd"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "STRING"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "ENVARRAY"
-                    },
-                    {
-                      "$ref": "nl_wordlist"
-                    },
-                    {
-                      "$ref": "INOUTPAR"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "cmd"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "STRING"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INOUTPAR"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "cmd"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "STRING"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "INBRACE"
-                    },
-                    {
-                      "$ref": "list"
-                    },
-                    {
-                      "$ref": "cmd"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "OUTANG"
-                    },
-                    {
-                      "$ref": "STRING"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 1832,
-                    "function": "par_simple"
-                  }
-                },
-                {
-                  "$ref": "STRING"
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 1832,
-                "function": "par_simple"
-              }
-            },
-            "min": 0,
-            "description": "par_simple contains for loop with parser function calls",
-            "source": {
-              "file": "parse.c",
-              "line": 1832,
-              "function": "par_simple"
-            }
+            "$ref": "NOCORRECT"
           },
           {
-            "variant": {
-              "repeat": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "NOCORRECT"
-                      },
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "$ref": "OUTANG"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "TYPESET"
-                      },
-                      {
-                        "$ref": "TYPESET"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "$ref": "STRING"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1832,
-                  "function": "par_simple"
-                }
-              },
-              "min": 0,
-              "description": "par_simple contains for loop with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 1832,
-                "function": "par_simple"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "simple sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 1888,
-              "function": "par_simple",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "ENVSTRING"
           },
           {
-            "variant": {
-              "repeat": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "NOCORRECT"
-                      },
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "$ref": "OUTANG"
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "TYPESET"
-                      },
-                      {
-                        "$ref": "TYPESET"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "redir"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVSTRING"
-                      },
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "ENVARRAY"
-                      },
-                      {
-                        "$ref": "nl_wordlist"
-                      },
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INOUTPAR"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "INBRACE"
-                      },
-                      {
-                        "$ref": "list"
-                      },
-                      {
-                        "$ref": "cmd"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "OUTANG"
-                      },
-                      {
-                        "$ref": "STRING"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 1832,
-                      "function": "par_simple"
-                    }
-                  },
-                  {
-                    "$ref": "STRING"
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 1832,
-                  "function": "par_simple"
-                }
-              },
-              "min": 0,
-              "description": "par_simple contains for loop with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 1832,
-                "function": "par_simple"
-              }
-            },
-            "condition": {
-              "lexstate": "INTYPESET"
-            },
-            "description": "simple sets lexer state INTYPESET",
-            "source": {
-              "file": "parse.c",
-              "line": 1928,
-              "function": "par_simple",
-              "context": "sets INTYPESET"
-            }
+            "$ref": "ENVARRAY"
+          },
+          {
+            "$ref": "nl_wordlist"
+          },
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "TYPESET"
+          },
+          {
+            "$ref": "TYPESET"
+          },
+          {
+            "$ref": "redir"
+          },
+          {
+            "$ref": "ENVSTRING"
+          },
+          {
+            "$ref": "ENVARRAY"
+          },
+          {
+            "$ref": "nl_wordlist"
+          },
+          {
+            "$ref": "INOUTPAR"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "INBRACE"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "list"
+          },
+          {
+            "$ref": "OUTBRACE",
+            "description": "NOT OUTBRACE"
+          },
+          {
+            "$ref": "cmd"
+          },
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "STRING"
           }
-        ],
-        "description": "simple (modifies lexer states: INCMDPOS, INTYPESET)",
-        "source": {
-          "file": "parse.c",
-          "line": 1832,
-          "function": "par_simple"
-        }
+        ]
       },
       "redir": {
-        "union": [
-          {
-            "$ref": "OUTANG"
-          },
-          {
-            "variant": {
-              "$ref": "OUTANG"
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "redir sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 2225,
-              "function": "par_redir",
-              "context": "sets INCMDPOS"
-            }
-          }
-        ],
-        "description": "redir (modifies lexer states: INCMDPOS)"
+        "$ref": "OUTANG"
       },
       "wordlist": {
         "$ref": "STRING"
       },
       "nl_wordlist": {
+        "$ref": "SEPER"
+      },
+      "cond_1": {
         "sequence": [
+          {
+            "$ref": "cond_2"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "DAMPER"
+          },
+          {
+            "$ref": "SEPER"
+          }
+        ]
+      },
+      "cond_2": {
+        "sequence": [
+          {
+            "$ref": "cond_double"
+          },
+          {
+            "$ref": "cond_double"
+          },
+          {
+            "$ref": "cond_double"
+          },
+          {
+            "$ref": "cond_triple"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "BANG"
+          },
+          {
+            "$ref": "INPAR"
+          },
+          {
+            "$ref": "OUTPAR",
+            "description": "NOT OUTPAR"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "cond"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "OUTPAR",
+            "description": "NOT OUTPAR"
+          },
+          {
+            "$ref": "STRING"
+          },
           {
             "$ref": "STRING"
           },
           {
             "$ref": "SEPER"
-          }
-        ],
-        "source": {
-          "file": "parse.c",
-          "line": 2367,
-          "function": "par_nl_wordlist"
-        }
-      },
-      "cond_1": {
-        "optional": {
-          "sequence": [
-            {
-              "$ref": "cond_2"
-            },
-            {
-              "$ref": "SEPER"
-            },
-            {
-              "$ref": "DAMPER"
-            },
-            {
-              "$ref": "SEPER"
-            }
-          ],
-          "source": {
-            "file": "parse.c",
-            "line": 2422,
-            "function": "par_cond_1"
-          }
-        },
-        "description": "par_cond_1 contains if statement without else with parser function calls",
-        "source": {
-          "file": "parse.c",
-          "line": 2422,
-          "function": "par_cond_1"
-        }
-      },
-      "cond_2": {
-        "union": [
-          {
-            "optional": {
-              "union": [
-                {
-                  "sequence": [
-                    {
-                      "$ref": "NULLTOK"
-                    },
-                    {
-                      "$ref": "cond_double"
-                    },
-                    {
-                      "$ref": "cond_double"
-                    },
-                    {
-                      "$ref": "cond_double"
-                    },
-                    {
-                      "$ref": "cond_triple"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 2464,
-                    "function": "par_cond_2"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 2464,
-                    "function": "par_cond_2"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "cond_multi"
-                    },
-                    {
-                      "$ref": "cond_triple"
-                    },
-                    {
-                      "$ref": "cond_double"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 2464,
-                    "function": "par_cond_2"
-                  }
-                },
-                {
-                  "sequence": [
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "STRING"
-                    },
-                    {
-                      "$ref": "SEPER"
-                    },
-                    {
-                      "$ref": "cond_multi"
-                    },
-                    {
-                      "$ref": "cond_triple"
-                    }
-                  ],
-                  "source": {
-                    "file": "parse.c",
-                    "line": 2464,
-                    "function": "par_cond_2"
-                  }
-                }
-              ],
-              "source": {
-                "file": "parse.c",
-                "line": 2464,
-                "function": "par_cond_2"
-              }
-            },
-            "description": "par_cond_2 contains if statement without else with parser function calls",
-            "source": {
-              "file": "parse.c",
-              "line": 2464,
-              "function": "par_cond_2"
-            }
           },
           {
-            "variant": {
-              "optional": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "NULLTOK"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      },
-                      {
-                        "$ref": "cond_triple"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "cond_multi"
-                      },
-                      {
-                        "$ref": "cond_triple"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "cond_multi"
-                      },
-                      {
-                        "$ref": "cond_triple"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 2464,
-                  "function": "par_cond_2"
-                }
-              },
-              "description": "par_cond_2 contains if statement without else with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 2464,
-                "function": "par_cond_2"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "cond_2 sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 2530,
-              "function": "par_cond_2",
-              "context": "sets INCMDPOS"
-            }
+            "$ref": "INANG"
           },
           {
-            "variant": {
-              "optional": {
-                "union": [
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "NULLTOK"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      },
-                      {
-                        "$ref": "cond_triple"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "cond_multi"
-                      },
-                      {
-                        "$ref": "cond_triple"
-                      },
-                      {
-                        "$ref": "cond_double"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  },
-                  {
-                    "sequence": [
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "STRING"
-                      },
-                      {
-                        "$ref": "SEPER"
-                      },
-                      {
-                        "$ref": "cond_multi"
-                      },
-                      {
-                        "$ref": "cond_triple"
-                      }
-                    ],
-                    "source": {
-                      "file": "parse.c",
-                      "line": 2464,
-                      "function": "par_cond_2"
-                    }
-                  }
-                ],
-                "source": {
-                  "file": "parse.c",
-                  "line": 2464,
-                  "function": "par_cond_2"
-                }
-              },
-              "description": "par_cond_2 contains if statement without else with parser function calls",
-              "source": {
-                "file": "parse.c",
-                "line": 2464,
-                "function": "par_cond_2"
-              }
-            },
-            "condition": {
-              "lexstate": "INCOND"
-            },
-            "description": "cond_2 sets lexer state INCOND",
-            "source": {
-              "file": "parse.c",
-              "line": 2588,
-              "function": "par_cond_2",
-              "context": "sets INCOND"
-            }
+            "$ref": "OUTANG"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "INANG"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "STRING"
+          },
+          {
+            "$ref": "SEPER"
+          },
+          {
+            "$ref": "cond_multi"
+          },
+          {
+            "$ref": "cond_triple"
+          },
+          {
+            "$ref": "cond_double"
           }
-        ],
-        "description": "cond_2 (modifies lexer states: INCMDPOS, INCOND)",
-        "source": {
-          "file": "parse.c",
-          "line": 2464,
-          "function": "par_cond_2"
-        }
+        ]
       },
       "cond_double": {
-        "union": [
-          {
-            "pattern": "[cond_double]",
-            "source": {
-              "file": "parse.c",
-              "line": 2612,
-              "function": "par_cond_double"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[cond_double]",
-              "source": {
-                "file": "parse.c",
-                "line": 2612,
-                "function": "par_cond_double"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "cond_double sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 2615,
-              "function": "par_cond_double",
-              "context": "sets INCMDPOS"
-            }
-          }
-        ],
-        "description": "cond_double (modifies lexer states: INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 2612,
-          "function": "par_cond_double"
-        }
+        "$ref": "cond_double",
+        "description": "Parser function par_cond_double (no sequences extracted)"
       },
       "cond_triple": {
-        "union": [
-          {
-            "pattern": "[cond_triple]",
-            "source": {
-              "file": "parse.c",
-              "line": 2645,
-              "function": "par_cond_triple"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[cond_triple]",
-              "source": {
-                "file": "parse.c",
-                "line": 2645,
-                "function": "par_cond_triple"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "cond_triple sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 2689,
-              "function": "par_cond_triple",
-              "context": "sets INCMDPOS"
-            }
-          }
-        ],
-        "description": "cond_triple (modifies lexer states: INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 2645,
-          "function": "par_cond_triple"
-        }
+        "$ref": "cond_triple",
+        "description": "Parser function par_cond_triple (no sequences extracted)"
       },
       "cond_multi": {
-        "union": [
-          {
-            "pattern": "[cond_multi]",
-            "source": {
-              "file": "parse.c",
-              "line": 2696,
-              "function": "par_cond_multi"
-            }
-          },
-          {
-            "variant": {
-              "pattern": "[cond_multi]",
-              "source": {
-                "file": "parse.c",
-                "line": 2696,
-                "function": "par_cond_multi"
-              }
-            },
-            "condition": {
-              "lexstate": "INCMDPOS"
-            },
-            "description": "cond_multi sets lexer state INCMDPOS",
-            "source": {
-              "file": "parse.c",
-              "line": 2699,
-              "function": "par_cond_multi",
-              "context": "sets INCMDPOS"
-            }
-          }
-        ],
-        "description": "cond_multi (modifies lexer states: INCMDPOS)",
-        "source": {
-          "file": "parse.c",
-          "line": 2696,
-          "function": "par_cond_multi"
-        }
+        "$ref": "cond_multi",
+        "description": "Parser function par_cond_multi (no sequences extracted)"
       }
     }
   },

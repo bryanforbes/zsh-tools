@@ -1,28 +1,3 @@
 [tasks.construct-zsh-grammar]
 description = "Construct zsh grammar files"
 run = 'uv run construct-zsh-grammar'
-
-[tasks.lint]
-description = "Lint all source files"
-depends = ':lint:*'
-
-[tasks."lint:ruff"]
-description = "Lint with ruff"
-usage = '''
-arg "<files>" var=#true default="." help="Specify files or directories to lint"
-'''
-run = 'ruff check ${usage_files?}'
-
-[tasks."lint:basedpyright"]
-description = "Type check with basedpyright"
-usage = '''
-arg "<files>" var=#true default="." help="Specify files or directories to type check"
-'''
-run = 'basedpyright ${usage_files?}'
-
-[tasks.format]
-description = "Format source files"
-usage = '''
-arg "<files>" var=#true default="." help="Specify files or directories to type check"
-'''
-run = 'ruff format ${usage_files?}'

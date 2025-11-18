@@ -18,7 +18,7 @@ local linters = new Mapping<String, Step> {
     ["basedpyright"] {
       glob = List("**/*.py", "**/*.pyi")
       check = "basedpyright {{ files }}"
-      depends = "ruff"
+      depends = "ruff_format"
       stomp = true
     }
 

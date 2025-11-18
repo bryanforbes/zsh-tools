@@ -1,16 +1,26 @@
 # Agent Guidelines for zsh-tools
 
+## Environment
+
+- **Clang Library**: `LIBCLANG_PREFIX` is set to `/opt/homebrew/opt/llvm` on macOS. Use in Python/Bash scripts that use clang.cindex:
+    ```python
+    import os
+    from pathlib import Path
+    import clang.cindex
+    clang.cindex.Config.set_library_path(Path(os.environ['LIBCLANG_PREFIX']) / 'lib')
+    ```
+
 ## Build/Lint/Test Commands
 
 - **Setup**: `mise run dev` (installs deps for all tools)
 - **Lint**:
-    - **All files**: `mise :lint --all`
-    - **Individual project**: `mise :lint <project_dir>`
-    - **Individual files**: `mise :lint <file1> <file2>`
+    - **Python**:
+        - `mise :ruff [--fix] [<file1> <file2>]`
+        - `mise :basedpyright [<file1> <file2>]`
+    - **JS/TS**: `mise :eslint [--fix] [<file1> <file2>]`
 - **Format**:
-    - **All projects**: `mise :format --all`
-    - **Individual project**: `mise :format <project_dir>`
-    - **Individual files**: `mise :format <file1> <file2>`
+    - **Python**: `mise :ruff-format [--check] [<file1> <file2>]`
+    - **JS/TS**: `mise :prettier [--check] [<file1> <file2>]`
 - **Test**:
     - **All projects**: `mise run test`
     - **Individual project**: `mise //<project_name>:test`
