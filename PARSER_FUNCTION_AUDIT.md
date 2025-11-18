@@ -88,16 +88,30 @@
     **Priority**: LOW
     **Reason**: Utility for word lists with newlines
 
-## Missing Functions WITHOUT Semantic Grammar (6)
+## Missing Functions WITHOUT Semantic Grammar (2)
 
-These are helper functions or conditional test variants without documented grammar:
+These are utility functions without documented semantic grammar:
 
 1. **`parse_context_save`** - Parser state management
 2. **`parse_context_restore`** - Parser state management
-3. **`par_list1`** - Helper for par_list (shortloops alternative)
-4. **`par_cond_double`** - Two-argument conditional test helper
-5. **`par_cond_triple`** - Three-argument conditional test helper
-6. **`par_cond_multi`** - Multi-argument conditional test helper
+
+## Internal Helper Functions (4) - Phase 3 Exclusion
+
+These are now explicitly excluded from the grammar as they are implementation
+details of their parent functions (not top-level semantic rules):
+
+1. **`par_list1`** - Helper for par_list (shortloops alternative)
+    - Called from: par_list
+    - Reason: Implementation detail, not a semantic grammar rule
+2. **`par_cond_double`** - Two-argument conditional test helper
+    - Called from: par_cond_2
+    - Reason: Implementation detail, not a semantic grammar rule
+3. **`par_cond_triple`** - Three-argument conditional test helper
+    - Called from: par_cond_2
+    - Reason: Implementation detail, not a semantic grammar rule
+4. **`par_cond_multi`** - Multi-argument conditional test helper
+    - Called from: par_cond_2
+    - Reason: Implementation detail, not a semantic grammar rule
 
 **Priority**: SKIP
 **Reason**: Internal helpers, no semantic grammar to validate against

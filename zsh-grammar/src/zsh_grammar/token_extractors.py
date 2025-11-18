@@ -581,8 +581,23 @@ def _has_semantic_context(tokens: list[Token], /) -> bool:
 
 
 def _is_parser_function(name: str, /) -> bool:
-    """Check if a function name is a parser function (par_* or parse_*)."""
-    return name.startswith(('par_', 'parse_'))
+    """Check if a function name is a parser function (par_* or parse_*).
+
+    Excludes internal helper functions that are called from other parsers:
+    - par_cond_double, par_cond_triple, par_cond_multi: Test helpers
+      (called from par_cond_2)
+    - par_list1: Shortloops helper (called from par_list)
+
+    These helpers are implementation details of their parent functions and
+    shouldn't appear as separate items in token sequences.
+    """
+    internal_helpers = {
+        'par_cond_double',
+        'par_cond_triple',
+        'par_cond_multi',
+        'par_list1',
+    }
+    return name.startswith(('par_', 'parse_')) and name not in internal_helpers
 
 
 def _extract_strcmp_string_value(tokens: list[str], /) -> str | None:

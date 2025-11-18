@@ -625,9 +625,6 @@
           }
         ]
       },
-      "list1": {
-        "$ref": "sublist"
-      },
       "sublist": {
         "sequence": [
           {
@@ -834,9 +831,6 @@
           },
           {
             "$ref": "list"
-          },
-          {
-            "$ref": "list1"
           }
         ]
       },
@@ -956,9 +950,6 @@
             "$ref": "SEPER"
           },
           {
-            "$ref": "list1"
-          },
-          {
             "$ref": "ELSE"
           },
           {
@@ -1028,9 +1019,6 @@
           },
           {
             "$ref": "list"
-          },
-          {
-            "$ref": "list1"
           }
         ]
       },
@@ -1065,9 +1053,6 @@
           },
           {
             "$ref": "list"
-          },
-          {
-            "$ref": "list1"
           }
         ]
       },
@@ -1115,9 +1100,6 @@
           {
             "$ref": "OUTBRACE",
             "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list1"
           }
         ]
       },
@@ -1225,18 +1207,6 @@
       "cond_2": {
         "sequence": [
           {
-            "$ref": "cond_double"
-          },
-          {
-            "$ref": "cond_double"
-          },
-          {
-            "$ref": "cond_double"
-          },
-          {
-            "$ref": "cond_triple"
-          },
-          {
             "$ref": "SEPER"
           },
           {
@@ -1303,29 +1273,8 @@
           },
           {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "cond_multi"
-          },
-          {
-            "$ref": "cond_triple"
-          },
-          {
-            "$ref": "cond_double"
           }
         ]
-      },
-      "cond_double": {
-        "$ref": "cond_double",
-        "description": "Parser function par_cond_double (no sequences extracted)"
-      },
-      "cond_triple": {
-        "$ref": "cond_triple",
-        "description": "Parser function par_cond_triple (no sequences extracted)"
-      },
-      "cond_multi": {
-        "$ref": "cond_multi",
-        "description": "Parser function par_cond_multi (no sequences extracted)"
       }
     }
   },
