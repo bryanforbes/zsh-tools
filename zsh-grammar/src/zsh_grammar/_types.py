@@ -209,6 +209,83 @@ class SyntheticToken(TypedDict):
 type TokenOrCall = TokenCheck | FunctionCall | SyntheticToken
 
 
+# Phase 2.4.1: Enhanced token/call discriminated union with branch context
+class TokenCheckEnhanced(TypedDict):
+    """Token check in ordered sequence with branch context."""
+
+    kind: Literal['token']
+    token_name: str
+    line: int
+    is_negated: bool
+    branch_id: str  # Identifies which control flow branch
+    sequence_index: int  # Position in ordered sequence
+
+
+class FunctionCallEnhanced(TypedDict):
+    """Function call in sequence with branch context."""
+
+    kind: Literal['call']
+    func_name: str
+    line: int
+    branch_id: str
+    sequence_index: int
+
+
+class SyntheticTokenEnhanced(TypedDict):
+    """Synthetic token from string matching with branch context."""
+
+    kind: Literal['synthetic_token']
+    token_name: str
+    line: int
+    condition: str
+    branch_id: str
+    sequence_index: int
+    is_optional: bool  # Controls whether to wrap in Optional
+
+
+# Ordered sequence: mix of tokens and calls with branch awareness
+type TokenOrCallEnhanced = (
+    TokenCheckEnhanced | FunctionCallEnhanced | SyntheticTokenEnhanced
+)
+
+
+type ControlFlowBranchType = Literal[
+    'if', 'else_if', 'else', 'switch_case', 'loop', 'sequential'
+]
+
+
+class ControlFlowBranch(TypedDict):
+    """Represents one alternative (if branch, switch case, loop body, etc.)."""
+
+    branch_id: str  # e.g., 'if_1', 'else_if_2', 'switch_case_FOR', 'loop'
+    branch_type: ControlFlowBranchType
+    condition: NotRequired[str]  # e.g., 'tok == INPAR' for if branch
+    token_condition: NotRequired[str]  # Semantic token check if applicable
+    start_line: int
+    end_line: int
+    items: list[TokenOrCallEnhanced]  # Ordered sequence for this branch
+
+
+class FunctionNodeEnhanced(TypedDict):
+    """Enhanced function node with token-sequence metadata."""
+
+    name: str
+    file: str
+    line: int
+    calls: list[str]  # Kept for validation; primary input is token_sequences
+
+    # Phase 2.4.1: Token sequence data (NEW)
+    token_sequences: list[ControlFlowBranch]  # Multiple branches
+    has_loops: bool  # while/for detected
+    loop_type: NotRequired[str]  # 'while', 'for', or None
+    is_optional: bool  # if statement without else
+
+    # Existing fields (kept for compatibility)
+    conditions: NotRequired[list[str]]
+    signature: NotRequired[str]
+    visibility: NotRequired[str]
+
+
 class FunctionNode(TypedDict):
     name: str
     file: str
