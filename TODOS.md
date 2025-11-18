@@ -5,6 +5,11 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 ## Completed ✅
 
 - [x] **Phase 1**: Parser symbol extraction - 31 parser functions extracted from `.syms` files, token mapping working
+- [x] **Phase 1.4**: Multi-Value Token Enhancement - COMPLETE
+    - [x] Token schema supports both single string and array of strings
+    - [x] Tokens can represent multiple keywords (e.g., TYPESET: ["declare", "export", "float", "integer", "local", "readonly", "typeset"])
+    - [x] Token matches field: `string | string[]` with minItems: 2 for arrays
+    - Result: Flexible token matching for multi-keyword parser functions
 - [x] **Phase 2**: Call graph construction - 1165 functions analyzed, 50+ cycles detected and properly handled via `$ref`
 - [x] **Phase 3**: Grammar rules generation - All 31 parser functions converted to grammar rules with source traceability
 - [x] **Phase 3.2**: Integrate Token Dispatch into Grammar Rules - COMPLETE
@@ -99,14 +104,6 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 - **Success Criteria**: ≥80% of test suite scripts validate correctly
 
 ### Medium Priority 🟡
-
-#### Phase 1.4: Multi-Value Token Enhancement
-
-- **Status**: Partially working
-- **Current**: Token mapping extracts token names and text values, but may not properly list all keywords
-- **TODO**: Enhance to properly handle multi-value tokens with `matches` array
-- **Example**: TYPESET should have `matches: ["declare", "export", "float", "integer", "local", "readonly", "typeset"]`
-- **Files**: Enhance `_build_token_mapping()` to aggregate keywords mapping to same token
 
 #### Phase 2.3.5: Tail Recursion vs Mutual Recursion
 
