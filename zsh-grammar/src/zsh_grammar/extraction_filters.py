@@ -72,9 +72,13 @@ def is_data_token(token_name: str, func_name: str) -> bool:  # noqa: PLR0911
         return True
 
     # par_cond_2: NULLTOK is error guard for test builtin only
+    # Phase 3c implementation: Context-sensitive filtering for dual-mode conditional parser
     if token_name == 'NULLTOK' and func_name == 'par_cond_2':  # noqa: S105
         # Line 2472: if (n_testargs) { if (tok == NULLTOK) ...
-        # Only semantic in test builtin mode, not in [[ ... ]] mode
+        # par_cond_2 implements both [[...]] (semantic-test mode) and [ ... ] (POSIX test builtin)
+        # NULLTOK appears only in the test builtin code path, not in [[...]] parsing
+        # Therefore filtered as non-semantic data token
+        # Semantic grammar documents [[...]] behavior, which doesn't use NULLTOK
         return True
 
     # INPUT token appears to be synthetic/corrupted extraction artifact
@@ -82,8 +86,15 @@ def is_data_token(token_name: str, func_name: str) -> bool:  # noqa: PLR0911
     if token_name == 'INPUT':  # noqa: S105
         return True
 
-    # STRING is semantic in par_repeat, par_case, par_simple, and par_cond_2
-    # In par_cond_2: appears in three-arg and two-arg test alternatives
+    # STRING is semantic in several functions where it represents actual grammar tokens
+    # Phase 3c: par_cond_2 is a dual-mode conditional parser
+    # - Semantic grammar documents [[...]] behavior (semantic-test mode)
+    # - Implementation also supports [ ... ] (POSIX test builtin)
+    # - In both modes, STRING is semantic and required by grammar:
+    #   - three-arg test: STRING STRING STRING (e.g., [ a -lt b ])
+    #   - two-arg test: STRING STRING (e.g., [ -f file ])
+    #   - comparison: STRING ( INANG | OUTANG ) STRING (e.g., [[ a < b ]])
+    # Therefore STRING is kept semantic in par_cond_2
     return token_name == 'STRING' and func_name not in (  # noqa: S105
         'par_repeat',
         'par_case',
