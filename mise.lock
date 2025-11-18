@@ -29,10 +29,10 @@ size = 12032411
 url = "https://github.com/astral-sh/ruff/releases/download/0.14.5/ruff-aarch64-apple-darwin.tar.gz"
 
 [[tools.uv]]
-version = "0.9.9"
+version = "0.9.10"
 backend = "aqua:astral-sh/uv"
 
 [tools.uv.platforms.macos-arm64]
-checksum = "sha256:737e1c2c4f97577aa7764141846e27de915eebb3b2a0f467451089a64824d2f7"
-size = 18176790
-url = "https://github.com/astral-sh/uv/releases/download/0.9.9/uv-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:af171d5a4eb1c502819de32740aa811ff71851b1f5ec2d8bd0dda302ed9554c2"
+size = 18205991
+url = "https://github.com/astral-sh/uv/releases/download/0.9.10/uv-aarch64-apple-darwin.tar.gz"

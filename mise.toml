@@ -56,29 +56,6 @@ depends = '//...:build:*'
 description = "Run all tests"
 depends = '//...:test:*'
 
-[tasks.eslint]
-description = "Lint with ESLint"
-usage = '''
-arg "<files>" var=#true default="." help="Specify files or directories to lint"
-flag "--fix" help="Fix lint issues"
-'''
-run = 'pnpm exec eslint ${usage_fix:+--fix} ${usage_files?}'
-
-[tasks.ruff]
-description = "Lint with ruff"
-usage = '''
-arg "<files>" var=#true default="." help="Specify files or directories to lint"
-flag "--fix" help="Fix lint issues"
-'''
-run = 'ruff check ${usage_fix:+--fix} ${usage_files?}'
-
-[tasks.basedpyright]
-description = "Type check with basedpyright"
-usage = '''
-arg "<files>" var=#true default="." help="Specify files or directories to type check"
-'''
-run = 'basedpyright ${usage_files?}'
-
 [tasks.prettier]
 description = "Format with Prettier"
 usage = '''
@@ -94,3 +71,53 @@ arg "<files>" var=#true default="." help="Specify files or directories to format
 flag "--check" help="Check formatting without making changes"
 '''
 run = 'ruff format ${usage_check:+--check} ${usage_files?}'
+
+[tasks.eslint]
+description = "Lint with ESLint"
+usage = '''
+arg "<files>" var=#true default="." help="Specify files or directories to lint"
+flag "--fix" help="Fix lint issues"
+'''
+wait_for = 'prettier'
+run = 'pnpm exec eslint ${usage_fix:+--fix} ${usage_files?}'
+
+[tasks.ruff]
+description = "Lint with ruff"
+usage = '''
+arg "<files>" var=#true default="." help="Specify files or directories to lint"
+flag "--fix" help="Fix lint issues"
+'''
+wait_for = 'ruff-format'
+run = 'ruff check ${usage_fix:+--fix} ${usage_files?}'
+
+[tasks.basedpyright]
+description = "Type check with basedpyright"
+usage = '''
+arg "<files>" var=#true default="." help="Specify files or directories to type check"
+'''
+wait_for = 'ruff'
+run = 'basedpyright ${usage_files?}'
+
+[tasks.format]
+description = "Format all code"
+usage = '''
+flag "--check" help="Check formatting without making changes"
+'''
+run = [
+  { tasks = [ ":prettier", ":ruff-format" ] }
+]
+
+[tasks.lint]
+description = "Lint all code"
+usage = '''
+flag "--fix" help="Fix lint issues"
+'''
+run = [
+  { tasks = [ ":eslint", ":ruff", ":basedpyright" ] }
+]
+
+[tasks.format-and-fix]
+description = "Format and fix all code"
+run = [
+  { tasks = [ ":format", ":eslint --fix", ":ruff --fix" ] }
+]

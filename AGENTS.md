@@ -14,13 +14,15 @@
 
 - **Setup**: `mise run dev` (installs deps for all tools)
 - **Format** (**NOTE:** run the language-specific formatter after editing a file and before linting to avoid unnecessary lint errors):
-    - **Python**: `mise :ruff-format [--check] [<file1> <file2>]`
-    - **JS/TS/Markdown**: `mise :prettier [--check] [<file1> <file2>]`
+    - **Python**: `mise //:ruff-format [--check] [<file1> <file2>]`
+    - **JS/TS/Markdown**: `mise //:prettier [--check] [<file1> <file2>]`
+    - **All files**: `mise //:format`
 - **Lint**:
     - **Python**:
-        - `mise :ruff [--fix] [<file1> <file2>]`
-        - `mise :basedpyright [<file1> <file2>]`
-    - **JS/TS**: `mise :eslint [--fix] [<file1> <file2>]`
+        - `mise //:ruff [--fix] [<file1> <file2>]`
+        - `mise //:basedpyright [<file1> <file2>]`
+    - **JS/TS**: `mise //:eslint [--fix] [<file1> <file2>]`
+    - **All files**: `mise //:lint`
 - **Test**:
     - **All projects**: `mise run test`
     - **Individual project**: `mise //<project_name>:test`
