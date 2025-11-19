@@ -538,71 +538,49 @@
         "pattern": "[a-zA-Z0-9_]+"
       },
       "string": {
-        "$ref": "list"
+        "empty": true
       },
       "subscript": {
-        "$ref": "subscript",
-        "description": "Parser function parse_subscript (no sequences extracted)"
+        "empty": true
       },
       "subst_string": {
-        "$ref": "subst_string",
-        "description": "Parser function parse_subst_string (no sequences extracted)"
+        "union": []
       },
       "context_save": {
-        "$ref": "context_save",
-        "description": "Parser function parse_context_save (no sequences extracted)"
+        "empty": true
       },
       "context_restore": {
-        "$ref": "context_restore",
-        "description": "Parser function parse_context_restore (no sequences extracted)"
+        "empty": true
       },
       "event": {
-        "sequence": [
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "ENDINPUT"
-          },
-          {
-            "$ref": "sublist"
-          },
-          {
-            "$ref": "ENDINPUT"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "AMPER"
-          },
-          {
-            "$ref": "AMPERBANG"
-          }
-        ]
+        "$ref": "SEPER"
       },
       "list": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "sublist"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "AMPER"
-          },
-          {
-            "$ref": "AMPERBANG"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "AMPER"
+            "sequence": [
+              {
+                "$ref": "sublist"
+              },
+              {
+                "$ref": "SEPER"
+              },
+              {
+                "$ref": "AMPER"
+              },
+              {
+                "$ref": "AMPERBANG"
+              },
+              {
+                "$ref": "SEPER"
+              },
+              {
+                "$ref": "AMPER"
+              },
+              {
+                "$ref": "SEPER"
+              }
+            ]
           },
           {
             "$ref": "SEPER"
@@ -610,15 +588,16 @@
         ]
       },
       "cond": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "cond_1"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "DBAR"
+            "sequence": [
+              {
+                "$ref": "DBAR"
+              },
+              {
+                "$ref": "SEPER"
+              }
+            ]
           },
           {
             "$ref": "SEPER"
@@ -626,18 +605,25 @@
         ]
       },
       "sublist": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "sublist2"
-          },
-          {
-            "$ref": "DBAR"
-          },
-          {
-            "$ref": "DAMPER"
-          },
-          {
-            "$ref": "DBAR"
+            "sequence": [
+              {
+                "$ref": "sublist2"
+              },
+              {
+                "$ref": "DBAR"
+              },
+              {
+                "$ref": "DAMPER"
+              },
+              {
+                "$ref": "DBAR"
+              },
+              {
+                "$ref": "SEPER"
+              }
+            ]
           },
           {
             "$ref": "SEPER"
@@ -645,31 +631,26 @@
         ]
       },
       "sublist2": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "COPROC"
+            "sequence": [
+              {
+                "$ref": "COPROC"
+              },
+              {
+                "$ref": "BANG"
+              }
+            ]
           },
           {
             "$ref": "BANG"
-          },
-          {
-            "$ref": "pline"
           }
         ]
       },
       "pline": {
-        "sequence": [
+        "union": [
           {
             "$ref": "cmd"
-          },
-          {
-            "$ref": "BAR"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "BARAMP"
           },
           {
             "$ref": "SEPER"
@@ -677,78 +658,53 @@
         ]
       },
       "cmd": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "OUTANG"
-          },
-          {
-            "$ref": "OUTANG"
+            "sequence": [
+              {
+                "$ref": "OUTANG"
+              },
+              {
+                "$ref": "OUTANG"
+              }
+            ]
           },
           {
             "$ref": "FOR"
           },
           {
-            "$ref": "for"
-          },
-          {
             "$ref": "FOREACH"
-          },
-          {
-            "$ref": "for"
           },
           {
             "$ref": "SELECT"
           },
           {
-            "$ref": "for"
-          },
-          {
             "$ref": "CASE"
           },
           {
-            "$ref": "case"
-          },
-          {
-            "$ref": "IF"
-          },
-          {
-            "$ref": "if"
+            "sequence": [
+              {
+                "$ref": "IF"
+              },
+              {
+                "$ref": "if"
+              }
+            ]
           },
           {
             "$ref": "WHILE"
           },
           {
-            "$ref": "while"
-          },
-          {
             "$ref": "UNTIL"
-          },
-          {
-            "$ref": "while"
           },
           {
             "$ref": "REPEAT"
           },
           {
-            "$ref": "repeat"
-          },
-          {
             "$ref": "INPAR"
           },
           {
-            "$ref": "subsh"
-          },
-          {
             "$ref": "INBRACE"
-          },
-          {
-            "$ref": "subsh"
-          },
-          {
-            "$ref": "funcdef"
-          },
-          {
-            "$ref": "dinbrack"
           },
           {
             "$ref": "DINPAR"
@@ -761,23 +717,11 @@
           },
           {
             "$ref": "OUTANG"
-          },
-          {
-            "$ref": "OUTANG"
           }
         ]
       },
       "for": {
         "sequence": [
-          {
-            "$ref": "FOREACH"
-          },
-          {
-            "$ref": "SELECT"
-          },
-          {
-            "$ref": "FOR"
-          },
           {
             "$ref": "DOUTPAR",
             "description": "NOT DOUTPAR"
@@ -797,390 +741,123 @@
           {
             "$ref": "OUTPAR",
             "description": "NOT OUTPAR"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "DOLOOP"
-          },
-          {
-            "$ref": "DONE",
-            "description": "NOT DONE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "DONE",
-            "description": "NOT DONE"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
           }
         ]
       },
       "case": {
-        "sequence": [
-          {
-            "$ref": "SEPER"
-          },
+        "union": [
           {
             "$ref": "STRING"
           },
           {
-            "$ref": "INBRACE"
+            "sequence": [
+              {
+                "$ref": "OUTPAR"
+              },
+              {
+                "$ref": "BAR"
+              }
+            ]
           },
           {
-            "$ref": "INBRACE"
+            "$ref": "BAR"
           },
           {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "OUTBRACE"
-          },
-          {
-            "$ref": "BAR"
-          },
-          {
-            "$ref": "OUTPAR"
-          },
-          {
-            "$ref": "BAR"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "OUTPAR"
-          },
-          {
-            "$ref": "BAR"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "SEMIAMP"
-          },
-          {
-            "$ref": "SEMIBAR"
-          },
-          {
-            "$ref": "OUTBRACE"
-          },
-          {
-            "$ref": "DSEMI",
-            "description": "NOT DSEMI"
           }
         ]
       },
       "if": {
-        "sequence": [
-          {
-            "$ref": "IF"
-          },
+        "union": [
           {
             "$ref": "FI"
           },
           {
-            "$ref": "ELSE"
-          },
-          {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "IF"
-          },
-          {
-            "$ref": "ELIF"
-          },
-          {
-            "$ref": "IF"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "FI"
-          },
-          {
-            "$ref": "THEN"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "ELSE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
           }
         ]
       },
       "while": {
-        "sequence": [
-          {
-            "$ref": "UNTIL"
-          },
+        "union": [
           {
             "$ref": "list"
           },
           {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "DOLOOP"
-          },
-          {
-            "$ref": "DONE",
-            "description": "NOT DONE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "DONE",
-            "description": "NOT DONE"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
           }
         ]
       },
       "repeat": {
-        "sequence": [
+        "union": [
           {
             "$ref": "STRING",
             "description": "NOT STRING"
           },
           {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "DOLOOP"
-          },
-          {
-            "$ref": "DONE",
-            "description": "NOT DONE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "DONE",
-            "description": "NOT DONE"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "list"
           }
         ]
       },
       "subsh": {
-        "sequence": [
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "INPAR"
-          }
-        ]
+        "union": []
       },
       "funcdef": {
-        "sequence": [
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "INOUTPAR"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          }
-        ]
+        "$ref": "INBRACE"
       },
       "time": {
         "$ref": "sublist2"
       },
       "dinbrack": {
-        "$ref": "cond"
+        "empty": true
       },
       "simple": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "NOCORRECT"
+            "sequence": [
+              {
+                "$ref": "NOCORRECT"
+              },
+              {
+                "$ref": "ENVSTRING"
+              },
+              {
+                "$ref": "ENVARRAY"
+              },
+              {
+                "$ref": "nl_wordlist"
+              }
+            ]
           },
           {
-            "$ref": "ENVSTRING"
+            "sequence": [
+              {
+                "$ref": "ENVSTRING"
+              },
+              {
+                "$ref": "ENVARRAY"
+              },
+              {
+                "$ref": "nl_wordlist"
+              }
+            ]
           },
           {
-            "$ref": "ENVARRAY"
-          },
-          {
-            "$ref": "nl_wordlist"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "TYPESET"
-          },
-          {
-            "$ref": "TYPESET"
-          },
-          {
-            "$ref": "redir"
-          },
-          {
-            "$ref": "ENVSTRING"
-          },
-          {
-            "$ref": "ENVARRAY"
-          },
-          {
-            "$ref": "nl_wordlist"
-          },
-          {
-            "$ref": "INOUTPAR"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
+            "sequence": [
+              {
+                "$ref": "ENVARRAY"
+              },
+              {
+                "$ref": "nl_wordlist"
+              }
+            ]
           },
           {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "OUTBRACE",
-            "description": "NOT OUTBRACE"
-          },
-          {
-            "$ref": "cmd"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "STRING"
           }
         ]
       },
       "redir": {
-        "$ref": "OUTANG"
+        "union": []
       },
       "wordlist": {
         "$ref": "STRING"
@@ -1189,15 +866,16 @@
         "$ref": "SEPER"
       },
       "cond_1": {
-        "sequence": [
+        "union": [
           {
-            "$ref": "cond_2"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "DAMPER"
+            "sequence": [
+              {
+                "$ref": "DAMPER"
+              },
+              {
+                "$ref": "SEPER"
+              }
+            ]
           },
           {
             "$ref": "SEPER"
@@ -1205,71 +883,9 @@
         ]
       },
       "cond_2": {
-        "sequence": [
+        "union": [
           {
             "$ref": "SEPER"
-          },
-          {
-            "$ref": "BANG"
-          },
-          {
-            "$ref": "INPAR"
-          },
-          {
-            "$ref": "OUTPAR",
-            "description": "NOT OUTPAR"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "cond"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "OUTPAR",
-            "description": "NOT OUTPAR"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "INANG"
-          },
-          {
-            "$ref": "OUTANG"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "INANG"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "STRING"
-          },
-          {
-            "$ref": "STRING"
           },
           {
             "$ref": "SEPER"

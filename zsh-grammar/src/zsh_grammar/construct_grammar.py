@@ -23,8 +23,13 @@ from zsh_grammar.control_flow import (
     detect_cycles,
     extract_lexer_state_changes,
 )
+from zsh_grammar.enhanced_call_graph import build_call_graph_enhanced
 from zsh_grammar.function_discovery import extract_parser_functions
-from zsh_grammar.grammar_rules import build_grammar_rules, embed_lexer_state_conditions
+from zsh_grammar.grammar_rules import (
+    build_grammar_rules,
+    build_grammar_rules_from_enhanced,
+    embed_lexer_state_conditions,
+)
 from zsh_grammar.grammar_utils import (
     create_ref,
     create_terminal,
@@ -605,8 +610,11 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     # Phase 1.2: Map tokens to rules from switch/case statements
     token_to_rules = _map_tokens_to_rules(parser, parser_functions)
 
-    # Phase 2: Build call graph for analyzing function composition
-    call_graph = build_call_graph(parser)
+    # Phase 2: Build enhanced call graph (Phase 2.4.1) with token sequences
+    call_graph = build_call_graph_enhanced(parser)
+
+    # Keep old call graph for validation/comparison
+    call_graph_old = build_call_graph(parser)
 
     # Merge call_graph into parser_functions to get actual C file locations
     # (call_graph has file/line from actual C files, parser_functions has .syms
@@ -624,7 +632,7 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
 
     # Phase 1.2: Validate completeness of rule references
     completeness_report = _validate_completeness(
-        token_to_rules, parser_functions, call_graph
+        token_to_rules, parser_functions, call_graph_old
     )
 
     token_mapping = _build_token_mapping(parser)
@@ -695,34 +703,38 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     ref_validation_errors = _validate_all_refs(core_symbols)
 
     # Phase 2.3: Detect cycles in call graph
-    func_to_cycles = detect_cycles(call_graph)
+    func_to_cycles = detect_cycles(call_graph_old)
 
     # Phase 3.3: Analyze control flow patterns for optional/repeat detection
-    # Note: analyze_all_control_flows takes extracted_tokens as
-    # dict[str, list[TokenOrCall]]. We construct this from call_graph
-    # token_sequences
-    extracted_tokens_dict: dict[str, list[TokenOrCall]] = {}
-    for func_name, node in call_graph.items():
-        if 'token_sequences' in node:
-            # token_sequences is list[list[TokenOrCall]], use first sequence
-            seqs = node['token_sequences']
-            if seqs:
-                extracted_tokens_dict[func_name] = seqs[0]
-    control_flows = analyze_all_control_flows(parser, extracted_tokens_dict)
+    # Note: analyze_all_control_flows analyzes AST directly,
+    # extracted_tokens param unused
+    control_flows = analyze_all_control_flows(parser, {})
 
     # Phase 4: Extract lexer state dependencies
     lexer_states = extract_lexer_state_changes(parser, parser_functions)
 
-    # Phase 3: Build grammar rules from call graph with control flow analysis
-    # Phase 3.2: Integrate token dispatch into grammar rules
-    grammar_rules = build_grammar_rules(
-        parser_functions, call_graph, extracted_tokens_dict
+    # Phase 3: Build grammar rules from enhanced call graph (Phase 2.4.1)
+    # with control flow analysis and token sequences
+    grammar_rules = build_grammar_rules_from_enhanced(call_graph, control_flows)
+
+    # Phase 3.2: Also build old rules for validation/comparison (using old call graph)
+    # Construct extracted_tokens_dict for old grammar rules
+    extracted_tokens_dict: dict[str, list[TokenOrCall]] = {}
+    for func_name, node in call_graph_old.items():
+        if 'token_sequences' in node:
+            # token_sequences was populated by old build_call_graph
+            seqs = node.get('token_sequences')  # type: ignore[typeddict-unknown-key]
+            if seqs and len(seqs) > 0:
+                extracted_tokens_dict[func_name] = seqs[0]
+    grammar_rules_old = build_grammar_rules(
+        parser_functions, call_graph_old, extracted_tokens_dict
     )
 
     # Phase 4.3: Embed lexer state conditions into grammar rules
     grammar_rules = embed_lexer_state_conditions(grammar_rules, lexer_states)
+    grammar_rules_old = embed_lexer_state_conditions(grammar_rules_old, lexer_states)
 
-    # Merge rules into core_symbols
+    # Merge enhanced rules into core_symbols
     core_symbols.update(grammar_rules)
 
     # Log extracted parser functions for debugging
@@ -871,7 +883,7 @@ def _construct_grammar(  # noqa: C901, PLR0912, PLR0915
     # Phase 2.4.1f: Validate against semantic grammar from parse.c comments
     print('\nSemantic grammar validation (Phase 2.4.1f):')
     validation_results, overall_confidence = validate_semantic_grammar(
-        call_graph, parser_functions
+        call_graph_old, parser_functions
     )
 
     # Categorize results by status
