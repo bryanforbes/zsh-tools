@@ -55,7 +55,7 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 #### Phase 2.4.1: Token-Sequence-Based Grammar Extraction (REDESIGN)
 
-**Overall Status**: Stages 0-3 COMPLETE (4 remaining: 4-6)
+**Overall Status**: Stages 0-4 COMPLETE (2 remaining: 5-6)
 
 **Progress**:
 
@@ -63,8 +63,8 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 - ✅ Stage 1: Branch extraction from AST
 - ✅ Stage 2: Token & call sequence extraction
 - ✅ Stage 3: Enhanced call graph construction
-- ⏳ Stage 4: Rule generation from token sequences (NEXT)
-- ⏳ Stage 5: Semantic validation & comparison
+- ✅ Stage 4: Rule generation from token sequences
+- ⏳ Stage 5: Semantic validation & comparison (NEXT)
 - ⏳ Stage 6: Documentation & integration
 
 **Critical Facts:**
@@ -187,20 +187,31 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 ##### Stage 4: Rule Generation from Token Sequences
 
-- **Status**: NOT STARTED
-- **Duration**: 2-3 sprints
-- **Dependencies**: Stage 0, Stage 3
+- **Status**: ✅ COMPLETE
+- **Duration**: 1 sprint
+- **Dependencies**: Stage 0 ✅, Stage 3 ✅
 - **Agent Role**: Grammar generator
 - **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 4 (sections 4.1-4.4)
 - **Deliverables**:
-    - [ ] 4.1: Rewrite \_build_grammar_rules to consume token_sequences
-    - [ ] 4.2: Model control flow branches as Union alternatives
-    - [ ] 4.3: Model token sequences as Sequence nodes
-    - [ ] 4.4: Model loops as Repeat; optional blocks as Optional
+    - [x] 4.1: Rewrite \_build_grammar_rules to consume token_sequences
+    - [x] 4.2: Model control flow branches as Union alternatives
+    - [x] 4.3: Model token sequences as Sequence nodes
+    - [x] 4.4: Model loops as Repeat; optional blocks as Optional
 - **Output Files**:
-    - Modified: `zsh_grammar/grammar_rules.py`
-    - Modified: `zsh_grammar/construct_grammar.py`
-    - New: `zsh_grammar/tests/test_grammar_rules_advanced.py`
+    - Modified: `zsh_grammar/grammar_rules.py` ✅
+    - Enhanced: `zsh_grammar/tests/test_grammar_rules_stage4.py` ✅
+- **Key Functions Implemented**:
+    - `item_to_node()`: Converts single items to grammar references
+    - `items_to_sequence()`: Builds sequences or unwraps single items
+    - `convert_branch_to_rule()`: Handles sequential/loop/if-else branches
+    - `convert_node_to_rule()`: Converts function nodes to rules with union alternatives
+    - `build_grammar_rules_from_enhanced()`: Main entry point for new approach
+    - `apply_control_flow_patterns()`: Wraps rules with Optional/Repeat
+- **Test Results**:
+    - 27/27 tests passing
+    - 100% code quality (0 ruff violations, 0 type errors)
+    - All tests validate rule generation for single/multiple branches, loops, and token-based alternatives
+- **Ready for**: Stage 5 (Semantic Validation & Comparison)
 
 ---
 

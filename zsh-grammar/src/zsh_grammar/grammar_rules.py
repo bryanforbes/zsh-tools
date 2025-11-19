@@ -13,12 +13,16 @@ from zsh_grammar.grammar_utils import create_ref, create_sequence, create_termin
 
 if TYPE_CHECKING:
     from zsh_grammar._types import (
+        ControlFlowBranch,
         FunctionNode,
+        FunctionNodeEnhanced,
         GrammarNode,
         SemanticGrammarRule,
         Source,
         TokenOrCall,
+        TokenOrCallEnhanced,
     )
+    from zsh_grammar.control_flow import ControlFlowPattern
 
 
 def sequence_to_rule(
@@ -77,7 +81,7 @@ def sequence_to_rule(
         elif item['kind'] == 'call':
             # Function call - reference to called rule
             call = item  # Already typed as _FunctionCall by discriminated union
-            rule_name = _function_to_rule_name(call['func_name'])
+            rule_name = function_to_rule_name(call['func_name'])
             ref = create_ref(rule_name)
             refs.append(ref)
 
@@ -233,7 +237,7 @@ def build_grammar_rules(
         if not _is_parser_function(func_name):
             continue
 
-        rule_name = _function_to_rule_name(func_name)
+        rule_name = function_to_rule_name(func_name)
 
         # Check if this function has extracted sequences
         if sequences := extracted_tokens.get(func_name):
@@ -278,7 +282,7 @@ def embed_lexer_state_conditions(
     return grammar
 
 
-def _function_to_rule_name(func_name: str, /) -> str:
+def function_to_rule_name(func_name: str, /) -> str:
     """
     Convert function name to grammar rule name.
 
@@ -305,6 +309,292 @@ def _build_func_to_rule_map(  # pyright: ignore[reportUnusedFunction]
     func_to_rule: dict[str, str] = {}
     for func_name in parser_functions:
         if _is_parser_function(func_name):
-            rule_name = _function_to_rule_name(func_name)
+            rule_name = function_to_rule_name(func_name)
             func_to_rule[func_name] = rule_name
     return func_to_rule
+
+
+# ============================================================================
+# Stage 4: Rule Generation from Token Sequences (Phase 2.4.1)
+# ============================================================================
+
+
+def item_to_node(item: TokenOrCallEnhanced, /) -> GrammarNode:
+    """
+    Convert single token/call item to grammar node.
+
+    Phase 2.4.1 Stage 4.1: Convert individual items to grammar references.
+
+    Args:
+        item: Token, call, or synthetic token item
+
+    Returns:
+        GrammarNode reference (with optional description for negated items)
+    """
+    if item['kind'] == 'token':
+        token_name = item['token_name']
+        is_negated = item.get('is_negated', False)
+
+        if is_negated:
+            return create_ref(token_name, description=f'NOT {token_name}')
+        return create_ref(token_name)
+
+    if item['kind'] == 'call':
+        func_name = item['func_name']
+        rule_name = function_to_rule_name(func_name)
+        return create_ref(rule_name)
+
+    if item['kind'] == 'synthetic_token':
+        token_name = item['token_name']
+        condition = item.get('condition', '')
+
+        if condition:
+            return create_ref(
+                token_name,
+                description=f'Synthetic: {condition}',
+            )
+        return create_ref(token_name)
+
+    return {'empty': True}
+
+
+def items_to_sequence(items: list[TokenOrCallEnhanced], /) -> GrammarNode:
+    """
+    Convert list of items to sequence or single reference.
+
+    Phase 2.4.1 Stage 4.1: Build sequence node from ordered items.
+
+    Strategy:
+    - Empty list → empty node
+    - Single item → unwrap to reference
+    - Multiple items → wrap in sequence node
+
+    Args:
+        items: Ordered list of token/call items
+
+    Returns:
+        GrammarNode (empty, reference, or sequence)
+    """
+    if not items:
+        return {'empty': True}
+
+    # Convert each item to node
+    nodes: list[GrammarNode] = []
+    for item in items:
+        node = item_to_node(item)
+        # Skip empty nodes in sequences
+        if node != {'empty': True}:
+            nodes.append(node)
+
+    if not nodes:
+        return {'empty': True}
+
+    if len(nodes) == 1:
+        return nodes[0]
+
+    return create_sequence(nodes)
+
+
+def convert_branch_to_rule(
+    func_name: str,
+    branch: ControlFlowBranch,
+    control_flows: dict[str, ControlFlowPattern | None],
+) -> GrammarNode:
+    """
+    Convert single control flow branch to grammar rule.
+
+    Phase 2.4.1 Stage 4.1: Convert branch to appropriate grammar node
+    based on branch type (sequential, loop, if, switch_case).
+
+    Strategy:
+    1. Empty branch → empty
+    2. Single item → unwrap
+    3. Loop branch → wrap in repeat (min=0)
+    4. Otherwise → sequence
+
+    Args:
+        func_name: Parent function name (for context)
+        branch: Control flow branch with items
+        control_flows: Optional pattern info (future use)
+
+    Returns:
+        GrammarNode representing the branch
+    """
+    items = branch['items']
+
+    # Case 1: Empty branch
+    if not items:
+        return {'empty': True}
+
+    # Case 2: Single item
+    if len(items) == 1:
+        return item_to_node(items[0])
+
+    # Case 3: Loop branch → wrap in repeat
+    if branch['branch_type'] == 'loop':
+        body_node = items_to_sequence(items)
+        return {
+            'repeat': body_node,
+            'min': 0,  # Loops can execute 0 times
+        }
+
+    # Case 4: Sequential branch → sequence
+    return items_to_sequence(items)
+
+
+def convert_node_to_rule(
+    func_name: str,
+    node: FunctionNodeEnhanced,
+    control_flows: dict[str, ControlFlowPattern | None],
+) -> GrammarNode:
+    """
+    Convert function node to grammar rule.
+
+    Phase 2.4.1 Stage 4.1: Main transformation from FunctionNodeEnhanced
+    to GrammarNode, handling multiple branches as union alternatives.
+
+    Strategy:
+    1. Empty sequences → empty
+    2. Single sequence → convert directly
+    3. Multiple sequences → union of alternatives
+
+    Args:
+        func_name: Function name (for logging/context)
+        node: Enhanced function node with token_sequences
+        control_flows: Optional control flow patterns
+
+    Returns:
+        GrammarNode representing the complete rule
+    """
+    branches = node['token_sequences']
+
+    # Case 1: No branches
+    if not branches:
+        return {'empty': True}
+
+    # Case 2: Single branch
+    if len(branches) == 1:
+        return convert_branch_to_rule(func_name, branches[0], control_flows)
+
+    # Case 3: Multiple branches → union
+    alternatives: list[GrammarNode] = []
+    for branch in branches:
+        alt = convert_branch_to_rule(func_name, branch, control_flows)
+        if alt != {'empty': True}:  # Skip empty alternatives
+            alternatives.append(alt)
+
+    if len(alternatives) == 1:
+        return alternatives[0]
+    return {'union': alternatives}
+
+
+def build_grammar_rules_from_enhanced(
+    call_graph: dict[str, FunctionNodeEnhanced],
+    control_flows: dict[str, ControlFlowPattern | None],
+) -> dict[str, GrammarNode]:
+    """
+    Build grammar rules from enhanced call graph with token sequences.
+
+    Phase 2.4.1 Stage 4: Main entry point for new token-sequence-centric
+    rule generation. Replaces old _build_grammar_rules() which only used
+    call graphs without token information.
+
+    Strategy:
+    1. Iterate over all parser functions in call_graph
+    2. Convert each FunctionNodeEnhanced to GrammarNode
+    3. Apply control flow patterns (optional/repeat wrapping)
+    4. Return dict of rule_name → GrammarNode
+
+    Args:
+        call_graph: Enhanced call graph with token_sequences
+        control_flows: Control flow patterns (if/loop analysis results)
+
+    Returns:
+        Dict mapping rule names to GrammarNode definitions
+    """
+    rules: dict[str, GrammarNode] = {}
+
+    for func_name, node in call_graph.items():
+        if not _is_parser_function(func_name):
+            continue
+
+        rule_name = function_to_rule_name(func_name)
+        rule = convert_node_to_rule(func_name, node, control_flows)
+
+        if rule:
+            rules[rule_name] = rule
+
+    return rules
+
+
+def apply_control_flow_patterns(
+    rules: dict[str, GrammarNode],
+    control_flows: dict[str, ControlFlowPattern | None],
+) -> dict[str, GrammarNode]:
+    """
+    Apply control flow patterns (optional/repeat) to rules.
+
+    Phase 2.4.1 Stage 4.2: Wrap generated rules with Optional/Repeat nodes
+    based on control flow analysis results.
+
+    Strategy:
+    1. For each rule, check control_flows[func_name]
+    2. If pattern_type == 'optional' → wrap in Optional
+    3. If pattern_type == 'repeat' → wrap in Repeat (if not already)
+    4. Otherwise → keep as-is
+
+    Args:
+        rules: Generated grammar rules
+        control_flows: Control flow analysis results
+
+    Returns:
+        Rules with optional/repeat wrapping applied
+    """
+    wrapped_rules = dict(rules)  # Copy
+
+    for rule_name in list(wrapped_rules.keys()):
+        func_name = _rule_name_to_function(rule_name)
+        if func_name not in control_flows:
+            continue
+
+        pattern = control_flows[func_name]
+        if pattern is None:
+            continue  # Sequential, no wrapping
+
+        rule = wrapped_rules[rule_name]
+
+        if pattern.get('pattern_type') == 'optional':
+            wrapped_rules[rule_name] = {'optional': rule}
+        elif pattern.get('pattern_type') == 'repeat' and 'repeat' not in rule:
+            # Only wrap if not already a repeat
+            min_iter = pattern.get('min_iterations', 0)
+            wrapped_rules[rule_name] = {
+                'repeat': rule,
+                'min': min_iter,
+            }
+
+    return wrapped_rules
+
+
+def _rule_name_to_function(rule_name: str, /) -> str:
+    """
+    Convert rule name back to function name.
+
+    Reverse of _function_to_rule_name():
+    - list → par_list
+    - string → parse_string
+    - for → par_for
+
+    Args:
+        rule_name: Grammar rule name
+
+    Returns:
+        Likely parser function name
+    """
+    # Try common prefixes in order
+    for prefix in ['par_', 'parse_']:
+        func = f'{prefix}{rule_name}'
+        if _is_parser_function(func):
+            return func
+    # Fallback
+    return f'par_{rule_name}'
