@@ -4,13 +4,27 @@
 
 Phase 2.4.1 redesigns the grammar extraction architecture from function-centric (call graphs) to token-sequence-centric (ordered token+call sequences). This enables reconstruction of semantic grammar comments from parse.c and properly models token-based control flow.
 
+**Current Status:** Stages 0-3 COMPLETE (3 remaining: 4-6)
+
+**Implementation Progress:**
+
+- ✅ **Stage 0**: Data structures & validators (18 tests passing)
+- ✅ **Stage 1**: Branch extraction from AST (40+ tests passing, 87% coverage)
+- ✅ **Stage 2**: Token & call sequence extraction (9 tests passing, 73% coverage)
+- ✅ **Stage 3**: Enhanced call graph construction (26 tests passing, 82% coverage)
+- ⏳ **Stage 4**: Rule generation from token sequences (NEXT)
+- ⏳ **Stage 5**: Semantic validation & comparison
+- ⏳ **Stage 6**: Documentation & integration
+
+**Test Results:** 121 tests passing, 0 lint errors, 0 type errors
+
 **Critical Facts:**
 
 - Current extraction is fundamentally broken: cannot reconstruct "INPAR list OUTPAR | INBRACE list OUTBRACE" patterns
-- Token extraction infrastructure exists but is unused dead code
-- Redesign requires ~40-60% rewrite of extraction logic (not incremental enhancement)
-- Estimated effort: 8-12 sprints of focused work
-- Can be parallelized across 3-4 independent sub-agents
+- Token extraction infrastructure now implemented and validated (Stages 0-3 complete)
+- Foundation established for rule generation: token sequences extracted, branches analyzed, call graph enhanced
+- Remaining effort: ~4-6 sprints (Stages 4-6)
+- Stages 4-5 can run in parallel (both depend on Stage 3)
 
 **Success Criteria:**
 

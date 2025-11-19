@@ -55,34 +55,47 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 #### Phase 2.4.1: Token-Sequence-Based Grammar Extraction (REDESIGN)
 
-**Overall Status**: Ready for implementation (6 stages, 8-12 sprints estimated)
+**Overall Status**: Stages 0-3 COMPLETE (4 remaining: 4-6)
+
+**Progress**:
+
+- ✅ Stage 0: Data structures & validators
+- ✅ Stage 1: Branch extraction from AST
+- ✅ Stage 2: Token & call sequence extraction
+- ✅ Stage 3: Enhanced call graph construction
+- ⏳ Stage 4: Rule generation from token sequences (NEXT)
+- ⏳ Stage 5: Semantic validation & comparison
+- ⏳ Stage 6: Documentation & integration
 
 **Critical Facts:**
 
 - Current extraction is function-centric (call graphs), needs token-sequence-centric
-- Token infrastructure exists but is unused dead code
-- Redesign requires ~40-60% rewrite of extraction logic (not incremental)
-- Can be parallelized across 3-4 independent sub-agents
+- Token infrastructure now extracted and validated (Stages 0-3 complete)
+- Stages 0-3 provide foundation for rule generation (Stage 4)
 - Success criteria: ≥80% of functions reconstruct semantic grammar comments
 
 ---
 
 ##### Stage 0: Data Structure Redesign & Validation Framework
 
-- **Status**: NOT STARTED
+- **Status**: ✅ COMPLETE
 - **Duration**: 1-2 sprints
 - **Dependencies**: None (can start immediately)
 - **Agent Role**: Data architect + Test setup
 - **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 0 (sections 0.1-0.3)
 - **Deliverables**:
-    - [ ] 0.1: TypedDict structures (TokenCheckEnhanced, ControlFlowBranch, FunctionNodeEnhanced)
-    - [ ] 0.2: Test harness (test_par_subsh_token_sequences, test_par_if_token_sequences, test_par_case_token_sequences)
-    - [ ] 0.3: Validation framework (TokenSequenceValidator class)
+    - [x] 0.1: TypedDict structures (TokenCheckEnhanced, ControlFlowBranch, FunctionNodeEnhanced)
+    - [x] 0.2: Test harness (test_par_subsh_token_sequences, test_par_if_token_sequences, test_par_case_token_sequences)
+    - [x] 0.3: Validation framework (TokenSequenceValidator class)
 - **Output Files**:
-    - Modified: `zsh_grammar/src/_types.py`
-    - New: `zsh_grammar/tests/test_data_structures.py`
-    - New: `zsh_grammar/tests/test_token_sequence_extraction.py`
-    - New: `zsh_grammar/token_sequence_validators.py`
+    - Modified: `zsh_grammar/src/_types.py` ✅
+    - New: `zsh_grammar/tests/test_data_structures.py` ✅
+    - New: `zsh_grammar/tests/test_token_sequence_extraction.py` ✅
+    - New: `zsh_grammar/token_sequence_validators.py` ✅
+- **Test Results**:
+    - 18/18 tests passing
+    - 0 lint errors, 0 type errors
+- **Ready for**: Stages 1-2
 
 ---
 
@@ -151,18 +164,24 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 ##### Stage 3: Enhanced Call Graph Construction
 
-- **Status**: NOT STARTED
+- **Status**: ✅ COMPLETE
 - **Duration**: 1-2 sprints
-- **Dependencies**: Stage 0, Stage 1, Stage 2
+- **Dependencies**: Stage 0 ✅, Stage 1 ✅, Stage 2 ✅
 - **Agent Role**: Integration specialist
 - **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 3 (sections 3.1-3.3)
 - **Deliverables**:
-    - [ ] 3.1: Build enhanced call graph with token_sequences
-    - [ ] 3.2: Validate extracted sequences
-    - [ ] 3.3: Compare enhanced graph with old call graph
+    - [x] 3.1: Build enhanced call graph with token_sequences
+    - [x] 3.2: Validate extracted sequences
+    - [x] 3.3: Compare enhanced graph with old call graph
 - **Output Files**:
-    - Modified: `zsh_grammar/control_flow.py`
-    - New: `zsh_grammar/tests/test_enhanced_call_graph.py`
+    - Modified: `zsh_grammar/control_flow.py` ✅
+    - New: `zsh_grammar/enhanced_call_graph.py` ✅
+    - New: `zsh_grammar/tests/test_enhanced_call_graph.py` ✅
+- **Test Results**:
+    - 26/26 tests passing
+    - 82% coverage on enhanced_call_graph.py
+    - 0 lint errors, 0 type errors
+- **Ready for**: Stage 4 (Rule Generation)
 
 ---
 

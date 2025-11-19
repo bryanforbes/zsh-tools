@@ -1,5 +1,18 @@
 # Phase 2.4.1 Quick Reference for Sub-Agents
 
+## Implementation Status
+
+**Completed (121 tests passing):**
+
+- ✅ Stage 0: Data structures & validators
+- ✅ Stage 1: Branch extraction from AST
+- ✅ Stage 2: Token & call sequence extraction
+- ✅ Stage 3: Enhanced call graph construction
+
+**Next**: Stage 4 (Rule Generation) - ready to start
+
+---
+
 ## One-Page Overview
 
 **Goal**: Replace function-centric grammar extraction with token-sequence-centric extraction.
@@ -10,7 +23,7 @@
 - Should model "tokens surrounding function calls" (token sequences)
 - Example: `par_subsh()` currently extracts as `{'$ref': 'list'}`; should be `Union[Sequence[INPAR, list, OUTPAR], Sequence[INBRACE, list, OUTBRACE]]`
 
-**Solution**: 6 stages, each ~2 sprints, can be parallelized.
+**Solution**: 6 stages, Stages 0-3 complete, 3 remaining can be parallelized.
 
 ---
 
@@ -18,49 +31,52 @@
 
 ### I want to work on...
 
-**Data structures & types?** → **Stage 0** (Data Architect)
+**Data structures & types?** → **Stage 0** ✅ COMPLETE
 
-- Define TypedDicts for enhanced data structures
-- Create test harness with examples
-- Duration: 1-2 sprints
+- ~~Define TypedDicts for enhanced data structures~~
+- ~~Create test harness with examples~~
+- Status: 18 tests passing, clean code
 
-**AST & control flow analysis?** → **Stage 1** (AST Specialist)
+**AST & control flow analysis?** → **Stage 1** ✅ COMPLETE
 
-- Extract if/else/switch/loop branches from AST
-- Identify token-based dispatch conditions
-- Duration: 2-3 sprints
+- ~~Extract if/else/switch/loop branches from AST~~
+- ~~Identify token-based dispatch conditions~~
+- Status: 40+ tests passing, 87% coverage
 
-**Token extraction?** → **Stage 2** (Token Extractor)
+**Token extraction?** → **Stage 2** ✅ COMPLETE
 
-- Walk AST within branch bounds
-- Extract ordered token+call sequences
-- Handle synthetic tokens from string matching
-- Duration: 2-3 sprints
+- ~~Walk AST within branch bounds~~
+- ~~Extract ordered token+call sequences~~
+- ~~Handle synthetic tokens from string matching~~
+- Status: 9 tests passing, 73% coverage
 
-**Gluing components together?** → **Stage 3** (Integrator)
+**Gluing components together?** → **Stage 3** ✅ COMPLETE
 
-- Combine branches + tokens into enhanced call graph
-- Validate completeness
-- Duration: 1-2 sprints
+- ~~Combine branches + tokens into enhanced call graph~~
+- ~~Validate completeness~~
+- Status: 26 tests passing, 82% coverage
 
-**Grammar rule generation?** → **Stage 4** (Grammar Generator)
+**Grammar rule generation?** → **Stage 4** ⏳ READY TO START
 
 - Convert token sequences to grammar nodes (Sequence, Union, Repeat, Optional)
 - Apply control flow patterns
 - Duration: 2-3 sprints
+- Dependency: Stage 3 ✅ complete
 
-**Testing & validation?** → **Stage 5** (QA Specialist)
+**Testing & validation?** → **Stage 5** ⏳ READY (after Stage 4 starts)
 
 - Extract semantic grammar from parse.c comments
 - Compare extracted vs expected rules
 - Generate validation report
 - Duration: 2-3 sprints
+- Dependency: Stage 3 ✅ complete (can run in parallel with Stage 4)
 
-**Documentation?** → **Stage 6** (Technical Writer)
+**Documentation?** → **Stage 6** ⏳ READY (after Stage 5 completes)
 
 - Update TODOS.md, AGENTS.md, architecture docs
 - Create integration guide
 - Duration: 1 sprint
+- Dependency: All stages complete
 
 ---
 

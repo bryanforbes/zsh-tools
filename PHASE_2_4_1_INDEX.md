@@ -1,6 +1,6 @@
 # Phase 2.4.1 Planning Documentation Index
 
-Complete planning for token-sequence-centric grammar extraction redesign. All documents ready for implementation; no code has been written.
+Token-sequence-centric grammar extraction redesign. **Implementation Status: Stages 0-3 COMPLETE (3 remaining: 4-6). 121 tests passing, 0 errors.**
 
 ---
 
@@ -402,7 +402,7 @@ PHASE_2_4_1_ARCHITECTURE_SHIFT.md
 
 ### Q: Can I start implementing immediately?
 
-**A**: Stage 0 can start immediately. Stages 1-3 must wait for Stage 0 completion. Stages 4-5 must wait for Stage 3 completion.
+**A**: Stages 0-3 are COMPLETE. Stage 4 can start immediately. Stage 5 must wait for Stage 4 completion. Stage 6 must wait for Stage 5 completion.
 
 ### Q: What if I find a mistake in the plan?
 
@@ -462,25 +462,27 @@ Reference your stage section in PHASE_2_4_1_REDESIGN_PLAN.md and pseudocode.
 
 ## Next Steps
 
-1. **Review** all four documents (this week)
-2. **Align** team on scope and approach (meeting)
-3. **Assign** Stage 0 to first sub-agent (tomorrow)
-4. **Kickoff** Stage 0 work (next week)
-5. **Weekly** progress reviews and blockers
-6. **Staggered** stage assignments as dependencies complete
+1. **Review** updated documentation (Stages 0-3 status)
+2. **Assign** Stage 4 to rule generation specialist (now)
+3. **Assign** Stage 5 to validation specialist (after Stage 4 begins)
+4. **Weekly** progress reviews and blockers
+5. **Stage 6** Documentation & integration (after Stage 5)
 
 ---
 
 ## Summary
 
-Four comprehensive planning documents are ready:
+Four comprehensive planning documents guide implementation:
 
 1. **PHASE_2_4_1_PLANNING_COMPLETE.md** — Overview and status
 2. **PHASE_2_4_1_ARCHITECTURE_SHIFT.md** — Technical justification
 3. **PHASE_2_4_1_REDESIGN_PLAN.md** — Detailed implementation specification
 4. **PHASE_2_4_1_QUICK_REFERENCE.md** — Sub-agent workflow guide
 
-**Total planning**: 123 KB, 3600 lines  
-**Status**: Ready for implementation  
-**No code written**: By design (planning-only phase)  
-**Next**: Assign Stage 0 to first sub-agent
+**Implementation Progress**:
+
+- ✅ Stages 0-3 COMPLETE (121 tests passing)
+- ⏳ Stages 4-6 IN PROGRESS
+- 0 lint errors, 0 type errors
+
+**Next**: Assign Stage 4 (Rule Generation) to next sub-agent
