@@ -6,33 +6,115 @@ Provides fixtures for loading parse.c and extracting parser functions.
 from __future__ import annotations
 
 import os
+import sys
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import pytest
+from clang.cindex import TranslationUnit
 
 from zsh_grammar.ast_utilities import find_function_definitions
 from zsh_grammar.source_parser import ZshParser
 
 if TYPE_CHECKING:
-    from clang.cindex import Cursor, TranslationUnit
+    from _typeshed import StrPath
+    from collections.abc import Iterator
+
+    from clang.cindex import Cursor
+
+
+@dataclass(slots=True)
+class CachedZshParser:
+    """ZshParser wrapper that caches parsed ASTs to .ast files."""
+
+    zsh_src: Path
+    cache_dir: Path
+    zsh_parser: ZshParser = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.zsh_parser = ZshParser(self.zsh_src)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+    def parse(
+        self, path: StrPath, /, *, expand_macros: bool = False
+    ) -> TranslationUnit | None:
+        """Parse with automatic AST caching.
+
+        Args:
+            path: Path to source file, relative to zsh_src or absolute
+            expand_macros: If True, expands macros via clang preprocessing
+
+        Returns:
+            TranslationUnit or None if parsing fails
+        """
+        source_file = self.zsh_src / path if isinstance(path, str) else Path(path)
+        cache_file = self.cache_dir / f'{source_file.stem}.ast'
+
+        # Check cache validity (cache must be newer than source)
+        cache_newer = (
+            cache_file.exists()
+            and cache_file.stat().st_mtime > source_file.stat().st_mtime
+        )
+        if cache_newer:
+            try:
+                return TranslationUnit.from_ast_file(cache_file)
+            except OSError as e:
+                # Cache corrupted or incompatible, fall through to re-parse
+                print(
+                    f'Warning: failed to load cached AST {cache_file}: {e}',
+                    file=sys.stderr,
+                )
+
+        # Parse fresh and cache
+        tu = self.zsh_parser.parse(source_file, expand_macros=expand_macros)
+        if tu is not None:
+            try:
+                tu.save(cache_file)
+            except OSError as e:
+                print(
+                    f'Warning: failed to cache AST {cache_file}: {e}',
+                    file=sys.stderr,
+                )
+
+        return tu
+
+    def parse_files(
+        self, glob_pattern: str, /
+    ) -> Iterator[tuple[Path, TranslationUnit]]:
+        """
+        Parse multiple Zsh source files matching a glob pattern.
+
+        Args:
+            glob_pattern (str): Glob pattern to match source files.
+
+        Yields:
+            tuple[Path, TranslationUnit]: Each file path and its parsed translation
+            unit. Files that fail preprocessing are skipped.
+        """
+        for file in self.zsh_src.glob(glob_pattern):
+            tu = self.parse(file)
+            if tu is not None:
+                yield file, tu
 
 
 @pytest.fixture(scope='session')
-def zsh_parser() -> ZshParser:
-    """Initialize ZshParser with zsh source directory."""
+def zsh_parser(request: pytest.FixtureRequest) -> CachedZshParser:
+    """Initialize CachedZshParser with zsh source directory."""
     # Set clang library path if environment variable is set
     libclang_prefix = os.environ.get('LIBCLANG_PREFIX')
     if libclang_prefix:
         ZshParser.set_clang_prefix(libclang_prefix)
 
     zsh_src = Path(__file__).parent.parent.parent / 'vendor' / 'zsh' / 'Src'
-    return ZshParser(zsh_src)
+    cache_dir = request.config.cache._cachedir / 'ast'
+
+    return CachedZshParser(zsh_src, cache_dir)
 
 
 @pytest.fixture(scope='session')
-def parse_c_ast(zsh_parser: ZshParser) -> TranslationUnit:
-    """Load and parse parse.c AST."""
+def parse_c_ast(zsh_parser: CachedZshParser) -> TranslationUnit:
+    """Load and parse parse.c AST, using cached .ast file if available."""
     tu = zsh_parser.parse('parse.c')
     if tu is None:
         pytest.skip('Failed to parse parse.c')

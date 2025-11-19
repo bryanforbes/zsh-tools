@@ -43,6 +43,7 @@
     - Python 3.14+ (unpublished), 3.10+ (published), strict ruff + basedpyright
     - `from __future__ import annotations` required, built-in generics, collections.abc protocols
     - Zero lint/type errors, ruff formatting, full type hints, no typing.Any
+    - Use `# pyright: ignore[<rule>]` for specific exceptions only
 - **JS/TS**: ESLint + Prettier, single quotes, 2-space indent, ES modules
 - **Imports**: `from __future__ import annotations` required in Python
 - **Error handling**: Standard Python exceptions, no bare excepts

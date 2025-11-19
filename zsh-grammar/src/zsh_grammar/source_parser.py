@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-@dataclass
+@dataclass(slots=True)
 class ZshParser:
     """
     Parser for Zsh source files using libclang.
