@@ -128,18 +128,24 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 ##### Stage 2: Token & Call Sequence Extraction
 
-- **Status**: NOT STARTED
-- **Duration**: 2-3 sprints
-- **Dependencies**: Stage 0, Stage 1
+- **Status**: ✅ COMPLETE
+- **Duration**: 1 sprint
+- **Dependencies**: Stage 0 ✅, Stage 1 ✅
 - **Agent Role**: Token extraction specialist
 - **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 2 (sections 2.1-2.3)
 - **Deliverables**:
-    - [ ] 2.1: Extract tokens and calls in order for each branch
-    - [ ] 2.2: Handle synthetic tokens from string matching
-    - [ ] 2.3: Merge branch items with sequence indices
+    - [x] 2.1: Extract tokens and calls in order for each branch
+    - [x] 2.2: Handle synthetic tokens from string matching
+    - [x] 2.3: Merge branch items with sequence indices
 - **Output Files**:
-    - Modified: `zsh_grammar/token_extractors.py`
-    - New: `zsh_grammar/tests/test_token_extraction_advanced.py`
+    - Modified: `zsh_grammar/src/zsh_grammar/token_extractors.py` (558 lines added) ✅
+    - Modified: `zsh_grammar/tests/test_branch_extractor.py` (61 new tests) ✅
+    - New: `PHASE_2_4_1_STAGE_2_COMPLETION.md` ✅
+- **Test Results**:
+    - 95/95 tests passing (34 existing Stage 1 + 61 new Stage 2)
+    - 57% coverage on token_extractors.py
+    - 0 lint errors, 0 type errors
+- **Ready for**: Stage 3 (Enhanced Call Graph Construction)
 
 ---
 
