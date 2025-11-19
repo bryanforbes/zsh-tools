@@ -1,0 +1,686 @@
+{
+  "$schema": "./canonical-grammar.schema.json",
+  "zsh_version": "5.9",
+  "languages": {
+    "core": {
+      "SEPER": {
+        "token": "SEPER",
+        "matches": [";", "\n"],
+        "description": "Statement separator (semicolon or newline)"
+      },
+      "SEMI": {
+        "token": "SEMI",
+        "matches": ";",
+        "description": "Literal semicolon in arithmetic contexts"
+      },
+      "AMPER": {
+        "token": "AMPER",
+        "matches": "&"
+      },
+      "AMPERBANG": {
+        "token": "AMPERBANG",
+        "matches": "&!"
+      },
+      "DBAR": {
+        "token": "DBAR",
+        "matches": "||"
+      },
+      "DAMPER": {
+        "token": "DAMPER",
+        "matches": "&&"
+      },
+      "BAR": {
+        "token": "BAR",
+        "matches": "|"
+      },
+      "BARAMP": {
+        "token": "BARAMP",
+        "matches": "|&"
+      },
+      "list": {
+        "description": "{ SEPER } [ sublist [ { SEPER | AMPER | AMPERBANG } list ] ]",
+        "sequence": [
+          {
+            "repeat": {
+              "$ref": "SEPER"
+            },
+            "min": 0
+          },
+          {
+            "optional": {
+              "sequence": [
+                {
+                  "$ref": "sublist"
+                },
+                {
+                  "optional": {
+                    "sequence": [
+                      {
+                        "repeat": {
+                          "union": [
+                            { "$ref": "SEPER" },
+                            { "$ref": "AMPER" },
+                            { "$ref": "AMPERBANG" }
+                          ]
+                        },
+                        "min": 1
+                      },
+                      {
+                        "$ref": "list"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "sublist": {
+        "description": "sublist2 [ ( DBAR | DAMPER ) { SEPER } sublist ]",
+        "sequence": [
+          {
+            "$ref": "sublist2"
+          },
+          {
+            "optional": {
+              "sequence": [
+                {
+                  "union": [{ "$ref": "DBAR" }, { "$ref": "DAMPER" }]
+                },
+                {
+                  "repeat": {
+                    "$ref": "SEPER"
+                  },
+                  "min": 0
+                },
+                {
+                  "$ref": "sublist"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "sublist2": {
+        "description": "[ COPROC | BANG ] pline",
+        "sequence": [
+          {
+            "optional": {
+              "union": [{ "$ref": "COPROC" }, { "$ref": "BANG" }]
+            }
+          },
+          {
+            "$ref": "pline"
+          }
+        ]
+      },
+      "pline": {
+        "description": "cmd [ ( BAR | BARAMP ) { SEPER } pline ]",
+        "sequence": [
+          {
+            "$ref": "cmd"
+          },
+          {
+            "optional": {
+              "sequence": [
+                {
+                  "union": [{ "$ref": "BAR" }, { "$ref": "BARAMP" }]
+                },
+                {
+                  "repeat": {
+                    "$ref": "SEPER"
+                  },
+                  "min": 0
+                },
+                {
+                  "$ref": "pline"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "cmd": {
+        "description": "{ redir } ( for | case | if | while | repeat | subsh | funcdef | time | dinbrack | dinpar | simple ) { redir }",
+        "sequence": [
+          {
+            "repeat": {
+              "$ref": "redir"
+            },
+            "min": 0
+          },
+          {
+            "union": [
+              { "$ref": "for" },
+              { "$ref": "case" },
+              { "$ref": "if" },
+              { "$ref": "while" },
+              { "$ref": "repeat" },
+              { "$ref": "subsh" },
+              { "$ref": "funcdef" },
+              { "$ref": "time" },
+              { "$ref": "dinbrack" },
+              { "$ref": "dinpar" },
+              { "$ref": "simple" }
+            ]
+          },
+          {
+            "repeat": {
+              "$ref": "redir"
+            },
+            "min": 0
+          }
+        ]
+      },
+      "simple": {
+        "description": "{ COMMAND | EXEC | NOGLOB | NOCORRECT | DASH } { STRING | ENVSTRING | ENVARRAY wordlist OUTPAR | redir }",
+        "sequence": [
+          {
+            "repeat": {
+              "union": [
+                { "$ref": "COMMAND" },
+                { "$ref": "EXEC" },
+                { "$ref": "NOGLOB" },
+                { "$ref": "NOCORRECT" },
+                { "$ref": "DASH" }
+              ]
+            },
+            "min": 0
+          },
+          {
+            "repeat": {
+              "union": [
+                { "$ref": "STRING" },
+                {
+                  "sequence": [
+                    { "$ref": "ENVSTRING" },
+                    {
+                      "optional": {
+                        "repeat": {
+                          "$ref": "STRING"
+                        },
+                        "min": 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  "sequence": [
+                    { "$ref": "ENVARRAY" },
+                    {
+                      "repeat": {
+                        "$ref": "STRING"
+                      },
+                      "min": 0
+                    },
+                    { "$ref": "OUTPAR" }
+                  ]
+                },
+                { "$ref": "redir" }
+              ]
+            },
+            "min": 0
+          }
+        ]
+      },
+      "wordlist": {
+        "description": "{ STRING }",
+        "repeat": {
+          "$ref": "STRING"
+        },
+        "min": 0
+      },
+      "nl_wordlist": {
+        "description": "{ STRING | SEPER }",
+        "repeat": {
+          "union": [{ "$ref": "STRING" }, { "$ref": "SEPER" }]
+        },
+        "min": 0
+      },
+      "if": {
+        "description": "{ ( IF | ELIF ) { SEPER } ( INPAR list OUTPAR | list ) { SEPER } ( THEN list | INBRACE list OUTBRACE | list1 ) } [ FI | ELSE list FI | ELSE { SEPER } INBRACE list OUTBRACE ]",
+        "sequence": [
+          {
+            "repeat": {
+              "sequence": [
+                {
+                  "union": [{ "$ref": "IF" }, { "$ref": "ELIF" }]
+                },
+                {
+                  "repeat": {
+                    "$ref": "SEPER"
+                  },
+                  "min": 0
+                },
+                {
+                  "union": [
+                    {
+                      "sequence": [
+                        { "$ref": "INPAR" },
+                        { "$ref": "list" },
+                        { "$ref": "OUTPAR" }
+                      ]
+                    },
+                    { "$ref": "list" }
+                  ]
+                },
+                {
+                  "repeat": {
+                    "$ref": "SEPER"
+                  },
+                  "min": 0
+                },
+                {
+                  "union": [
+                    {
+                      "sequence": [{ "$ref": "THEN" }, { "$ref": "list" }]
+                    },
+                    {
+                      "sequence": [
+                        { "$ref": "INBRACE" },
+                        { "$ref": "list" },
+                        { "$ref": "OUTBRACE" }
+                      ]
+                    },
+                    { "$ref": "list1" }
+                  ]
+                }
+              ]
+            },
+            "min": 1
+          },
+          {
+            "optional": {
+              "union": [
+                { "$ref": "FI" },
+                {
+                  "sequence": [
+                    { "$ref": "ELSE" },
+                    { "$ref": "list" },
+                    { "$ref": "FI" }
+                  ]
+                },
+                {
+                  "sequence": [
+                    { "$ref": "ELSE" },
+                    {
+                      "repeat": {
+                        "$ref": "SEPER"
+                      },
+                      "min": 0
+                    },
+                    { "$ref": "INBRACE" },
+                    { "$ref": "list" },
+                    { "$ref": "OUTBRACE" }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "while": {
+        "description": "( WHILE | UNTIL ) ( INPAR list OUTPAR | list ) { SEPER } ( DO list DONE | INBRACE list OUTBRACE | list ZEND )",
+        "sequence": [
+          {
+            "union": [{ "$ref": "WHILE" }, { "$ref": "UNTIL" }]
+          },
+          {
+            "union": [
+              {
+                "sequence": [
+                  { "$ref": "INPAR" },
+                  { "$ref": "list" },
+                  { "$ref": "OUTPAR" }
+                ]
+              },
+              { "$ref": "list" }
+            ]
+          },
+          {
+            "repeat": {
+              "$ref": "SEPER"
+            },
+            "min": 0
+          },
+          {
+            "union": [
+              {
+                "sequence": [
+                  { "$ref": "DO" },
+                  { "$ref": "list" },
+                  { "$ref": "DONE" }
+                ]
+              },
+              {
+                "sequence": [
+                  { "$ref": "INBRACE" },
+                  { "$ref": "list" },
+                  { "$ref": "OUTBRACE" }
+                ]
+              },
+              {
+                "sequence": [{ "$ref": "list" }, { "$ref": "ZEND" }]
+              }
+            ]
+          }
+        ]
+      },
+      "repeat": {
+        "description": "REPEAT STRING { SEPER } ( DO list DONE | INBRACE list OUTBRACE | list ZEND )",
+        "sequence": [
+          { "$ref": "REPEAT" },
+          { "$ref": "STRING" },
+          {
+            "repeat": {
+              "$ref": "SEPER"
+            },
+            "min": 0
+          },
+          {
+            "union": [
+              {
+                "sequence": [
+                  { "$ref": "DO" },
+                  { "$ref": "list" },
+                  { "$ref": "DONE" }
+                ]
+              },
+              {
+                "sequence": [
+                  { "$ref": "INBRACE" },
+                  { "$ref": "list" },
+                  { "$ref": "OUTBRACE" }
+                ]
+              },
+              {
+                "sequence": [{ "$ref": "list" }, { "$ref": "ZEND" }]
+              }
+            ]
+          }
+        ]
+      },
+      "for": {
+        "description": "( FOR DINPAR expr SEMI expr SEMI expr DOUTPAR | ( FOR[EACH] | SELECT ) name ( in wordlist | INPAR wordlist OUTPAR ) ) { SEPER } ( DO list DONE | INBRACE list OUTBRACE | list ZEND | list1 )",
+        "union": [
+          {
+            "sequence": [
+              { "$ref": "FOR" },
+              { "$ref": "DINPAR" },
+              { "$ref": "STRING" },
+              { "$ref": "SEMI" },
+              { "$ref": "STRING" },
+              { "$ref": "SEMI" },
+              { "$ref": "STRING" },
+              { "pattern": ")" }
+            ]
+          },
+          {
+            "sequence": [
+              {
+                "union": [
+                  { "$ref": "FOR" },
+                  { "$ref": "FOREACH" },
+                  { "$ref": "SELECT" }
+                ]
+              },
+              { "$ref": "STRING" },
+              {
+                "union": [
+                  {
+                    "sequence": [{ "pattern": "in" }, { "$ref": "wordlist" }]
+                  },
+                  {
+                    "sequence": [
+                      { "$ref": "INPAR" },
+                      { "$ref": "wordlist" },
+                      { "$ref": "OUTPAR" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "case": {
+        "description": "CASE STRING ( INBRACE | in ) { pattern } ( ESAC | OUTBRACE )",
+        "sequence": [
+          { "$ref": "CASE" },
+          { "$ref": "STRING" },
+          {
+            "union": [{ "$ref": "INBRACE" }, { "pattern": "in" }]
+          },
+          {
+            "repeat": {
+              "sequence": [
+                { "$ref": "STRING" },
+                {
+                  "union": [{ "$ref": "OUTPAR" }, { "$ref": "BAR" }]
+                },
+                { "$ref": "list" }
+              ]
+            },
+            "min": 0
+          },
+          {
+            "union": [{ "$ref": "ESAC" }, { "$ref": "OUTBRACE" }]
+          }
+        ]
+      },
+      "subsh": {
+        "description": "INPAR list OUTPAR | INBRACE list OUTBRACE",
+        "union": [
+          {
+            "sequence": [
+              { "$ref": "INPAR" },
+              { "$ref": "list" },
+              { "$ref": "OUTPAR" }
+            ]
+          },
+          {
+            "sequence": [
+              { "$ref": "INBRACE" },
+              { "$ref": "list" },
+              { "$ref": "OUTBRACE" }
+            ]
+          }
+        ]
+      },
+      "funcdef": {
+        "description": "STRING INOUTPAR ( list | INBRACE list OUTBRACE )",
+        "sequence": [
+          { "$ref": "STRING" },
+          { "$ref": "INOUTPAR" },
+          {
+            "union": [
+              { "$ref": "list" },
+              {
+                "sequence": [
+                  { "$ref": "INBRACE" },
+                  { "$ref": "list" },
+                  { "$ref": "OUTBRACE" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "time": {
+        "description": "TIME [ pline ]",
+        "sequence": [
+          { "$ref": "TIME" },
+          {
+            "optional": {
+              "$ref": "pline"
+            }
+          }
+        ]
+      },
+      "dinbrack": {
+        "description": "[[ expression ]]",
+        "sequence": [
+          { "$ref": "DINBRACK" },
+          { "$ref": "STRING" },
+          { "pattern": "]]" }
+        ]
+      },
+      "dinpar": {
+        "description": "(( STRING ))",
+        "sequence": [
+          { "$ref": "DINPAR" },
+          { "$ref": "STRING" },
+          { "pattern": "))" }
+        ]
+      },
+      "redir": {
+        "description": "Redirection operator",
+        "sequence": [
+          { "pattern": ">|[0-9]*>|>>|<|<>|<<|<<<|&>|&>>|2>|2>>" },
+          { "$ref": "STRING" }
+        ]
+      },
+      "list1": {
+        "description": "sublist",
+        "$ref": "sublist"
+      },
+      "STRING": {
+        "token": "STRING",
+        "matches": "<word>"
+      },
+      "COPROC": {
+        "token": "COPROC",
+        "matches": "coproc"
+      },
+      "BANG": {
+        "token": "BANG",
+        "matches": "!"
+      },
+      "INPAR": {
+        "token": "INPAR",
+        "matches": "("
+      },
+      "OUTPAR": {
+        "token": "OUTPAR",
+        "matches": ")"
+      },
+      "INBRACE": {
+        "token": "INBRACE",
+        "matches": "{"
+      },
+      "OUTBRACE": {
+        "token": "OUTBRACE",
+        "matches": "}"
+      },
+      "FOR": {
+        "token": "FOR",
+        "matches": "for"
+      },
+      "FOREACH": {
+        "token": "FOREACH",
+        "matches": "foreach"
+      },
+      "SELECT": {
+        "token": "SELECT",
+        "matches": "select"
+      },
+      "CASE": {
+        "token": "CASE",
+        "matches": "case"
+      },
+      "ESAC": {
+        "token": "ESAC",
+        "matches": "esac"
+      },
+      "IF": {
+        "token": "IF",
+        "matches": "if"
+      },
+      "ELIF": {
+        "token": "ELIF",
+        "matches": "elif"
+      },
+      "ELSE": {
+        "token": "ELSE",
+        "matches": "else"
+      },
+      "FI": {
+        "token": "FI",
+        "matches": "fi"
+      },
+      "WHILE": {
+        "token": "WHILE",
+        "matches": "while"
+      },
+      "UNTIL": {
+        "token": "UNTIL",
+        "matches": "until"
+      },
+      "DO": {
+        "token": "DO",
+        "matches": "do"
+      },
+      "DONE": {
+        "token": "DONE",
+        "matches": "done"
+      },
+      "REPEAT": {
+        "token": "REPEAT",
+        "matches": "repeat"
+      },
+      "TIME": {
+        "token": "TIME",
+        "matches": "time"
+      },
+      "DINBRACK": {
+        "token": "DINBRACK",
+        "matches": "[["
+      },
+      "DINPAR": {
+        "token": "DINPAR",
+        "matches": "(("
+      },
+      "COMMAND": {
+        "token": "COMMAND",
+        "matches": "command"
+      },
+      "EXEC": {
+        "token": "EXEC",
+        "matches": "exec"
+      },
+      "NOGLOB": {
+        "token": "NOGLOB",
+        "matches": "noglob"
+      },
+      "NOCORRECT": {
+        "token": "NOCORRECT",
+        "matches": "nocorrect"
+      },
+      "DASH": {
+        "token": "DASH",
+        "matches": "-"
+      },
+      "THEN": {
+        "token": "THEN",
+        "matches": "then"
+      },
+      "ZEND": {
+        "token": "ZEND",
+        "matches": ""
+      },
+      "INOUTPAR": {
+        "token": "INOUTPAR",
+        "matches": "()"
+      },
+      "ENVSTRING": {
+        "token": "ENVSTRING",
+        "matches": "<env_string>"
+      },
+      "ENVARRAY": {
+        "token": "ENVARRAY",
+        "matches": "<env_array>"
+      }
+    }
+  }
+}
