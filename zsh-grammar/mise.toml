@@ -1,4 +1,4 @@
-[tasks.construct-zsh-grammar]
+[tasks.construct]
 description = "Construct zsh grammar files"
 run = 'uv run construct-zsh-grammar'
 

@@ -544,7 +544,7 @@
         "empty": true
       },
       "subst_string": {
-        "union": []
+        "empty": true
       },
       "context_save": {
         "empty": true
@@ -799,7 +799,7 @@
         ]
       },
       "subsh": {
-        "union": []
+        "empty": true
       },
       "funcdef": {
         "$ref": "INBRACE"
@@ -857,7 +857,7 @@
         ]
       },
       "redir": {
-        "union": []
+        "empty": true
       },
       "wordlist": {
         "$ref": "STRING"

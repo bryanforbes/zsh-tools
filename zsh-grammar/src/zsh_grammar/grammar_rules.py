@@ -483,6 +483,8 @@ def convert_node_to_rule(
         if alt != {'empty': True}:  # Skip empty alternatives
             alternatives.append(alt)
 
+    if not alternatives:
+        return {'empty': True}
     if len(alternatives) == 1:
         return alternatives[0]
     return {'union': alternatives}
