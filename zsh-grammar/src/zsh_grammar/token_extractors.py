@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from clang.cindex import CursorKind, Token
+from clang.cindex import Cursor, CursorKind, Token
 
 from zsh_grammar.ast_utilities import walk_and_filter
 from zsh_grammar.extraction_filters import (
@@ -19,9 +19,14 @@ from zsh_grammar.extraction_filters import (
 )
 
 if TYPE_CHECKING:
-    from clang.cindex import Cursor
-
-    from zsh_grammar._types import SyntheticToken, TokenCheck, TokenOrCall
+    from zsh_grammar._types import (
+        ControlFlowBranch,
+        SyntheticToken,
+        SyntheticTokenEnhanced,
+        TokenCheck,
+        TokenOrCall,
+        TokenOrCallEnhanced,
+    )
 
 
 def extract_token_sequences(cursor: Cursor, func_name: str = '') -> list[TokenOrCall]:  # noqa: C901, PLR0912
@@ -623,3 +628,436 @@ def _extract_strcmp_string_value(tokens: list[str], /) -> str | None:
         if token and not token.startswith('(') and not token.startswith(')'):
             return token
     return None
+
+
+# Stage 2: Token Sequence Extraction for Branches
+
+
+def _get_common_tokens() -> set[str]:
+    """Return set of common token names."""
+    return {
+        'INPAR',
+        'OUTPAR',
+        'INBRACE',
+        'OUTBRACE',
+        'SEPER',
+        'SEMI',
+        'DSEMI',
+        'STRING',
+        'FOR',
+        'FOREACH',
+        'SELECT',
+        'CASE',
+        'ESAC',
+        'IF',
+        'THEN',
+        'ELSE',
+        'ELIF',
+        'FI',
+        'WHILE',
+        'UNTIL',
+        'REPEAT',
+        'DO',
+        'DONE',
+        'DINPAR',
+        'DOUTPAR',
+        'BAR',
+        'OUTANG',
+        'INANG',
+        'ALWAYS',
+        'ENVSTRING',
+        'ENVARRAY',
+        'NULLTOK',
+        'WORD',
+    }
+
+
+def _identify_error_lines(cursor: Cursor, start_line: int, end_line: int) -> set[int]:
+    """Identify lines with error-checking if statements in branch."""
+    error_lines: set[int] = set()
+    if_stmts = list(walk_and_filter(cursor, CursorKind.IF_STMT))
+
+    for if_stmt in if_stmts:
+        if_start = if_stmt.extent.start.line
+        if_end = if_stmt.extent.end.line
+        # Only consider if statements within this branch
+        if not (start_line <= if_start <= end_line):
+            continue
+
+        tokens = list(if_stmt.get_tokens())
+        condition_tokens = [t.spelling for t in tokens[:15]]
+
+        if _is_error_check_condition(condition_tokens):
+            for line_num in range(if_start, if_end + 1):
+                error_lines.add(line_num)
+
+    return error_lines
+
+
+def _process_binary_operator_tokens(
+    node: Cursor,
+    branch_id: str,
+    func_name: str,
+    seen: set[tuple[str, int]],
+    items: list[TokenOrCallEnhanced],
+) -> None:
+    """Process binary operator nodes for token extraction."""
+    tokens = list(node.get_tokens())
+    if not (len(tokens) >= 3 and tokens[0].spelling == 'tok'):
+        return
+
+    op = tokens[1].spelling
+    token_name = tokens[2].spelling
+    node_line = node.location.line
+
+    if not (
+        op in ('==', '!=')
+        and token_name.isupper()
+        and len(token_name) > 2
+        and token_name != 'LEXERR'  # noqa: S105
+    ):
+        return
+
+    # Skip pure inequality checks without context
+    if op == '!=' and not _has_semantic_context(tokens):
+        return
+
+    # Skip data tokens
+    if is_data_token(token_name, func_name):
+        return
+
+    key = (token_name, node_line)
+    if key not in seen:
+        seen.add(key)
+        item: TokenOrCallEnhanced = {
+            'kind': 'token',
+            'token_name': token_name,
+            'line': node_line,
+            'is_negated': (op == '!='),
+            'branch_id': branch_id,
+            'sequence_index': -1,
+        }
+        items.append(item)
+
+
+def _process_function_call(
+    node: Cursor,
+    branch_id: str,
+    func_name: str,
+    seen: set[tuple[str, int]],
+    items: list[TokenOrCallEnhanced],
+) -> None:
+    """Process function call nodes."""
+    if not (_is_parser_function(node.spelling) and node.spelling != func_name):
+        return
+
+    node_line = node.location.line
+    key = (node.spelling, node_line)
+    if key not in seen:
+        seen.add(key)
+        item: TokenOrCallEnhanced = {
+            'kind': 'call',
+            'func_name': node.spelling,
+            'line': node_line,
+            'branch_id': branch_id,
+            'sequence_index': -1,
+        }
+        items.append(item)
+
+
+def _process_token_reference(
+    node: Cursor,
+    branch_id: str,
+    func_name: str,
+    common_tokens: set[str],
+    seen: set[tuple[str, int]],
+    items: list[TokenOrCallEnhanced],
+) -> None:
+    """Process direct token reference nodes."""
+    if not (node.spelling in common_tokens and node.spelling != 'LEXERR'):
+        return
+
+    if is_data_token(node.spelling, func_name):
+        return
+
+    node_line = node.location.line
+    key = (node.spelling, node_line)
+    if key not in seen:
+        seen.add(key)
+        item: TokenOrCallEnhanced = {
+            'kind': 'token',
+            'token_name': node.spelling,
+            'line': node_line,
+            'is_negated': False,
+            'branch_id': branch_id,
+            'sequence_index': -1,
+        }
+        items.append(item)
+
+
+def extract_tokens_and_calls_for_branch(
+    cursor: Cursor,
+    branch: ControlFlowBranch,
+    func_name: str = '',
+) -> list[TokenOrCallEnhanced]:
+    """
+    Phase 2.4.1 Stage 2.1: Extract tokens and function calls for a specific branch.
+
+    Walks AST nodes within the branch's line range (start_line to end_line) and
+    identifies all semantic tokens and function calls in execution order.
+
+    Args:
+        cursor: Parser function definition cursor
+        branch: ControlFlowBranch with start_line and end_line
+        func_name: Function name for context-sensitive filtering
+
+    Returns:
+        Ordered list of tokens and function calls with branch_id and sequence_index=-1
+        (sequence_index will be assigned during merge)
+    """
+    start_line = branch['start_line']
+    end_line = branch['end_line']
+    branch_id = branch['branch_id']
+
+    common_tokens = _get_common_tokens()
+    items: list[TokenOrCallEnhanced] = []
+    seen: set[tuple[str, int]] = set()
+    error_check_lines = _identify_error_lines(cursor, start_line, end_line)
+
+    # Walk and collect tokens and calls
+    for node in cursor.walk_preorder():
+        node_line = node.location.line
+        # Only process nodes within branch range
+        if not (start_line <= node_line <= end_line):
+            continue
+
+        # Skip error-checking nodes
+        if node_line in error_check_lines:
+            continue
+
+        if node.kind == CursorKind.BINARY_OPERATOR:
+            _process_binary_operator_tokens(node, branch_id, func_name, seen, items)
+        elif node.kind == CursorKind.CALL_EXPR:
+            _process_function_call(node, branch_id, func_name, seen, items)
+        elif node.kind == CursorKind.DECL_REF_EXPR:
+            _process_token_reference(
+                node, branch_id, func_name, common_tokens, seen, items
+            )
+
+    # Extract error guard tokens for this branch
+    error_guards = extract_error_guard_tokens(cursor, func_name)
+    for guard in error_guards:
+        guard_line = guard['line']
+        if start_line <= guard_line <= end_line:
+            key = (guard['token_name'], guard_line)
+            if key not in seen:
+                seen.add(key)
+                enhanced_guard: TokenOrCallEnhanced = {
+                    'kind': guard['kind'],
+                    'token_name': guard['token_name'],
+                    'line': guard_line,
+                    'is_negated': guard['is_negated'],
+                    'branch_id': branch_id,
+                    'sequence_index': -1,
+                }
+                items.append(enhanced_guard)
+
+    # Sort by line number to preserve execution order
+    items.sort(key=lambda x: x['line'])
+
+    return items
+
+
+def _is_valid_strcmp_pattern(spelling_list: list[str]) -> bool:
+    """Check if token list matches required strcmp pattern."""
+    return (
+        'tok' in spelling_list
+        and '==' in spelling_list
+        and 'STRING' in spelling_list
+        and '&&' in spelling_list
+        and 'strcmp' in spelling_list
+    )
+
+
+def _verify_tok_equals(spelling_list: list[str]) -> bool:
+    """Verify tok == (not tok !=)."""
+    try:
+        tok_idx = spelling_list.index('tok')
+        if tok_idx + 1 >= len(spelling_list):
+            return False
+        return spelling_list[tok_idx + 1] == '=='
+    except (ValueError, IndexError):
+        return False
+
+
+def _extract_and_validate_string_value(
+    spelling_list: list[str],
+) -> str | None:
+    """Extract and validate string value from strcmp pattern."""
+    try:
+        strcmp_idx = spelling_list.index('strcmp')
+    except ValueError:
+        return None
+
+    rest = spelling_list[strcmp_idx:]
+    if len(rest) < 5 or rest[0] != 'strcmp' or rest[1] != '(':
+        return None
+
+    string_value = _extract_strcmp_string_value(rest)
+    if not string_value:
+        return None
+
+    # Skip single-character strings (except A-K)
+    valid_single_chars = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'}
+    if len(string_value) == 1 and string_value.upper() not in valid_single_chars:
+        return None
+
+    return string_value
+
+
+def _should_extract_synthetic_token(synth_token_name: str) -> bool:
+    """Check if synthetic token should be extracted."""
+    # Skip 'IN' - it's a duplicate of INPAR alternative
+    return synth_token_name != 'IN'  # noqa: S105
+
+
+def extract_synthetic_tokens_for_branch(
+    cursor: Cursor,
+    branch: ControlFlowBranch,
+) -> list[SyntheticTokenEnhanced]:
+    """
+    Phase 2.4.1 Stage 2.2: Extract synthetic tokens from string matching within branch.
+
+    Identifies patterns like `tok == STRING && !strcmp(tokstr, "always")` within
+    the branch and converts them to synthetic ALWAYS tokens.
+
+    Args:
+        cursor: Parser function definition cursor
+        branch: ControlFlowBranch to process
+
+    Returns:
+        List of SyntheticTokenEnhanced with branch_id and sequence_index=-1
+    """
+    start_line = branch['start_line']
+    end_line = branch['end_line']
+    branch_id = branch['branch_id']
+
+    synthetics: list[SyntheticTokenEnhanced] = []
+    seen: set[tuple[str, int]] = set()
+
+    for node in cursor.walk_preorder():
+        node_line = node.location.line
+        # Only process nodes within branch
+        if not (start_line <= node_line <= end_line):
+            continue
+
+        if node.kind != CursorKind.BINARY_OPERATOR:
+            continue
+
+        tokens = list(node.get_tokens())
+        if not tokens:
+            continue
+
+        spelling_list = [t.spelling for t in tokens]
+
+        # Check pattern and tok == requirement
+        if not (
+            _is_valid_strcmp_pattern(spelling_list)
+            and _verify_tok_equals(spelling_list)
+        ):
+            continue
+
+        # Extract and validate string value
+        string_value = _extract_and_validate_string_value(spelling_list)
+        if not string_value:
+            continue
+
+        synth_token_name = string_value.upper()
+
+        if not _should_extract_synthetic_token(synth_token_name):
+            continue
+
+        key = (synth_token_name, node_line)
+        if key in seen:
+            continue
+
+        seen.add(key)
+
+        # Determine if optional based on enclosing if structure
+        is_optional = _is_in_optional_if(node)
+
+        # Check for negated strcmp
+        is_negated_strcmp = (
+            'strcmp' in spelling_list
+            and spelling_list.index('strcmp') > 0
+            and spelling_list[spelling_list.index('strcmp') - 1] == '!'
+        )
+
+        condition_desc = (
+            f'tok == STRING && !strcmp(tokstr, "{string_value}")'
+            if is_negated_strcmp
+            else f'tok == STRING && strcmp(tokstr, "{string_value}")'
+        )
+
+        synth: SyntheticTokenEnhanced = {
+            'kind': 'synthetic_token',
+            'token_name': synth_token_name,
+            'line': node_line,
+            'condition': condition_desc,
+            'branch_id': branch_id,
+            'sequence_index': -1,
+            'is_optional': is_optional,
+        }
+        synthetics.append(synth)
+
+    return synthetics
+
+
+def merge_branch_items(
+    tokens: list[TokenOrCallEnhanced],
+    synthetics: list[SyntheticTokenEnhanced],
+) -> list[TokenOrCallEnhanced]:
+    """
+    Phase 2.4.1 Stage 2.3: Merge tokens, calls, and synthetics into single sequence.
+
+    Combines all items, sorts by line number, and assigns contiguous sequence_index.
+
+    Args:
+        tokens: Tokens and calls (sequence_index=-1)
+        synthetics: Synthetic tokens (sequence_index=-1)
+
+    Returns:
+        Merged list with sequence_index assigned (0, 1, 2, ..., n-1)
+    """
+    # Combine all items
+    all_items: list[TokenOrCallEnhanced] = tokens + synthetics  # type: ignore[arg-type]
+
+    # Sort by line number
+    all_items.sort(key=lambda x: x['line'])
+
+    # Assign sequence indices
+    for i, item in enumerate(all_items):
+        item['sequence_index'] = i
+
+    return all_items
+
+
+def _is_in_optional_if(node: Cursor) -> bool:
+    """
+    Check if a node is in an if statement without else (optional).
+
+    Args:
+        node: AST node to check
+
+    Returns:
+        True if node is in optional if block, False otherwise
+    """
+    parent = node.get_parent()
+    while parent:
+        if parent.kind == CursorKind.IF_STMT:
+            tokens = [t.spelling for t in parent.get_tokens()]
+            has_else = 'else' in tokens
+            return not has_else
+        parent = parent.get_parent()
+
+    return False
