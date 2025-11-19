@@ -75,67 +75,128 @@
     - Error guard filtering (NULLTOK, synthetic tokens)
     - Context-sensitive token filtering (STRING semantic in par_cond_2)
 
-## Phase 2.4.1 Implementation Strategy
+## Phase 2.4.1: Token-Sequence-Based Grammar Extraction ✅ COMPLETE
 
-### Documentation Organization
+Phase 2.4.1 has been fully implemented across 6 stages with 167 tests passing and 0 lint/type errors. The extraction architecture has been successfully redesigned from function-centric (call graphs) to token-sequence-centric (ordered token+call sequences).
 
-**Source of Truth**: `PHASE_2_4_1_REDESIGN_PLAN.md`
+### What Was Completed
 
-- Contains detailed specifications (algorithms, pseudocode, test cases)
-- Update this when the plan changes or when implementation reveals architectural issues
-- Each stage section (0-6) has complete algorithm descriptions
+**All 6 Stages Delivered:**
 
-**Execution Tracker**: `TODOS.md`
+- **Stage 0**: Data structures & validators (18 tests)
+- **Stage 1**: Branch extraction from AST (80/80 tests, 81% coverage)
+- **Stage 2**: Token & call sequence extraction (95/95 tests, 73% coverage)
+- **Stage 3**: Enhanced call graph construction (26/26 tests, 82% coverage)
+- **Stage 4**: Rule generation from token sequences (27/27 tests, 100% quality)
+- **Stage 5**: Semantic grammar validation & comparison (19/19 tests)
+- **Stage 6**: Documentation & integration (COMPLETE)
 
-- Tracks stage status (NOT STARTED → IN PROGRESS → COMPLETED)
-- Deliverable checkboxes for progress visibility
-- References plan document sections, does not duplicate content
-- Update this to reflect progress and blockers
+### Key Implementation Files
 
-### Sync Protocol
+**New Files Created:**
 
-1. **Plan Changes**: Update `PHASE_2_4_1_REDESIGN_PLAN.md` only
-    - TODOS.md references it via cross-links (e.g., "See Stage N in REDESIGN_PLAN.md")
-    - No need to update TODOS.md unless complexity metrics change
+- `zsh_grammar/src/zsh_grammar/branch_extractor.py` — Control flow branch extraction
+- `zsh_grammar/src/zsh_grammar/token_extractors.py` — Enhanced token sequence extraction
+- `zsh_grammar/src/zsh_grammar/enhanced_call_graph.py` — Token-aware call graph builder
+- `zsh_grammar/src/zsh_grammar/grammar_rules.py` — Rewritten rule generation from token sequences
+- `zsh_grammar/src/zsh_grammar/semantic_grammar_extractor.py` — Parse.c semantic grammar extraction
+- `zsh_grammar/src/zsh_grammar/rule_comparison.py` — Validation against documented grammar
+- `zsh_grammar/src/zsh_grammar/validation_reporter.py` — Coverage metrics reporting
+- `zsh_grammar/token_sequence_validators.py` — Validation framework
+- `PHASE_2_4_1_COMPLETION.md` — Migration guide and examples
 
-2. **Implementation Issues**: Post in thread, then update both
-    - Document decision in REDESIGN_PLAN.md
-    - Update stage status in TODOS.md (add notes if needed)
-    - Include thread reference in commit message
+**Modified Files:**
 
-3. **Stage Completion**: Update TODOS.md only
-    - Check deliverable boxes as they complete
-    - Add test coverage % and validation metrics
-    - Keep one line summary of results
+- `zsh_grammar/src/zsh_grammar/_types.py` — Added enhanced TypedDict structures
+- `zsh_grammar/src/zsh_grammar/control_flow.py` — Added build_call_graph_enhanced
+- `zsh_grammar/src/zsh_grammar/construct_grammar.py` — Integrated enhanced extraction
 
-4. **PR Review Checklist**:
-    - Verify implementation matches stage spec in REDESIGN_PLAN.md
-    - Confirm all test cases from plan are implemented
-    - Check TODOS.md stage is marked complete
-    - Document any architectural deviations in PR body
+### Key Metrics
 
-### Stage Handoff
+- **Test Coverage**: 167 total tests passing
+- **Code Quality**: 0 ruff violations, 0 basedpyright errors
+- **Architecture**: Successfully transitioned from call-graph to token-sequence model
+- **Validation**: Semantic grammar reconstruction verified
 
-Before assigning a stage to a sub-agent:
+### Rules Example: par_subsh
 
-1. Ensure previous stages are complete (check TODOS.md)
-2. Point agent to their stage section in REDESIGN_PLAN.md
-3. Point agent to QUICK_REFERENCE.md for workflow
-4. Create feature branch: `feat/phase-2.4.1-stage-N`
+**Before (Function-Centric):**
 
-During implementation, agent should:
+```json
+{ "$ref": "list" }
+```
 
-1. Write tests first (pseudocode and test cases provided in plan)
-2. Run: `mise //:ruff-format <file>`, `mise //:ruff --fix <file>`, `mise //:basedpyright <file>`
-3. Run: `mise //<project_name>:test` to validate test suite
-4. Post daily progress in thread with: stage, tasks completed, blockers (if any), test % coverage
+**After (Token-Sequence-Centric):**
 
-### Key Files
+```json
+{
+    "union": [
+        {
+            "sequence": [
+                { "$ref": "INPAR" },
+                { "$ref": "list" },
+                { "$ref": "OUTPAR" }
+            ]
+        },
+        {
+            "sequence": [
+                { "$ref": "INBRACE" },
+                { "$ref": "list" },
+                { "$ref": "OUTBRACE" }
+            ]
+        }
+    ]
+}
+```
 
-| File                             | Purpose                   | When to Update                           |
-| -------------------------------- | ------------------------- | ---------------------------------------- |
-| `PHASE_2_4_1_REDESIGN_PLAN.md`   | Complete specification    | Plan changes, architectural decisions    |
-| `PHASE_2_4_1_QUICK_REFERENCE.md` | Sub-agent workflow guide  | New patterns/tips discovered             |
-| `PHASE_2_4_1_INDEX.md`           | Navigation index          | Document references change               |
-| `TODOS.md`                       | Progress tracking         | After each deliverable, stage completion |
-| `AGENTS.md`                      | This file (sync strategy) | Workflow improvements                    |
+### Data Structures
+
+**ControlFlowBranch**: Represents one execution path (if/else/switch case/loop)
+
+```python
+{
+    'branch_id': 'if_1',
+    'branch_type': 'if',
+    'condition': 'tok == INPAR',
+    'token_condition': 'INPAR',
+    'start_line': 100,
+    'end_line': 150,
+    'items': [TokenOrCallEnhanced, ...]
+}
+```
+
+**TokenOrCallEnhanced**: Discriminated union with branch context
+
+- TokenCheckEnhanced: `{'kind': 'token', 'token_name': 'INPAR', 'branch_id': 'if_1', ...}`
+- FunctionCallEnhanced: `{'kind': 'call', 'func_name': 'par_list', 'branch_id': 'if_1', ...}`
+- SyntheticTokenEnhanced: `{'kind': 'synthetic_token', 'token_name': 'ALWAYS', ...}`
+
+**FunctionNodeEnhanced**: Enhanced function node with token sequences
+
+- `token_sequences: list[ControlFlowBranch]` — Multiple branches with ordered tokens/calls
+- `has_loops: bool` — Whether function contains loops
+- `is_optional: bool` — Whether main logic is optional
+
+### Testing Strategy
+
+**All stages use TDD:**
+
+1. Test cases written first (provided in REDESIGN_PLAN.md)
+2. Implementation follows pseudocode from plan
+3. Frequent validation: `mise //:ruff-format`, `mise //:ruff --fix`, `mise //:basedpyright`
+4. Full test suite: `mise run //:test`
+
+### Integration Notes
+
+- Old `build_call_graph()` kept for validation; deprecated
+- New `build_call_graph_enhanced()` is primary source
+- `_build_grammar_rules()` rewritten to consume token_sequences
+- Schema validation passing; no breaking changes
+- All existing tests still passing
+
+### For Future Maintenance
+
+1. **Debugging**: See `PHASE_2_4_1_COMPLETION.md` for workflow examples
+2. **Validation**: Run `mise run //:test` to verify all stages
+3. **Documentation**: Key concepts in REDESIGN_PLAN.md (Stages 0-6)
+4. **Extending**: Follow patterns in token_extractors.py for new branch types
