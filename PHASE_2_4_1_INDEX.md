@@ -1,6 +1,6 @@
 # Phase 2.4.1 Planning Documentation Index
 
-Token-sequence-centric grammar extraction redesign. **Implementation Status: Stages 0-4 COMPLETE (2 remaining: 5-6). 148 tests passing, 0 errors.**
+Token-sequence-centric grammar extraction redesign. **Implementation Status: Stages 0-5 COMPLETE (1 remaining: 6). 167 tests passing, 0 errors.**
 
 ---
 
@@ -402,7 +402,7 @@ PHASE_2_4_1_ARCHITECTURE_SHIFT.md
 
 ### Q: Can I start implementing immediately?
 
-**A**: Stages 0-4 are COMPLETE. Stage 5 can start immediately. Stage 6 must wait for Stage 5 completion.
+**A**: Stages 0-5 are COMPLETE. Stage 6 can start immediately.
 
 ### Q: What if I find a mistake in the plan?
 
@@ -462,11 +462,10 @@ Reference your stage section in PHASE_2_4_1_REDESIGN_PLAN.md and pseudocode.
 
 ## Next Steps
 
-1. **Stage 4 Complete** ✅ Rule generation from token sequences (Nov 18, 2025)
-2. **Assign** Stage 5 to validation specialist (now)
-3. **Assign** Stage 6 to documentation specialist (after Stage 5 completes)
-4. **Weekly** progress reviews and blockers
-5. **Estimated completion**: Week of Dec 2-6, 2025
+1. **Stage 5 Complete** ✅ Semantic grammar validation & comparison (Nov 18, 2025)
+2. **Assign** Stage 6 to documentation specialist (now)
+3. **Weekly** progress reviews and blockers
+4. **Estimated completion**: Week of Nov 25-29, 2025
 
 ---
 
@@ -481,8 +480,8 @@ Four comprehensive planning documents guide implementation:
 
 **Implementation Progress**:
 
-- ✅ Stages 0-4 COMPLETE (148 tests passing)
-- ⏳ Stages 5-6 IN PROGRESS
+- ✅ Stages 0-5 COMPLETE (167 tests passing)
+- ⏳ Stage 6 IN PROGRESS
 - 0 lint errors, 0 type errors
 
-**Next**: Assign Stage 5 (Semantic Validation & Comparison) to next sub-agent
+**Next**: Assign Stage 6 (Documentation & Integration) to next sub-agent
