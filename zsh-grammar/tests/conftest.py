@@ -132,6 +132,12 @@ def zsh_parser(request: pytest.FixtureRequest) -> CachedZshParser:
 
 
 @pytest.fixture(scope='session')
+def parse_c_path(zsh_parser: CachedZshParser) -> Path:
+    """Get path to parse.c file."""
+    return zsh_parser.zsh_src / 'parse.c'
+
+
+@pytest.fixture(scope='session')
 def parse_c_ast(zsh_parser: CachedZshParser) -> TranslationUnit:
     """Load and parse parse.c AST, using cached .ast file if available."""
     tu = zsh_parser.parse('parse.c')

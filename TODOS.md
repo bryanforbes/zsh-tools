@@ -55,7 +55,7 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 #### Phase 2.4.1: Token-Sequence-Based Grammar Extraction (REDESIGN)
 
-**Overall Status**: Stages 0-4 COMPLETE (2 remaining: 5-6)
+**Overall Status**: Stages 0-5 COMPLETE (1 remaining: 6)
 
 **Progress**:
 
@@ -64,8 +64,8 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 - ✅ Stage 2: Token & call sequence extraction
 - ✅ Stage 3: Enhanced call graph construction
 - ✅ Stage 4: Rule generation from token sequences
-- ⏳ Stage 5: Semantic validation & comparison (NEXT)
-- ⏳ Stage 6: Documentation & integration
+- ✅ Stage 5: Semantic validation & comparison (COMPLETE)
+- ⏳ Stage 6: Documentation & integration (NEXT)
 
 **Critical Facts:**
 
@@ -217,22 +217,31 @@ Status: **Phases 1-3, 2.4 INFRASTRUCTURE, 4.3, and 5.2 COMPLETE BUT ARCHITECTURA
 
 ##### Stage 5: Semantic Grammar Validation & Comparison
 
-- **Status**: NOT STARTED
-- **Duration**: 2-3 sprints
-- **Dependencies**: Stage 0, Stage 4
+- **Status**: ✅ COMPLETE
+- **Duration**: 1 sprint
+- **Dependencies**: Stage 0 ✅, Stage 4 ✅
 - **Agent Role**: QA/Validation specialist
 - **Spec**: See `PHASE_2_4_1_REDESIGN_PLAN.md` Stage 5 (sections 5.1-5.3)
 - **Deliverables**:
-    - [ ] 5.1: Extract semantic grammar comments from parse.c
-    - [ ] 5.2: Compare extracted rules against documented grammar
-    - [ ] 5.3: Generate validation report with coverage metrics
+    - [x] 5.1: Extract semantic grammar comments from parse.c
+    - [x] 5.2: Compare extracted rules against documented grammar
+    - [x] 5.3: Generate validation report with coverage metrics
 - **Output Files**:
-    - New: `zsh_grammar/semantic_grammar_extractor.py`
-    - New: `zsh_grammar/rule_comparison.py`
-    - New: `zsh_grammar/validation_reporter.py`
-    - New: `zsh_grammar/tests/test_semantic_grammar_extractor.py`
-    - New: `zsh_grammar/tests/test_rule_comparison.py`
-    - Report: `PHASE_2_4_1_VALIDATION_REPORT.md` (generated, committed)
+    - New: `zsh_grammar/src/zsh_grammar/semantic_grammar_extractor.py` ✅
+    - New: `zsh_grammar/src/zsh_grammar/rule_comparison.py` ✅
+    - New: `zsh_grammar/src/zsh_grammar/validation_reporter.py` ✅
+    - New: `zsh_grammar/tests/test_stage5_validation.py` ✅
+    - Modified: `zsh_grammar/tests/conftest.py` (added parse_c_path fixture) ✅
+- **Test Results**:
+    - 19/19 tests passing (100% coverage on semantic_grammar_extractor.py, 96% on rule_comparison.py, 69% on validation_reporter.py)
+    - 0 lint errors, 0 type errors
+    - All 167 existing tests still passing
+- **Key Functions**:
+    - `extract_semantic_grammar_from_parse_c()`: Extracts documented grammar from parse.c comments
+    - `RuleComparator.compare_rules()`: Compares extracted rules against semantic grammar with metrics
+    - `generate_validation_report()`: Generates markdown validation report with summary statistics
+    - `print_summary_table()`: Creates markdown table of comparison results
+- **Ready for**: Stage 6 (Documentation & Integration)
 
 ---
 
