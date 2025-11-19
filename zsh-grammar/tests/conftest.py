@@ -6,6 +6,7 @@ Provides fixtures for loading parse.c and extracting parser functions.
 from __future__ import annotations
 
 import os
+import shutil
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -22,6 +23,24 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
     from clang.cindex import Cursor
+
+
+def pytest_addoption(
+    parser: pytest.Parser, pluginmanager: pytest.PytestPluginManager
+) -> None:
+    parser.addoption(
+        '--clear-ast-cache',
+        action='store_true',
+        default=False,
+        help='Clear cached AST files before running tests.',
+    )
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    if config.getoption('--clear-ast-cache'):
+        cache_dir = config.cache._cachedir / 'ast'
+        if cache_dir.exists():
+            shutil.rmtree(cache_dir)
 
 
 @dataclass(slots=True)

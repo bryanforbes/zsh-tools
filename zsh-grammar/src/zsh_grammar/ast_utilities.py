@@ -59,7 +59,7 @@ def find_function_definitions(
     Yields:
         Function definition cursors matching criteria
     """
-    for node in cursor.walk_preorder():
+    for node in cursor.get_children():
         if (
             node.kind == CursorKind.FUNCTION_DECL
             and node.is_definition()
