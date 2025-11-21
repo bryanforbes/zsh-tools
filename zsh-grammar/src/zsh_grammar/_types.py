@@ -6,7 +6,7 @@ from typing_extensions import TypedDict
 
 class Source(TypedDict):
     file: str
-    line: int
+    line: int | tuple[int, int]
     function: NotRequired[str]
     context: NotRequired[str]
 

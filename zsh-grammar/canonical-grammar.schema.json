@@ -14,7 +14,17 @@
           "required": ["file", "line"],
           "properties": {
             "file": { "type": "string", "description": "e.g., parse.c" },
-            "line": { "type": "integer" },
+            "line": {
+              "oneOf": [
+                { "type": "integer" },
+                {
+                  "type": "array",
+                  "items": { "type": "integer" },
+                  "minLength": 2,
+                  "maxLength": 2
+                }
+              ]
+            },
             "function": {
               "type": "string",
               "description": "e.g., par_cmd"

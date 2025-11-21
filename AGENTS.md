@@ -62,5 +62,6 @@
     - **Amp analysis commits**: Include thread reference and co-author at end of message:
         - `Amp-Thread-ID: https://ampcode.com/threads/T-<uuid>`
         - `Co-authored-by: Amp <amp@ampcode.com>`
+        - If there are multiple amp threads, they should all be ordered by ascending date, one line each, before the co-author line
     - Example subject: `fix(extraction): handle mod_import_function`
     - Example body: `Updated regex pattern to accept optional intermediate keywords\nlike 'mod_import_function' in parser function declarations.`

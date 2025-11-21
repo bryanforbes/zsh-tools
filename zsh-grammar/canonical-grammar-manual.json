@@ -467,17 +467,30 @@
           }
         },
         "variable": {
-          "description": "A parameter whose name begins with an alphanumeric character or underscore",
-          "pattern": "[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*",
+          "description": "A named parameter whose name begins with a letter or underscore",
+          "pattern": "[a-zA-Z_][a-zA-Z0-9_]*",
           "source": {
             "file": "params.yo",
             "line": 10,
             "context": "A parameter whose name begins with an alphanumeric or underscore is referred to as a variable"
           }
         },
+        "positional_parameter": {
+          "description": "A special parameter denoting a positional argument ($1, $2, etc.)",
+          "pattern": "[0-9]+",
+          "source": {
+            "file": "params.yo",
+            "line": [6, 11],
+            "context": "Positional parameters are special parameters, not variables"
+          }
+        },
         "parameter": {
-          "description": "A named entity with a value and attributes. Can be a variable (alphanumeric/underscore name) or special parameter (*, @, #, ?, -, $, !)",
-          "union": [{ "$rule": "variable" }, { "$rule": "special_parameter" }],
+          "description": "A named entity with a value and attributes. Can be a variable (alphanumeric/underscore name), positional parameter ($1, $2, etc.), or special parameter (*, @, #, ?, -, $, !)",
+          "union": [
+            { "$rule": "variable" },
+            { "$rule": "positional_parameter" },
+            { "$rule": "special_parameter" }
+          ],
           "source": {
             "file": "params.yo",
             "line": 6,
@@ -485,12 +498,12 @@
           }
         },
         "parameter_assignment": {
-          "description": "A variable assignment in the form NAME=value, where NAME begins with alphanumeric or underscore",
-          "pattern": "[a-zA-Z_][a-zA-Z0-9_]*=.*",
+          "description": "A parameter assignment in the form NAME[subscript]=[+=]value, where NAME begins with alphanumeric or underscore. Subscripts are optional and may be nested.",
+          "pattern": "[a-zA-Z_][a-zA-Z0-9_]*(\\[[^\\]]*\\])*(\\+)?=.*",
           "source": {
             "file": "params.yo",
             "line": 50,
-            "context": "The value of a scalar parameter may be assigned by writing name=value"
+            "context": "Parameter assignment including array elements and increment syntax"
           }
         },
         "simple_command": {
@@ -498,20 +511,24 @@
           "sequence": [
             {
               "repeat": {
+                "description": "Parameter assignments, precommand modifiers, and redirections processed in a unified lexical loop before any command word. All can appear in any order and repeat multiple times.",
                 "sequence": [
-                  { "$rule": "parameter_assignment" },
+                  {
+                    "union": [
+                      { "$rule": "parameter_assignment" },
+                      { "$rule": "precommand_modifier" },
+                      { "$rule": "redirection" }
+                    ]
+                  },
                   { "$token": "BLANK" }
-                ]
+                ],
+                "source": {
+                  "file": "parse.c",
+                  "line": 1840,
+                  "context": "par_simple initial processing loop"
+                }
               },
               "min": 0
-            },
-            {
-              "optional": {
-                "sequence": [
-                  { "$rule": "precommand_modifier" },
-                  { "$token": "BLANK" }
-                ]
-              }
             },
             { "$rule": "word" },
             {
@@ -519,7 +536,11 @@
                 "sequence": [
                   { "$token": "BLANK" },
                   {
-                    "union": [{ "$rule": "word" }, { "$rule": "redirection" }]
+                    "union": [
+                      { "$rule": "word" },
+                      { "$rule": "redirection" },
+                      { "$rule": "parameter_assignment" }
+                    ]
                   }
                 ]
               },
@@ -1054,17 +1075,17 @@
           ]
         },
         "optional_word": {
-          "optional": {
-            "sequence": [
-              {
-                "optional": { "$token": "BLANK" }
-              },
-              { "$rule": "word" },
-              {
-                "optional": { "$token": "BLANK" }
+          "union": [
+            { "optional": { "$token": "BLANK" } },
+            {
+              "optional": {
+                "sequence": [
+                  { "$rule": "word" },
+                  { "optional": { "$token": "BLANK" } }
+                ]
               }
-            ]
-          }
+            }
+          ]
         },
         "arith_for_expression": {
           "sequence": [
@@ -1460,6 +1481,53 @@
             "context": "Complex Commands"
           }
         },
+        "case_pattern_item": {
+          "description": "A case pattern",
+          "union": [
+            {
+              "description": "no parenthesis",
+              "sequence": [
+                { "$rule": "case_pattern" },
+                {
+                  "repeat": {
+                    "sequence": [
+                      { "$token": "PIPE" },
+                      { "$rule": "case_pattern" }
+                    ]
+                  },
+                  "min": 0
+                }
+              ],
+              "source": {
+                "file": "parse.c",
+                "line": [1318, 1350],
+                "context": "Embedded parentheses handling - parens are part of pattern string"
+              }
+            },
+            {
+              "description": "with balanced parenthesis",
+              "sequence": [
+                { "$token": "INPAR" },
+                { "$rule": "case_pattern" },
+                {
+                  "repeat": {
+                    "sequence": [
+                      { "$token": "PIPE" },
+                      { "$rule": "case_pattern" }
+                    ]
+                  },
+                  "min": 0
+                },
+                { "$token": "OUTPAR" }
+              ],
+              "source": {
+                "file": "parse.c",
+                "line": [1246, 1247],
+                "context": "Optional INPAR consumption - balanced parentheses as separate tokens"
+              }
+            }
+          ]
+        },
         "case_statement": {
           "description": "case word in [pattern ... ) list (;;|;&|;|) ] ... esac",
           "union": [
@@ -1474,22 +1542,7 @@
                 {
                   "repeat": {
                     "sequence": [
-                      {
-                        "optional": { "$token": "INPAR" }
-                      },
-                      { "$rule": "case_pattern" },
-                      {
-                        "repeat": {
-                          "sequence": [
-                            { "$token": "PIPE" },
-                            { "$rule": "case_pattern" }
-                          ]
-                        },
-                        "min": 0
-                      },
-                      {
-                        "optional": { "$token": "OUTPAR" }
-                      },
+                      { "$rule": "case_pattern_item" },
                       { "$rule": "list" },
                       {
                         "union": [
@@ -1521,22 +1574,7 @@
                 {
                   "repeat": {
                     "sequence": [
-                      {
-                        "optional": { "$token": "INPAR" }
-                      },
-                      { "$rule": "case_pattern" },
-                      {
-                        "repeat": {
-                          "sequence": [
-                            { "$token": "PIPE" },
-                            { "$rule": "case_pattern" }
-                          ]
-                        },
-                        "min": 0
-                      },
-                      {
-                        "optional": { "$token": "OUTPAR" }
-                      },
+                      { "$rule": "case_pattern_item" },
                       { "$rule": "list" },
                       {
                         "union": [
@@ -1905,7 +1943,9 @@
           "description": "Arithmetic expression: (( expr ))",
           "sequence": [
             { "$token": "DINPAR" },
-            { "$rule": "placeholder", "$lang": "arithmetic_expressions" },
+            {
+              "pattern": "[^)]+"
+            },
             { "$token": "DOUTPAR" }
           ],
           "source": {
@@ -1917,14 +1957,6 @@
       }
     },
     "conditional_expressions": {
-      "tokens": {
-        "PLACEHOLDER": { "matches": "1" }
-      },
-      "rules": {
-        "placeholder": { "empty": true }
-      }
-    },
-    "arithmetic_expressions": {
       "tokens": {
         "PLACEHOLDER": { "matches": "1" }
       },

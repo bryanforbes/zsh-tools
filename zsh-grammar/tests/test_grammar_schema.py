@@ -7,6 +7,7 @@ Part of Phase 2.4.1: Grammar Testing Level 1 (Schema Validation).
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from pathlib import Path
 from typing import TYPE_CHECKING, TypeGuard
 
@@ -438,7 +439,7 @@ class TestHelperDefinitions:
         """Test optional_word helper has correct structure."""
         optional_word = core_lang['rules']['optional_word']
         assert isinstance(optional_word, dict)
-        assert 'optional' in optional_word
+        assert 'union' in optional_word
 
 
 class TestSourceAttributions:
@@ -449,9 +450,12 @@ class TestSourceAttributions:
         all_sources = self._extract_all_sources(grammar)
 
         for source in all_sources:
-            assert source['file'] in ('grammar.yo', 'params.yo', 'redirect.yo'), (
-                f'Expected grammar.yo, got {source["file"]}'
-            )
+            assert source['file'] in (
+                'grammar.yo',
+                'params.yo',
+                'redirect.yo',
+                'parse.c',
+            ), f'Expected grammar.yo, got {source["file"]}'
 
     def test_source_line_numbers_reasonable(self, grammar: Grammar) -> None:
         """Test source line numbers are reasonable."""
@@ -460,8 +464,12 @@ class TestSourceAttributions:
         for source in all_sources:
             if 'line' in source:
                 line = source['line']
+
+                if isinstance(line, Sequence):
+                    line = line[0]
+
                 # grammar.yo has ~500 lines, but allow some margin
-                assert 0 < line < 1000, f'Suspicious line number: {line}'
+                assert 0 < line < 2000, f'Suspicious line number: {line}'
 
     def test_source_context_is_string(self, grammar: Grammar) -> None:
         """Test source context fields are strings."""
