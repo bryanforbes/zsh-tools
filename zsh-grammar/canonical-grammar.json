@@ -5,450 +5,282 @@
       "SEPER": {
         "token": "SEPER",
         "matches": ";",
-        "source": {
-          "file": "zsh.h",
-          "line": 316
-        }
+        "source": { "file": "zsh.h", "line": 316 }
       },
       "NEWLIN": {
         "token": "NEWLIN",
         "matches": "\\\\n",
-        "source": {
-          "file": "zsh.h",
-          "line": 317
-        }
+        "source": { "file": "zsh.h", "line": 317 }
       },
       "SEMI": {
         "token": "SEMI",
         "matches": ";",
-        "source": {
-          "file": "zsh.h",
-          "line": 318
-        }
+        "source": { "file": "zsh.h", "line": 318 }
       },
       "DSEMI": {
         "token": "DSEMI",
         "matches": ";;",
-        "source": {
-          "file": "zsh.h",
-          "line": 319
-        }
+        "source": { "file": "zsh.h", "line": 319 }
       },
       "AMPER": {
         "token": "AMPER",
         "matches": "&",
-        "source": {
-          "file": "zsh.h",
-          "line": 320
-        }
+        "source": { "file": "zsh.h", "line": 320 }
       },
       "INPAR": {
         "token": "INPAR",
         "matches": "(",
-        "source": {
-          "file": "zsh.h",
-          "line": 321
-        }
+        "source": { "file": "zsh.h", "line": 321 }
       },
       "OUTPAR": {
         "token": "OUTPAR",
         "matches": ")",
-        "source": {
-          "file": "zsh.h",
-          "line": 322
-        }
+        "source": { "file": "zsh.h", "line": 322 }
       },
       "DBAR": {
         "token": "DBAR",
         "matches": "||",
-        "source": {
-          "file": "zsh.h",
-          "line": 323
-        }
+        "source": { "file": "zsh.h", "line": 323 }
       },
       "DAMPER": {
         "token": "DAMPER",
         "matches": "&&",
-        "source": {
-          "file": "zsh.h",
-          "line": 324
-        }
+        "source": { "file": "zsh.h", "line": 324 }
       },
       "OUTANG": {
         "token": "OUTANG",
         "matches": ">",
-        "source": {
-          "file": "zsh.h",
-          "line": 325
-        }
+        "source": { "file": "zsh.h", "line": 325 }
       },
       "OUTANGBANG": {
         "token": "OUTANGBANG",
         "matches": ">|",
-        "source": {
-          "file": "zsh.h",
-          "line": 326
-        }
+        "source": { "file": "zsh.h", "line": 326 }
       },
       "DOUTANG": {
         "token": "DOUTANG",
         "matches": ">>",
-        "source": {
-          "file": "zsh.h",
-          "line": 327
-        }
+        "source": { "file": "zsh.h", "line": 327 }
       },
       "DOUTANGBANG": {
         "token": "DOUTANGBANG",
         "matches": ">>|",
-        "source": {
-          "file": "zsh.h",
-          "line": 328
-        }
+        "source": { "file": "zsh.h", "line": 328 }
       },
       "INANG": {
         "token": "INANG",
         "matches": "<",
-        "source": {
-          "file": "zsh.h",
-          "line": 329
-        }
+        "source": { "file": "zsh.h", "line": 329 }
       },
       "INOUTANG": {
         "token": "INOUTANG",
         "matches": "<>",
-        "source": {
-          "file": "zsh.h",
-          "line": 330
-        }
+        "source": { "file": "zsh.h", "line": 330 }
       },
       "DINANG": {
         "token": "DINANG",
         "matches": "<<",
-        "source": {
-          "file": "zsh.h",
-          "line": 331
-        }
+        "source": { "file": "zsh.h", "line": 331 }
       },
       "DINANGDASH": {
         "token": "DINANGDASH",
         "matches": "<<-",
-        "source": {
-          "file": "zsh.h",
-          "line": 332
-        }
+        "source": { "file": "zsh.h", "line": 332 }
       },
       "INANGAMP": {
         "token": "INANGAMP",
         "matches": "<&",
-        "source": {
-          "file": "zsh.h",
-          "line": 333
-        }
+        "source": { "file": "zsh.h", "line": 333 }
       },
       "OUTANGAMP": {
         "token": "OUTANGAMP",
         "matches": ">&",
-        "source": {
-          "file": "zsh.h",
-          "line": 334
-        }
+        "source": { "file": "zsh.h", "line": 334 }
       },
       "AMPOUTANG": {
         "token": "AMPOUTANG",
         "matches": "&>",
-        "source": {
-          "file": "zsh.h",
-          "line": 335
-        }
+        "source": { "file": "zsh.h", "line": 335 }
       },
       "OUTANGAMPBANG": {
         "token": "OUTANGAMPBANG",
         "matches": "&>|",
-        "source": {
-          "file": "zsh.h",
-          "line": 336
-        }
+        "source": { "file": "zsh.h", "line": 336 }
       },
       "DOUTANGAMP": {
         "token": "DOUTANGAMP",
         "matches": ">>&",
-        "source": {
-          "file": "zsh.h",
-          "line": 337
-        }
+        "source": { "file": "zsh.h", "line": 337 }
       },
       "DOUTANGAMPBANG": {
         "token": "DOUTANGAMPBANG",
         "matches": ">>&|",
-        "source": {
-          "file": "zsh.h",
-          "line": 338
-        }
+        "source": { "file": "zsh.h", "line": 338 }
       },
       "TRINANG": {
         "token": "TRINANG",
         "matches": "<<<",
-        "source": {
-          "file": "zsh.h",
-          "line": 339
-        }
+        "source": { "file": "zsh.h", "line": 339 }
       },
       "BAR": {
         "token": "BAR",
         "matches": "|",
-        "source": {
-          "file": "zsh.h",
-          "line": 340
-        }
+        "source": { "file": "zsh.h", "line": 340 }
       },
       "BARAMP": {
         "token": "BARAMP",
         "matches": "|&",
-        "source": {
-          "file": "zsh.h",
-          "line": 341
-        }
+        "source": { "file": "zsh.h", "line": 341 }
       },
       "INOUTPAR": {
         "token": "INOUTPAR",
         "matches": "()",
-        "source": {
-          "file": "zsh.h",
-          "line": 342
-        }
+        "source": { "file": "zsh.h", "line": 342 }
       },
       "DINPAR": {
         "token": "DINPAR",
         "matches": "((",
-        "source": {
-          "file": "zsh.h",
-          "line": 343
-        }
+        "source": { "file": "zsh.h", "line": 343 }
       },
       "DOUTPAR": {
         "token": "DOUTPAR",
         "matches": "))",
-        "source": {
-          "file": "zsh.h",
-          "line": 344
-        }
+        "source": { "file": "zsh.h", "line": 344 }
       },
       "AMPERBANG": {
         "token": "AMPERBANG",
         "matches": "&|",
-        "source": {
-          "file": "zsh.h",
-          "line": 345
-        }
+        "source": { "file": "zsh.h", "line": 345 }
       },
       "SEMIAMP": {
         "token": "SEMIAMP",
         "matches": ";&",
-        "source": {
-          "file": "zsh.h",
-          "line": 346
-        }
+        "source": { "file": "zsh.h", "line": 346 }
       },
       "SEMIBAR": {
         "token": "SEMIBAR",
         "matches": ";|",
-        "source": {
-          "file": "zsh.h",
-          "line": 347
-        }
+        "source": { "file": "zsh.h", "line": 347 }
       },
       "BANG": {
         "token": "BANG",
         "matches": "!",
-        "source": {
-          "file": "zsh.h",
-          "line": 356
-        }
+        "source": { "file": "zsh.h", "line": 356 }
       },
       "DINBRACK": {
         "token": "DINBRACK",
         "matches": "[[",
-        "source": {
-          "file": "zsh.h",
-          "line": 357
-        }
+        "source": { "file": "zsh.h", "line": 357 }
       },
       "INBRACE": {
         "token": "INBRACE",
         "matches": "{",
-        "source": {
-          "file": "zsh.h",
-          "line": 358
-        }
+        "source": { "file": "zsh.h", "line": 358 }
       },
       "OUTBRACE": {
         "token": "OUTBRACE",
         "matches": "}",
-        "source": {
-          "file": "zsh.h",
-          "line": 359
-        }
+        "source": { "file": "zsh.h", "line": 359 }
       },
       "CASE": {
         "token": "CASE",
         "matches": "case",
-        "source": {
-          "file": "zsh.h",
-          "line": 360
-        }
+        "source": { "file": "zsh.h", "line": 360 }
       },
       "COPROC": {
         "token": "COPROC",
         "matches": "coproc",
-        "source": {
-          "file": "zsh.h",
-          "line": 361
-        }
+        "source": { "file": "zsh.h", "line": 361 }
       },
       "DOLOOP": {
         "token": "DOLOOP",
         "matches": "do",
-        "source": {
-          "file": "zsh.h",
-          "line": 362
-        }
+        "source": { "file": "zsh.h", "line": 362 }
       },
       "DONE": {
         "token": "DONE",
         "matches": "done",
-        "source": {
-          "file": "zsh.h",
-          "line": 363
-        }
+        "source": { "file": "zsh.h", "line": 363 }
       },
       "ELIF": {
         "token": "ELIF",
         "matches": "elif",
-        "source": {
-          "file": "zsh.h",
-          "line": 364
-        }
+        "source": { "file": "zsh.h", "line": 364 }
       },
       "ELSE": {
         "token": "ELSE",
         "matches": "else",
-        "source": {
-          "file": "zsh.h",
-          "line": 365
-        }
+        "source": { "file": "zsh.h", "line": 365 }
       },
       "ZEND": {
         "token": "ZEND",
         "matches": "end",
-        "source": {
-          "file": "zsh.h",
-          "line": 366
-        }
+        "source": { "file": "zsh.h", "line": 366 }
       },
       "ESAC": {
         "token": "ESAC",
         "matches": "esac",
-        "source": {
-          "file": "zsh.h",
-          "line": 367
-        }
+        "source": { "file": "zsh.h", "line": 367 }
       },
       "FI": {
         "token": "FI",
         "matches": "fi",
-        "source": {
-          "file": "zsh.h",
-          "line": 368
-        }
+        "source": { "file": "zsh.h", "line": 368 }
       },
       "FOR": {
         "token": "FOR",
         "matches": "for",
-        "source": {
-          "file": "zsh.h",
-          "line": 369
-        }
+        "source": { "file": "zsh.h", "line": 369 }
       },
       "FOREACH": {
         "token": "FOREACH",
         "matches": "foreach",
-        "source": {
-          "file": "zsh.h",
-          "line": 370
-        }
+        "source": { "file": "zsh.h", "line": 370 }
       },
       "FUNC": {
         "token": "FUNC",
         "matches": "function",
-        "source": {
-          "file": "zsh.h",
-          "line": 371
-        }
+        "source": { "file": "zsh.h", "line": 371 }
       },
       "IF": {
         "token": "IF",
         "matches": "if",
-        "source": {
-          "file": "zsh.h",
-          "line": 372
-        }
+        "source": { "file": "zsh.h", "line": 372 }
       },
       "NOCORRECT": {
         "token": "NOCORRECT",
         "matches": "nocorrect",
-        "source": {
-          "file": "zsh.h",
-          "line": 373
-        }
+        "source": { "file": "zsh.h", "line": 373 }
       },
       "REPEAT": {
         "token": "REPEAT",
         "matches": "repeat",
-        "source": {
-          "file": "zsh.h",
-          "line": 374
-        }
+        "source": { "file": "zsh.h", "line": 374 }
       },
       "SELECT": {
         "token": "SELECT",
         "matches": "select",
-        "source": {
-          "file": "zsh.h",
-          "line": 375
-        }
+        "source": { "file": "zsh.h", "line": 375 }
       },
       "THEN": {
         "token": "THEN",
         "matches": "then",
-        "source": {
-          "file": "zsh.h",
-          "line": 376
-        }
+        "source": { "file": "zsh.h", "line": 376 }
       },
       "TIME": {
         "token": "TIME",
         "matches": "time",
-        "source": {
-          "file": "zsh.h",
-          "line": 377
-        }
+        "source": { "file": "zsh.h", "line": 377 }
       },
       "UNTIL": {
         "token": "UNTIL",
         "matches": "until",
-        "source": {
-          "file": "zsh.h",
-          "line": 378
-        }
+        "source": { "file": "zsh.h", "line": 378 }
       },
       "WHILE": {
         "token": "WHILE",
         "matches": "while",
-        "source": {
-          "file": "zsh.h",
-          "line": 379
-        }
+        "source": { "file": "zsh.h", "line": 379 }
       },
       "TYPESET": {
         "token": "TYPESET",
@@ -461,437 +293,174 @@
           "readonly",
           "typeset"
         ],
-        "source": {
-          "file": "zsh.h",
-          "line": 380
-        }
+        "source": { "file": "zsh.h", "line": 380 }
       },
       "STRING": {
         "token": "STRING",
         "matches": "<string>",
-        "source": {
-          "file": "zsh.h",
-          "line": 349
-        }
+        "source": { "file": "zsh.h", "line": 349 }
       },
       "ENVSTRING": {
         "token": "ENVSTRING",
         "matches": "<env_string>",
-        "source": {
-          "file": "zsh.h",
-          "line": 350
-        }
+        "source": { "file": "zsh.h", "line": 350 }
       },
       "ENVARRAY": {
         "token": "ENVARRAY",
         "matches": "<env_array>",
-        "source": {
-          "file": "zsh.h",
-          "line": 351
-        }
+        "source": { "file": "zsh.h", "line": 351 }
       },
       "NULLTOK": {
         "token": "NULLTOK",
         "matches": "<null>",
-        "source": {
-          "file": "zsh.h",
-          "line": 315
-        }
+        "source": { "file": "zsh.h", "line": 315 }
       },
       "LEXERR": {
         "token": "LEXERR",
         "matches": "<lexer_error>",
-        "source": {
-          "file": "zsh.h",
-          "line": 353
-        }
+        "source": { "file": "zsh.h", "line": 353 }
       },
       "parameter": {
         "union": [
-          {
-            "$ref": "variable"
-          },
-          {
-            "pattern": "*"
-          },
-          {
-            "pattern": "@"
-          },
-          {
-            "pattern": "#"
-          },
-          {
-            "pattern": "?"
-          },
-          {
-            "pattern": "-"
-          },
-          {
-            "pattern": "$"
-          },
-          {
-            "pattern": "!"
-          }
+          { "$ref": "variable" },
+          { "pattern": "*" },
+          { "pattern": "@" },
+          { "pattern": "#" },
+          { "pattern": "?" },
+          { "pattern": "-" },
+          { "pattern": "$" },
+          { "pattern": "!" }
         ]
       },
-      "variable": {
-        "pattern": "[a-zA-Z0-9_]+"
-      },
-      "string": {
-        "empty": true
-      },
-      "subscript": {
-        "empty": true
-      },
-      "subst_string": {
-        "empty": true
-      },
-      "context_save": {
-        "empty": true
-      },
-      "context_restore": {
-        "empty": true
-      },
-      "event": {
-        "$ref": "SEPER"
-      },
+      "variable": { "pattern": "[a-zA-Z0-9_]+" },
+      "string": { "empty": true },
+      "subscript": { "empty": true },
+      "subst_string": { "empty": true },
+      "context_save": { "empty": true },
+      "context_restore": { "empty": true },
+      "event": { "$ref": "SEPER" },
       "list": {
         "union": [
           {
             "sequence": [
-              {
-                "$ref": "sublist"
-              },
-              {
-                "$ref": "SEPER"
-              },
-              {
-                "$ref": "AMPER"
-              },
-              {
-                "$ref": "AMPERBANG"
-              },
-              {
-                "$ref": "SEPER"
-              },
-              {
-                "$ref": "AMPER"
-              },
-              {
-                "$ref": "SEPER"
-              }
+              { "$ref": "sublist" },
+              { "$ref": "SEPER" },
+              { "$ref": "AMPER" },
+              { "$ref": "AMPERBANG" },
+              { "$ref": "SEPER" },
+              { "$ref": "AMPER" },
+              { "$ref": "SEPER" }
             ]
           },
-          {
-            "$ref": "SEPER"
-          }
+          { "$ref": "SEPER" }
         ]
       },
       "cond": {
         "union": [
-          {
-            "sequence": [
-              {
-                "$ref": "DBAR"
-              },
-              {
-                "$ref": "SEPER"
-              }
-            ]
-          },
-          {
-            "$ref": "SEPER"
-          }
+          { "sequence": [{ "$ref": "DBAR" }, { "$ref": "SEPER" }] },
+          { "$ref": "SEPER" }
         ]
       },
       "sublist": {
         "union": [
           {
             "sequence": [
-              {
-                "$ref": "sublist2"
-              },
-              {
-                "$ref": "DBAR"
-              },
-              {
-                "$ref": "DAMPER"
-              },
-              {
-                "$ref": "DBAR"
-              },
-              {
-                "$ref": "SEPER"
-              }
+              { "$ref": "sublist2" },
+              { "$ref": "DBAR" },
+              { "$ref": "DAMPER" },
+              { "$ref": "DBAR" },
+              { "$ref": "SEPER" }
             ]
           },
-          {
-            "$ref": "SEPER"
-          }
+          { "$ref": "SEPER" }
         ]
       },
       "sublist2": {
         "union": [
-          {
-            "sequence": [
-              {
-                "$ref": "COPROC"
-              },
-              {
-                "$ref": "BANG"
-              }
-            ]
-          },
-          {
-            "$ref": "BANG"
-          }
+          { "sequence": [{ "$ref": "COPROC" }, { "$ref": "BANG" }] },
+          { "$ref": "BANG" }
         ]
       },
-      "pline": {
-        "union": [
-          {
-            "$ref": "cmd"
-          },
-          {
-            "$ref": "SEPER"
-          }
-        ]
-      },
+      "pline": { "union": [{ "$ref": "cmd" }, { "$ref": "SEPER" }] },
       "cmd": {
         "union": [
-          {
-            "sequence": [
-              {
-                "$ref": "OUTANG"
-              },
-              {
-                "$ref": "OUTANG"
-              }
-            ]
-          },
-          {
-            "$ref": "FOR"
-          },
-          {
-            "$ref": "FOREACH"
-          },
-          {
-            "$ref": "SELECT"
-          },
-          {
-            "$ref": "CASE"
-          },
-          {
-            "sequence": [
-              {
-                "$ref": "IF"
-              },
-              {
-                "$ref": "if"
-              }
-            ]
-          },
-          {
-            "$ref": "WHILE"
-          },
-          {
-            "$ref": "UNTIL"
-          },
-          {
-            "$ref": "REPEAT"
-          },
-          {
-            "$ref": "INPAR"
-          },
-          {
-            "$ref": "INBRACE"
-          },
-          {
-            "$ref": "DINPAR"
-          },
-          {
-            "$ref": "time"
-          },
-          {
-            "$ref": "simple"
-          },
-          {
-            "$ref": "OUTANG"
-          }
+          { "sequence": [{ "$ref": "OUTANG" }, { "$ref": "OUTANG" }] },
+          { "$ref": "FOR" },
+          { "$ref": "FOREACH" },
+          { "$ref": "SELECT" },
+          { "$ref": "CASE" },
+          { "sequence": [{ "$ref": "IF" }, { "$ref": "if" }] },
+          { "$ref": "WHILE" },
+          { "$ref": "UNTIL" },
+          { "$ref": "REPEAT" },
+          { "$ref": "INPAR" },
+          { "$ref": "INBRACE" },
+          { "$ref": "DINPAR" },
+          { "$ref": "time" },
+          { "$ref": "simple" },
+          { "$ref": "OUTANG" }
         ]
       },
       "for": {
         "sequence": [
-          {
-            "$ref": "DOUTPAR",
-            "description": "NOT DOUTPAR"
-          },
-          {
-            "$ref": "SEPER",
-            "description": "NOT SEPER"
-          },
-          {
-            "$ref": "SEPER",
-            "description": "NOT SEPER"
-          },
-          {
-            "$ref": "OUTPAR",
-            "description": "NOT OUTPAR"
-          },
-          {
-            "$ref": "OUTPAR",
-            "description": "NOT OUTPAR"
-          }
+          { "$ref": "DOUTPAR", "description": "NOT DOUTPAR" },
+          { "$ref": "SEPER", "description": "NOT SEPER" },
+          { "$ref": "SEPER", "description": "NOT SEPER" },
+          { "$ref": "OUTPAR", "description": "NOT OUTPAR" },
+          { "$ref": "OUTPAR", "description": "NOT OUTPAR" }
         ]
       },
       "case": {
         "union": [
-          {
-            "$ref": "STRING"
-          },
-          {
-            "sequence": [
-              {
-                "$ref": "OUTPAR"
-              },
-              {
-                "$ref": "BAR"
-              }
-            ]
-          },
-          {
-            "$ref": "BAR"
-          },
-          {
-            "$ref": "SEPER"
-          }
+          { "$ref": "STRING" },
+          { "sequence": [{ "$ref": "OUTPAR" }, { "$ref": "BAR" }] },
+          { "$ref": "BAR" },
+          { "$ref": "SEPER" }
         ]
       },
-      "if": {
-        "union": [
-          {
-            "$ref": "FI"
-          },
-          {
-            "$ref": "SEPER"
-          }
-        ]
-      },
-      "while": {
-        "union": [
-          {
-            "$ref": "list"
-          },
-          {
-            "$ref": "SEPER"
-          }
-        ]
-      },
+      "if": { "union": [{ "$ref": "FI" }, { "$ref": "SEPER" }] },
+      "while": { "union": [{ "$ref": "list" }, { "$ref": "SEPER" }] },
       "repeat": {
         "union": [
-          {
-            "$ref": "STRING",
-            "description": "NOT STRING"
-          },
-          {
-            "$ref": "SEPER"
-          }
+          { "$ref": "STRING", "description": "NOT STRING" },
+          { "$ref": "SEPER" }
         ]
       },
-      "subsh": {
-        "empty": true
-      },
-      "funcdef": {
-        "$ref": "INBRACE"
-      },
-      "time": {
-        "$ref": "sublist2"
-      },
-      "dinbrack": {
-        "empty": true
-      },
+      "subsh": { "empty": true },
+      "funcdef": { "$ref": "INBRACE" },
+      "time": { "$ref": "sublist2" },
+      "dinbrack": { "empty": true },
       "simple": {
         "union": [
           {
             "sequence": [
-              {
-                "$ref": "NOCORRECT"
-              },
-              {
-                "$ref": "ENVSTRING"
-              },
-              {
-                "$ref": "ENVARRAY"
-              },
-              {
-                "$ref": "nl_wordlist"
-              }
+              { "$ref": "NOCORRECT" },
+              { "$ref": "ENVSTRING" },
+              { "$ref": "ENVARRAY" },
+              { "$ref": "nl_wordlist" }
             ]
           },
           {
             "sequence": [
-              {
-                "$ref": "ENVSTRING"
-              },
-              {
-                "$ref": "ENVARRAY"
-              },
-              {
-                "$ref": "nl_wordlist"
-              }
+              { "$ref": "ENVSTRING" },
+              { "$ref": "ENVARRAY" },
+              { "$ref": "nl_wordlist" }
             ]
           },
-          {
-            "sequence": [
-              {
-                "$ref": "ENVARRAY"
-              },
-              {
-                "$ref": "nl_wordlist"
-              }
-            ]
-          },
-          {
-            "$ref": "SEPER"
-          }
+          { "sequence": [{ "$ref": "ENVARRAY" }, { "$ref": "nl_wordlist" }] },
+          { "$ref": "SEPER" }
         ]
       },
-      "redir": {
-        "empty": true
-      },
-      "wordlist": {
-        "$ref": "STRING"
-      },
-      "nl_wordlist": {
-        "$ref": "SEPER"
-      },
+      "redir": { "empty": true },
+      "wordlist": { "$ref": "STRING" },
+      "nl_wordlist": { "$ref": "SEPER" },
       "cond_1": {
         "union": [
-          {
-            "sequence": [
-              {
-                "$ref": "DAMPER"
-              },
-              {
-                "$ref": "SEPER"
-              }
-            ]
-          },
-          {
-            "$ref": "SEPER"
-          }
+          { "sequence": [{ "$ref": "DAMPER" }, { "$ref": "SEPER" }] },
+          { "$ref": "SEPER" }
         ]
       },
-      "cond_2": {
-        "union": [
-          {
-            "$ref": "SEPER"
-          },
-          {
-            "$ref": "SEPER"
-          }
-        ]
-      }
+      "cond_2": { "union": [{ "$ref": "SEPER" }, { "$ref": "SEPER" }] }
     }
   },
   "zsh_version": "5.9",

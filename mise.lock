@@ -1,6 +1,11 @@
 [[tools.hk]]
-version = "1.21.0"
+version = "1.22.0"
 backend = "aqua:jdx/hk"
+
+[tools.hk.platforms.macos-arm64]
+checksum = "sha256:ab65cea1c7133e744304967b3e6ff9f75a04492c705fcebdd755376d9a33b6de"
+size = 6270951
+url = "https://github.com/jdx/hk/releases/download/v1.22.0/hk-aarch64-apple-darwin.tar.gz"
 
 [[tools.node]]
 version = "24.11.1"
@@ -12,7 +17,7 @@ size = 51177814
 url = "https://nodejs.org/dist/v24.11.1/node-v24.11.1-darwin-arm64.tar.gz"
 
 [[tools."pipx:basedpyright"]]
-version = "1.33.0"
+version = "1.34.0"
 backend = "pipx:basedpyright"
 
 [[tools.pkl]]

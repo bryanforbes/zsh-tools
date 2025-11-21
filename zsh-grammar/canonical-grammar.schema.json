@@ -2,45 +2,41 @@
   "$schema": "https://json-schema.org/draft-07/schema",
   "title": "ZshGrammar",
   "definitions": {
-    "Language": {
+    "Metadata": {
       "type": "object",
-      "minProperties": 1,
-      "propertyNames": {
-        "pattern": "^([A-Z][A-Z0-9_]*|[a-z][a-z0-9_]*)$",
-        "description": "Token names in SCREAMING_SNAKE_CASE (e.g., FOR, WORD) or rule names in lower_snake_case (e.g., for, while, case)"
-      },
-      "additionalProperties": { "$ref": "#/definitions/GrammarNode" }
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "What this rule or symbol represents"
+        },
+        "source": {
+          "type": "object",
+          "required": ["file", "line"],
+          "properties": {
+            "file": { "type": "string", "description": "e.g., parse.c" },
+            "line": { "type": "integer" },
+            "function": {
+              "type": "string",
+              "description": "e.g., par_cmd"
+            },
+            "context": {
+              "type": "string",
+              "description": "e.g., switch case FOR"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
     },
     "Empty": {
       "type": "object",
       "const": { "empty": true }
     },
-    "Token": {
-      "type": "object",
-      "required": ["token", "matches"],
-      "properties": {
-        "token": {
-          "type": "string",
-          "description": "Token constant name"
-        },
-        "matches": {
-          "oneOf": [
-            { "type": "string", "description": "Single string match" },
-            {
-              "type": "array",
-              "items": { "type": "string" },
-              "minItems": 2,
-              "description": "Multiple string matches (eg. declare, export, and float all produce TYPESET)"
-            }
-          ]
-        }
-      }
-    },
     "Optional": {
       "type": "object",
       "required": ["optional"],
       "properties": {
-        "optional": { "$ref": "#/definitions/GrammarNode" }
+        "optional": { "$ref": "#/definitions/Rule" }
       },
       "description": "Optional node"
     },
@@ -148,7 +144,7 @@
       "type": "object",
       "required": ["variant", "condition"],
       "properties": {
-        "variant": { "$ref": "#/definitions/GrammarNode" },
+        "variant": { "$ref": "#/definitions/Rule" },
         "condition": { "$ref": "#/definitions/Condition" }
       },
       "description": "Variant path based on options"
@@ -170,7 +166,7 @@
       "properties": {
         "union": {
           "type": "array",
-          "items": { "$ref": "#/definitions/GrammarNode" },
+          "items": { "$ref": "#/definitions/Rule" },
           "minItems": 2
         }
       }
@@ -181,7 +177,7 @@
       "properties": {
         "sequence": {
           "type": "array",
-          "items": { "$ref": "#/definitions/GrammarNode" },
+          "items": { "$ref": "#/definitions/Rule" },
           "minItems": 2
         }
       }
@@ -190,7 +186,7 @@
       "type": "object",
       "required": ["repeat"],
       "properties": {
-        "repeat": { "$ref": "#/definitions/GrammarNode" },
+        "repeat": { "$ref": "#/definitions/Rule" },
         "min": {
           "type": "integer",
           "default": 0,
@@ -202,59 +198,109 @@
         }
       }
     },
-    "Ref": {
+    "Reference": {
       "type": "object",
-      "required": ["$ref"],
-      "properties": {
-        "$ref": {
-          "type": "string",
-          "pattern": "^(/[a-z][a-zA-Z0-9_]*/)?([A-Z][A-Z0-9_]*|[a-z][a-z0-9_]*)$",
-          "description": "Reference to a symbol (token in SCREAMING_SNAKE_CASE or rule in lower_snake_case)"
+      "oneOf": [
+        {
+          "type": "object",
+          "description": "Token reference looked up in the current language's \"tokens\" key",
+          "required": ["$token"],
+          "properties": {
+            "$token": {
+              "type": "string",
+              "pattern": "^[A-Z][A-Z0-9_]*$",
+              "description": "Token names in SCREAMING_SNAKE_CASE (e.g., FOR, WORD)"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "description": "Rule reference looked up in a language's \"rules\" key",
+          "required": ["$rule"],
+          "properties": {
+            "$rule": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9_]*$",
+              "description": "Rule names in lower_snake_case (e.g., for, while, case)"
+            },
+            "$lang": {
+              "type": "string",
+              "pattern": "^[a-z][a-zA-Z0-9_]*$",
+              "description": "The language to look the rule up in; if omitted, look up in the current language"
+            }
+          }
         }
-      }
+      ]
     },
-    "GrammarNode": {
+    "Rule": {
       "allOf": [
         {
           "oneOf": [
             { "$ref": "#/definitions/Empty" },
             { "$ref": "#/definitions/Optional" },
-            { "$ref": "#/definitions/Ref" },
+            { "$ref": "#/definitions/Reference" },
             { "$ref": "#/definitions/Repeat" },
             { "$ref": "#/definitions/Sequence" },
             { "$ref": "#/definitions/Terminal" },
-            { "$ref": "#/definitions/Token" },
             { "$ref": "#/definitions/Union" },
             { "$ref": "#/definitions/Variant" }
           ]
         },
-        {
-          "type": "object",
-          "properties": {
-            "description": {
-              "type": "string",
-              "description": "What this rule or symbol represents"
-            },
-            "source": {
-              "type": "object",
-              "required": ["file", "line"],
-              "properties": {
-                "file": { "type": "string", "description": "e.g., parse.c" },
-                "line": { "type": "integer" },
-                "function": {
-                  "type": "string",
-                  "description": "e.g., par_cmd"
-                },
-                "context": {
-                  "type": "string",
-                  "description": "e.g., switch case FOR"
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        }
+        { "$ref": "#/definitions/Metadata" }
       ]
+    },
+    "RuleMap": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$",
+        "description": "Rule names in lower_snake_case (e.g., for, while, case)"
+      },
+      "additionalProperties": { "$ref": "#/definitions/Rule" }
+    },
+    "Token": {
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "required": ["matches"],
+              "properties": {
+                "matches": {
+                  "oneOf": [
+                    { "type": "string", "description": "Single string match" },
+                    {
+                      "type": "array",
+                      "items": { "type": "string" },
+                      "minItems": 2,
+                      "description": "Multiple string matches (eg. declare, export, and float all produce TYPESET)"
+                    }
+                  ]
+                }
+              }
+            },
+            { "$ref": "#/definitions/Terminal" }
+          ]
+        },
+        { "$ref": "#/definitions/Metadata" }
+      ]
+    },
+    "TokenMap": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[A-Z][A-Z0-9_]*$",
+        "description": "Token names in SCREAMING_SNAKE_CASE (e.g., FOR, WORD)"
+      },
+      "additionalProperties": { "$ref": "#/definitions/Token" }
+    },
+    "Language": {
+      "type": "object",
+      "properties": {
+        "rules": { "$ref": "#/definitions/RuleMap" },
+        "tokens": { "$ref": "#/definitions/TokenMap" }
+      },
+      "additionalProperties": false
     }
   },
   "type": "object",

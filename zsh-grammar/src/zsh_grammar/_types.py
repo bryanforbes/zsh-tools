@@ -11,22 +11,17 @@ class Source(TypedDict):
     context: NotRequired[str]
 
 
-class _BaseNode(TypedDict):
+class _WithMetadata(TypedDict):
     description: NotRequired[str]
     source: NotRequired[Source]
 
 
-class Empty(_BaseNode):
+class Empty(_WithMetadata):
     empty: Literal[True]
 
 
-class Token(_BaseNode):
-    token: str
-    matches: str | list[str]
-
-
-class Optional(_BaseNode):
-    optional: GrammarNode
+class Optional(_WithMetadata):
+    optional: Rule
 
 
 class OptionCondition(TypedDict):
@@ -92,39 +87,53 @@ type Condition = (
 )
 
 
-class Variant(_BaseNode):
-    variant: GrammarNode
+class Variant(_WithMetadata):
+    variant: Rule
     condition: Condition
 
 
-class Terminal(_BaseNode):
+class Terminal(_WithMetadata):
     pattern: str
 
 
-class Union(_BaseNode):
-    union: list[GrammarNode]
+class Union(_WithMetadata):
+    union: list[Rule]
 
 
-class Sequence(_BaseNode):
-    sequence: list[GrammarNode]
+class Sequence(_WithMetadata):
+    sequence: list[Rule]
 
 
-class Repeat(_BaseNode):
-    repeat: GrammarNode
+class Repeat(_WithMetadata):
+    repeat: Rule
     min: NotRequired[int]
     max: NotRequired[int]
 
 
-_RefBase = TypedDict('_RefBase', {'$ref': str})
+_RuleRefBase = TypedDict('_RuleRefBase', {'$rule': str, '$lang': NotRequired[str]})
+_TokenRefBase = TypedDict('_TokenRefBase', {'$token': str})
 
 
-class Ref(_BaseNode, _RefBase): ...
+class RuleRef(_WithMetadata, _RuleRefBase): ...
 
 
-type GrammarNode = (
-    Empty | Optional | Ref | Repeat | Sequence | Terminal | Token | Union | Variant
-)
-type Language = dict[str, GrammarNode]
+class TokenRef(_WithMetadata, _TokenRefBase): ...
+
+
+type Ref = RuleRef | TokenRef
+
+
+class Token(_WithMetadata):
+    token: str
+    matches: str | list[str]
+
+
+type Rule = Empty | Optional | Ref | Repeat | Sequence | Terminal | Union | Variant
+
+
+class Language(TypedDict):
+    tokens: dict[str, Token | Terminal]
+    rules: dict[str, Rule]
 
 
 class Languages(TypedDict, extra_items=Language):

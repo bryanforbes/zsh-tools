@@ -1,685 +1,1935 @@
 {
   "$schema": "./canonical-grammar.schema.json",
+  "version": "5.9",
   "zsh_version": "5.9",
+  "generated_at": "2025-11-19T00:00:00Z",
   "languages": {
     "core": {
-      "SEPER": {
-        "token": "SEPER",
-        "matches": [";", "\n"],
-        "description": "Statement separator (semicolon or newline)"
+      "tokens": {
+        "BLANK": {
+          "pattern": "[ \t]+"
+        },
+        "NEWLINE": {
+          "matches": "\n"
+        },
+        "SEMI": {
+          "matches": ";"
+        },
+        "DSEMI": {
+          "matches": ";;"
+        },
+        "SEMIAMP": {
+          "matches": ";&"
+        },
+        "SEMIBAR": {
+          "matches": ";|"
+        },
+        "SEPER": {
+          "matches": ["\n", ";"]
+        },
+        "PIPE": {
+          "matches": "|"
+        },
+        "PIPE_AMP": {
+          "matches": "|&"
+        },
+        "LOGICAL_AND": {
+          "matches": "&&"
+        },
+        "LOGICAL_OR": {
+          "matches": "||"
+        },
+        "AMPER": {
+          "matches": "&"
+        },
+        "AMPERPIPE": {
+          "matches": "&|"
+        },
+        "AMPERBANG": {
+          "matches": "&!"
+        },
+        "DO": {
+          "matches": "do",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "DONE": {
+          "matches": "done",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "ESAC": {
+          "matches": "esac",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "THEN": {
+          "matches": "then",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "ELIF": {
+          "matches": "elif",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "ELSE": {
+          "matches": "else",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "FI": {
+          "matches": "fi",
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "FOR": {
+          "matches": "for",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "CASE": {
+          "matches": "case",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "IF": {
+          "matches": "if",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "WHILE": {
+          "matches": "while",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "FUNCTION": {
+          "matches": "function",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "REPEAT": {
+          "matches": "repeat",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "TIME": {
+          "matches": "time",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "UNTIL": {
+          "matches": "until",
+          "source": {
+            "file": "grammar.yo",
+            "line": 500,
+            "context": "Reserved Words"
+          }
+        },
+        "SELECT": {
+          "matches": "select",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "COPROC": {
+          "matches": "coproc",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "BUILTIN": {
+          "matches": "builtin"
+        },
+        "NOCORRECT": {
+          "matches": "nocorrect",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "NOGLOB": {
+          "matches": "noglob"
+        },
+        "FOREACH": {
+          "matches": "foreach",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "END": {
+          "matches": "end",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "BANG": {
+          "matches": "!",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "DINBRACK": {
+          "matches": "[[",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "DOUTBRACK": {
+          "matches": "]]"
+        },
+        "INBRACE": {
+          "matches": "{",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "OUTBRACE": {
+          "matches": "}",
+          "source": {
+            "file": "grammar.yo",
+            "line": 501,
+            "context": "Reserved Words"
+          }
+        },
+        "DECLARE": {
+          "matches": "declare",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "EXPORT": {
+          "matches": "export",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "FLOAT": {
+          "matches": "float",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "INTEGER": {
+          "matches": "integer",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "LOCAL": {
+          "matches": "local",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "READONLY": {
+          "matches": "readonly",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "TYPESET": {
+          "matches": "typeset",
+          "source": {
+            "file": "grammar.yo",
+            "line": 502,
+            "context": "Reserved Words"
+          }
+        },
+        "INPAR": {
+          "matches": "("
+        },
+        "OUTPAR": {
+          "matches": ")"
+        },
+        "REDIR_INPUT": {
+          "matches": "<",
+          "source": {
+            "file": "redirect.yo",
+            "line": 27,
+            "context": "Input redirection"
+          }
+        },
+        "REDIR_INOUT": {
+          "matches": "<>",
+          "source": {
+            "file": "redirect.yo",
+            "line": 31,
+            "context": "Input/output redirection"
+          }
+        },
+        "REDIR_OUTPUT": {
+          "matches": ">",
+          "source": {
+            "file": "redirect.yo",
+            "line": 35,
+            "context": "Output redirection"
+          }
+        },
+        "REDIR_CLOBBER": {
+          "matches": [">|", ">!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 42,
+            "context": "Output clobber"
+          }
+        },
+        "REDIR_APPEND": {
+          "matches": ">>",
+          "source": {
+            "file": "redirect.yo",
+            "line": 47,
+            "context": "Output append"
+          }
+        },
+        "REDIR_APPEND_CLOBBER": {
+          "matches": [">>|", ">>!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 53,
+            "context": "Output append clobber"
+          }
+        },
+        "REDIR_HEREDOC": {
+          "matches": ["<<", "<<-"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 58,
+            "context": "Here-document"
+          }
+        },
+        "REDIR_HERESTRING": {
+          "matches": "<<<",
+          "source": {
+            "file": "redirect.yo",
+            "line": 85,
+            "context": "Here-string"
+          }
+        },
+        "REDIR_DUP_INPUT": {
+          "matches": "<&",
+          "source": {
+            "file": "redirect.yo",
+            "line": 92,
+            "context": "File descriptor duplication input"
+          }
+        },
+        "REDIR_DUP_OUTPUT": {
+          "matches": ">&",
+          "source": {
+            "file": "redirect.yo",
+            "line": 93,
+            "context": "File descriptor duplication output"
+          }
+        },
+        "REDIR_OUTERR": {
+          "matches": "&>",
+          "source": {
+            "file": "redirect.yo",
+            "line": 105,
+            "context": "Redirect both stdout and stderr"
+          }
+        },
+        "REDIR_OUTERR_CLOBBER": {
+          "matches": ["&>|", "&>!", ">&|", ">&!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 114,
+            "context": "Redirect both stdout and stderr with clobber"
+          }
+        },
+        "REDIR_OUTERR_APPEND": {
+          "matches": ["&>>", ">>&"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 121,
+            "context": "Redirect both stdout and stderr with append"
+          }
+        },
+        "REDIR_OUTERR_APPEND_CLOBBER": {
+          "matches": ["&>>|", "&>>!", ">>&|", ">>&!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 126,
+            "context": "Redirect both stdout and stderr with append and clobber"
+          }
+        },
+        "DINPAR": {
+          "matches": "(("
+        },
+        "DOUTPAR": {
+          "matches": "))"
+        },
+        "SPECIAL_STAR": {
+          "matches": "*"
+        },
+        "SPECIAL_AT": {
+          "matches": "@"
+        },
+        "SPECIAL_HASH": {
+          "matches": "#"
+        },
+        "SPECIAL_QUESTION": {
+          "matches": "?"
+        },
+        "SPECIAL_DASH": {
+          "matches": "-"
+        },
+        "SPECIAL_DOLLAR": {
+          "matches": "$"
+        }
       },
-      "SEMI": {
-        "token": "SEMI",
-        "matches": ";",
-        "description": "Literal semicolon in arithmetic contexts"
-      },
-      "AMPER": {
-        "token": "AMPER",
-        "matches": "&"
-      },
-      "AMPERBANG": {
-        "token": "AMPERBANG",
-        "matches": "&!"
-      },
-      "DBAR": {
-        "token": "DBAR",
-        "matches": "||"
-      },
-      "DAMPER": {
-        "token": "DAMPER",
-        "matches": "&&"
-      },
-      "BAR": {
-        "token": "BAR",
-        "matches": "|"
-      },
-      "BARAMP": {
-        "token": "BARAMP",
-        "matches": "|&"
-      },
-      "list": {
-        "description": "{ SEPER } [ sublist [ { SEPER | AMPER | AMPERBANG } list ] ]",
-        "sequence": [
-          {
-            "repeat": {
-              "$ref": "SEPER"
+      "rules": {
+        "special_parameter": {
+          "description": "Special parameter: *, @, #, ?, -, $, or !. These have predetermined meaning to the shell",
+          "union": [
+            { "$token": "SPECIAL_STAR" },
+            { "$token": "SPECIAL_AT" },
+            { "$token": "SPECIAL_HASH" },
+            { "$token": "SPECIAL_QUESTION" },
+            { "$token": "SPECIAL_DASH" },
+            { "$token": "SPECIAL_DOLLAR" },
+            { "$token": "BANG" }
+          ],
+          "source": {
+            "file": "params.yo",
+            "line": 8,
+            "context": "A name may be the single characters *, @, #, ?, -, $, or !"
+          }
+        },
+        "variable": {
+          "description": "A parameter whose name begins with an alphanumeric character or underscore",
+          "pattern": "[0-9]+|[a-zA-Z_][a-zA-Z0-9_]*",
+          "source": {
+            "file": "params.yo",
+            "line": 10,
+            "context": "A parameter whose name begins with an alphanumeric or underscore is referred to as a variable"
+          }
+        },
+        "parameter": {
+          "description": "A named entity with a value and attributes. Can be a variable (alphanumeric/underscore name) or special parameter (*, @, #, ?, -, $, !)",
+          "union": [{ "$rule": "variable" }, { "$rule": "special_parameter" }],
+          "source": {
+            "file": "params.yo",
+            "line": 6,
+            "context": "A parameter has a name, a value, and a number of attributes"
+          }
+        },
+        "parameter_assignment": {
+          "description": "A variable assignment in the form NAME=value, where NAME begins with alphanumeric or underscore",
+          "pattern": "[a-zA-Z_][a-zA-Z0-9_]*=.*",
+          "source": {
+            "file": "params.yo",
+            "line": 50,
+            "context": "The value of a scalar parameter may be assigned by writing name=value"
+          }
+        },
+        "simple_command": {
+          "description": "A sequence of optional variable assignments followed by blank-separated words, with optional redirections interspersed",
+          "sequence": [
+            {
+              "repeat": {
+                "sequence": [
+                  { "$rule": "parameter_assignment" },
+                  { "$token": "BLANK" }
+                ]
+              },
+              "min": 0
             },
-            "min": 0
-          },
-          {
-            "optional": {
+            {
+              "optional": {
+                "sequence": [
+                  { "$rule": "precommand_modifier" },
+                  { "$token": "BLANK" }
+                ]
+              }
+            },
+            { "$rule": "word" },
+            {
+              "repeat": {
+                "sequence": [
+                  { "$token": "BLANK" },
+                  {
+                    "union": [{ "$rule": "word" }, { "$rule": "redirection" }]
+                  }
+                ]
+              },
+              "min": 0
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 20,
+            "context": "Simple Commands & Pipelines"
+          }
+        },
+        "pipeline": {
+          "description": "Either a simple command, or a sequence of commands separated by | or |&",
+          "sequence": [
+            {
+              "optional": {
+                "sequence": [
+                  {
+                    "union": [{ "$token": "BANG" }, { "$token": "COPROC" }]
+                  },
+                  { "$token": "BLANK" }
+                ]
+              }
+            },
+            { "$rule": "simple_command" },
+            {
+              "repeat": {
+                "sequence": [
+                  {
+                    "optional": { "$token": "BLANK" }
+                  },
+                  {
+                    "union": [{ "$token": "PIPE" }, { "$token": "PIPE_AMP" }]
+                  },
+                  {
+                    "optional": { "$token": "BLANK" }
+                  },
+                  { "$rule": "simple_command" }
+                ]
+              },
+              "min": 1
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 40,
+            "context": "Simple Commands & Pipelines"
+          }
+        },
+        "sublist": {
+          "description": "A single pipeline or sequence of pipelines separated by && or ||",
+          "sequence": [
+            { "$rule": "pipeline" },
+            {
+              "repeat": {
+                "sequence": [
+                  {
+                    "optional": { "$token": "BLANK" }
+                  },
+                  {
+                    "union": [
+                      { "$token": "LOGICAL_AND" },
+                      { "$token": "LOGICAL_OR" }
+                    ]
+                  },
+                  {
+                    "optional": { "$token": "BLANK" }
+                  },
+                  { "$rule": "pipeline" }
+                ]
+              },
+              "min": 0
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 67,
+            "context": "Simple Commands & Pipelines"
+          }
+        },
+        "sublist_terminator_no_semi": {
+          "union": [
+            { "$token": "AMPER" },
+            { "$token": "AMPERPIPE" },
+            { "$token": "AMPERBANG" },
+            { "$token": "NEWLINE" }
+          ]
+        },
+        "sublist_terminator": {
+          "union": [
+            { "$token": "SEMI" },
+            { "$rule": "sublist_terminator_no_semi" }
+          ]
+        },
+        "list": {
+          "description": "A sequence of zero or more sublists, each terminated by ;, &, &|, &!, or newline",
+          "union": [
+            {
+              "repeat": {
+                "sequence": [
+                  { "$rule": "sublist" },
+                  {
+                    "optional": { "$token": "BLANK" }
+                  },
+                  { "$rule": "sublist_terminator" },
+                  {
+                    "optional": { "$token": "BLANK" }
+                  }
+                ]
+              },
+              "min": 0
+            },
+            {
+              "variant": {
+                "sequence": [
+                  {
+                    "repeat": {
+                      "sequence": [
+                        { "$rule": "sublist" },
+                        {
+                          "optional": { "$token": "BLANK" }
+                        },
+                        { "$rule": "sublist_terminator" },
+                        {
+                          "optional": { "$token": "BLANK" }
+                        }
+                      ]
+                    },
+                    "min": 0
+                  },
+                  {
+                    "optional": {
+                      "sequence": [
+                        { "$rule": "sublist" },
+                        {
+                          "optional": { "$token": "BLANK" }
+                        },
+                        { "$rule": "sublist_terminator_no_semi" },
+                        {
+                          "optional": { "$token": "BLANK" }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "condition": {
+                "parseflag": "incmdpos"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 84,
+            "context": "Simple Commands & Pipelines"
+          }
+        },
+        "reserved_words": {
+          "description": "Reserved words recognized by the shell",
+          "union": [
+            { "$token": "DO" },
+            { "$token": "DONE" },
+            { "$token": "ESAC" },
+            { "$token": "THEN" },
+            { "$token": "ELIF" },
+            { "$token": "ELSE" },
+            { "$token": "FI" },
+            { "$token": "FOR" },
+            { "$token": "CASE" },
+            { "$token": "IF" },
+            { "$token": "WHILE" },
+            { "$token": "FUNCTION" },
+            { "$token": "REPEAT" },
+            { "$token": "TIME" },
+            { "$token": "UNTIL" },
+            { "$token": "SELECT" },
+            { "$token": "COPROC" },
+            { "$token": "NOCORRECT" },
+            { "$token": "FOREACH" },
+            { "$token": "END" },
+            { "$token": "BANG" },
+            { "$token": "DINBRACK" },
+            { "$token": "INBRACE" },
+            { "$token": "OUTBRACE" },
+            { "$token": "DECLARE" },
+            { "$token": "EXPORT" },
+            { "$token": "FLOAT" },
+            { "$token": "INTEGER" },
+            { "$token": "LOCAL" },
+            { "$token": "READONLY" },
+            { "$token": "TYPESET" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 499,
+            "context": "Reserved Words"
+          }
+        },
+        "word": {
+          "description": "A blank-separated word",
+          "union": [
+            { "$rule": "plain_string" },
+            { "$rule": "plain_glob_pattern" },
+            { "$rule": "quoted_string" },
+            { "$rule": "parameter_reference" },
+            { "$rule": "command_substitution" },
+            {
+              "repeat": {
+                "union": [
+                  { "$rule": "plain_string" },
+                  { "$rule": "plain_glob_pattern" },
+                  { "$rule": "quoted_string" },
+                  { "$rule": "parameter_reference" },
+                  { "$rule": "command_substitution" }
+                ]
+              },
+              "min": 2
+            },
+            { "$rule": "reserved_words" },
+            {
+              "variant": {
+                "union": [
+                  { "$rule": "command_separator" },
+                  { "$rule": "redirection_operator" },
+                  {
+                    "variant": {
+                      "union": [{ "$token": "INPAR" }, { "$token": "OUTPAR" }]
+                    },
+                    "condition": {
+                      "not": {
+                        "lexstate": "IN_GLOBPAT"
+                      }
+                    }
+                  }
+                ]
+              },
+              "condition": {
+                "option": "global_aliasing"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 586,
+            "context": "Aliasing"
+          }
+        },
+        "redirection_operator": {
+          "description": "Redirection operators",
+          "union": [
+            { "$token": "REDIR_INPUT" },
+            { "$token": "REDIR_INOUT" },
+            { "$token": "REDIR_OUTPUT" },
+            { "$token": "REDIR_CLOBBER" },
+            { "$token": "REDIR_APPEND" },
+            { "$token": "REDIR_APPEND_CLOBBER" },
+            { "$token": "REDIR_HEREDOC" },
+            { "$token": "REDIR_HERESTRING" },
+            { "$token": "REDIR_DUP_INPUT" },
+            { "$token": "REDIR_DUP_OUTPUT" },
+            { "$token": "REDIR_OUTERR" },
+            { "$token": "REDIR_OUTERR_CLOBBER" },
+            { "$token": "REDIR_OUTERR_APPEND" },
+            { "$token": "REDIR_OUTERR_APPEND_CLOBBER" }
+          ],
+          "source": {
+            "file": "redirect.yo",
+            "line": 17,
+            "context": "Redirection operators"
+          }
+        },
+        "redirection": {
+          "description": "Optional redirection operators",
+          "pattern": "[<>](&|\\||\\|&)?.*",
+          "source": {
+            "file": "grammar.yo",
+            "line": 22,
+            "context": "Simple Commands & Pipelines"
+          }
+        },
+        "quoted_string": {
+          "description": "Single-quoted, double-quoted, or $'...' strings",
+          "union": [
+            {
+              "pattern": "'([^']*|'')*'"
+            },
+            {
+              "pattern": "\"([^\"\\\\]|\\\\.)*\""
+            },
+            {
+              "pattern": "\\$'([^'\\\\]|\\\\.)*'"
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 481,
+            "context": "Quoting"
+          }
+        },
+        "command_pcm": {
+          "sequence": [
+            { "pattern": "command" },
+            {
+              "repeat": {
+                "sequence": [
+                  { "$token": "BLANK" },
+                  {
+                    "pattern": "-[pvV]+"
+                  }
+                ]
+              },
+              "min": 0
+            }
+          ]
+        },
+        "exec_pcm": {
+          "sequence": [
+            { "pattern": "exec" },
+            {
+              "repeat": {
+                "sequence": [
+                  { "$token": "BLANK" },
+                  {
+                    "union": [
+                      {
+                        "pattern": "-[cl]+"
+                      },
+                      {
+                        "sequence": [
+                          {
+                            "pattern": "-a"
+                          },
+                          { "$token": "BLANK" },
+                          { "$rule": "word" }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "min": 0
+            }
+          ]
+        },
+        "precommand_modifier": {
+          "description": "Modifiers that alter how a command is interpreted",
+          "union": [
+            { "$token": "DASH" },
+            { "$token": "BUILTIN" },
+            { "$rule": "command_pcm" },
+            { "$rule": "exec_pcm" },
+            { "$token": "NOCORRECT" },
+            { "$token": "NOGLOB" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 107,
+            "context": "Precommand Modifiers"
+          }
+        },
+        "complex_command": {
+          "description": "One of the complex commands: if, for, while, until, repeat, case, select, brace group, time, or conditional",
+          "union": [
+            { "$rule": "if_statement" },
+            { "$rule": "for_loop" },
+            { "$rule": "while_loop" },
+            { "$rule": "until_loop" },
+            { "$rule": "repeat_loop" },
+            { "$rule": "case_statement" },
+            { "$rule": "select_statement" },
+            { "$rule": "brace_group" },
+            { "$rule": "arithmetic_command" },
+            { "$rule": "conditional_command" },
+            { "$rule": "time_command" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 165,
+            "context": "Complex Commands"
+          }
+        },
+        "if_statement": {
+          "description": "Conditional statement: if list then list [elif list then list] ... [else list] fi",
+          "union": [
+            {
+              "description": "Full if/then/elif/else/fi form: if list then list [elif list then list] ... [else list] fi",
               "sequence": [
+                { "$token": "IF" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "THEN" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
                 {
-                  "$ref": "sublist"
+                  "repeat": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "$token": "ELIF" },
+                      { "$token": "BLANK" },
+                      { "$rule": "list" },
+                      { "$token": "BLANK" },
+                      { "$token": "THEN" },
+                      { "$token": "BLANK" },
+                      { "$rule": "list" }
+                    ]
+                  },
+                  "min": 0
                 },
                 {
                   "optional": {
                     "sequence": [
-                      {
-                        "repeat": {
-                          "union": [
-                            { "$ref": "SEPER" },
-                            { "$ref": "AMPER" },
-                            { "$ref": "AMPERBANG" }
-                          ]
-                        },
-                        "min": 1
-                      },
-                      {
-                        "$ref": "list"
-                      }
+                      { "$token": "BLANK" },
+                      { "$token": "ELSE" },
+                      { "$token": "BLANK" },
+                      { "$rule": "list" }
+                    ]
+                  }
+                },
+                { "$token": "BLANK" },
+                { "$token": "FI" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 174,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Brace form: if list { list } [elif list { list }] ... [else { list }]",
+              "sequence": [
+                { "$token": "IF" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "OUTBRACE" },
+                {
+                  "repeat": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "$token": "ELIF" },
+                      { "$token": "BLANK" },
+                      { "$rule": "list" },
+                      { "$token": "BLANK" },
+                      { "$token": "INBRACE" },
+                      { "$token": "BLANK" },
+                      { "$rule": "list" },
+                      { "$token": "BLANK" },
+                      { "$token": "OUTBRACE" }
+                    ]
+                  },
+                  "min": 0
+                },
+                {
+                  "optional": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "$token": "ELSE" },
+                      { "$token": "BLANK" },
+                      { "$token": "INBRACE" },
+                      { "$token": "BLANK" },
+                      { "$rule": "list" },
+                      { "$token": "BLANK" },
+                      { "$token": "OUTBRACE" }
                     ]
                   }
                 }
-              ]
-            }
-          }
-        ]
-      },
-      "sublist": {
-        "description": "sublist2 [ ( DBAR | DAMPER ) { SEPER } sublist ]",
-        "sequence": [
-          {
-            "$ref": "sublist2"
-          },
-          {
-            "optional": {
-              "sequence": [
-                {
-                  "union": [{ "$ref": "DBAR" }, { "$ref": "DAMPER" }]
-                },
-                {
-                  "repeat": {
-                    "$ref": "SEPER"
-                  },
-                  "min": 0
-                },
-                {
-                  "$ref": "sublist"
-                }
-              ]
-            }
-          }
-        ]
-      },
-      "sublist2": {
-        "description": "[ COPROC | BANG ] pline",
-        "sequence": [
-          {
-            "optional": {
-              "union": [{ "$ref": "COPROC" }, { "$ref": "BANG" }]
-            }
-          },
-          {
-            "$ref": "pline"
-          }
-        ]
-      },
-      "pline": {
-        "description": "cmd [ ( BAR | BARAMP ) { SEPER } pline ]",
-        "sequence": [
-          {
-            "$ref": "cmd"
-          },
-          {
-            "optional": {
-              "sequence": [
-                {
-                  "union": [{ "$ref": "BAR" }, { "$ref": "BARAMP" }]
-                },
-                {
-                  "repeat": {
-                    "$ref": "SEPER"
-                  },
-                  "min": 0
-                },
-                {
-                  "$ref": "pline"
-                }
-              ]
-            }
-          }
-        ]
-      },
-      "cmd": {
-        "description": "{ redir } ( for | case | if | while | repeat | subsh | funcdef | time | dinbrack | dinpar | simple ) { redir }",
-        "sequence": [
-          {
-            "repeat": {
-              "$ref": "redir"
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 437,
+                "context": "Alternate Forms For Complex Commands"
+              }
             },
-            "min": 0
-          },
-          {
+            {
+              "description": "Short form: if list sublist",
+              "variant": {
+                "sequence": [
+                  { "$token": "IF" },
+                  { "$token": "BLANK" },
+                  { "$rule": "list" },
+                  { "$token": "BLANK" },
+                  { "$rule": "sublist" }
+                ]
+              },
+              "condition": {
+                "option": "SHORT_LOOPS"
+              },
+              "source": {
+                "file": "grammar.yo",
+                "line": 452,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            }
+          ]
+        },
+        "term": {
+          "union": [
+            {
+              "repeat": { "$token": "NEWLINE" },
+              "min": 1
+            },
+            { "$token": "SEMI" }
+          ]
+        },
+        "wordlist": {
+          "repeat": { "$rule": "word" },
+          "min": 0
+        },
+        "nl_wordlist": {
+          "repeat": {
             "union": [
-              { "$ref": "for" },
-              { "$ref": "case" },
-              { "$ref": "if" },
-              { "$ref": "while" },
-              { "$ref": "repeat" },
-              { "$ref": "subsh" },
-              { "$ref": "funcdef" },
-              { "$ref": "time" },
-              { "$ref": "dinbrack" },
-              { "$ref": "dinpar" },
-              { "$ref": "simple" }
+              { "$token": "BLANK" },
+              { "$token": "SEPER" },
+              { "$rule": "word" }
             ]
           },
-          {
-            "repeat": {
-              "$ref": "redir"
+          "min": 1
+        },
+        "in_wordlist": {
+          "sequence": [
+            {
+              "pattern": "in"
             },
-            "min": 0
+            { "$token": "BLANK" },
+            { "$rule": "wordlist" }
+          ]
+        },
+        "optional_word": {
+          "optional": {
+            "sequence": [
+              {
+                "optional": { "$token": "BLANK" }
+              },
+              { "$rule": "word" },
+              {
+                "optional": { "$token": "BLANK" }
+              }
+            ]
           }
-        ]
-      },
-      "simple": {
-        "description": "{ COMMAND | EXEC | NOGLOB | NOCORRECT | DASH } { STRING | ENVSTRING | ENVARRAY wordlist OUTPAR | redir }",
-        "sequence": [
-          {
-            "repeat": {
-              "union": [
-                { "$ref": "COMMAND" },
-                { "$ref": "EXEC" },
-                { "$ref": "NOGLOB" },
-                { "$ref": "NOCORRECT" },
-                { "$ref": "DASH" }
-              ]
-            },
-            "min": 0
-          },
-          {
-            "repeat": {
-              "union": [
-                { "$ref": "STRING" },
+        },
+        "arith_for_expression": {
+          "sequence": [
+            { "$rule": "optional_word" },
+            { "$token": "SEPER" },
+            { "$rule": "optional_word" },
+            { "$token": "SEPER" },
+            { "$rule": "optional_word" }
+          ]
+        },
+        "for_loop": {
+          "description": "for name ... [in word ...] term do list done",
+          "union": [
+            {
+              "sequence": [
+                { "$token": "FOR" },
+                { "$token": "BLANK" },
                 {
-                  "sequence": [
-                    { "$ref": "ENVSTRING" },
+                  "repeat": { "$rule": "variable" },
+                  "min": 1
+                },
+                { "$token": "BLANK" },
+                {
+                  "optional": { "$rule": "in_wordlist" }
+                },
+                { "$token": "BLANK" },
+                { "$rule": "term" },
+                { "$token": "BLANK" },
+                { "$token": "DO" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DONE" }
+              ],
+              "description": "Standard for loop: for name ... [in word ...] term do list done",
+              "source": {
+                "file": "grammar.yo",
+                "line": 185,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "sequence": [
+                { "$token": "FOR" },
+                { "$token": "BLANK" },
+                { "$token": "DINPAR" },
+                { "$rule": "arith_for_expression" },
+                { "$token": "DOUTPAR" },
+                { "$token": "BLANK" },
+                { "$token": "DO" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DONE" }
+              ],
+              "description": "C-style arithmetic for loop: for (( expr1 ; expr2 ; expr3 )) do list done",
+              "source": {
+                "file": "grammar.yo",
+                "line": 204,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Short form of for loop: for name ... ( word ... ) sublist",
+              "sequence": [
+                { "$token": "FOR" },
+                { "$token": "BLANK" },
+                {
+                  "repeat": { "$rule": "variable" },
+                  "min": 1
+                },
+                { "$token": "BLANK" },
+                { "$token": "INPAR" },
+                {
+                  "optional": { "$token": "BLANK" }
+                },
+                { "$rule": "nl_wordlist" },
+                {
+                  "optional": { "$token": "BLANK" }
+                },
+                { "$token": "OUTPAR" },
+                { "$token": "BLANK" },
+                {
+                  "union": [
                     {
-                      "optional": {
-                        "repeat": {
-                          "$ref": "STRING"
-                        },
-                        "min": 0
+                      "sequence": [
+                        { "$token": "INBRACE" },
+                        { "$token": "BLANK" },
+                        { "$rule": "list" },
+                        { "$token": "BLANK" },
+                        { "$token": "OUTBRACE" }
+                      ]
+                    },
+                    {
+                      "variant": { "$rule": "sublist" },
+                      "condition": {
+                        "option": "SHORT_LOOPS"
                       }
                     }
                   ]
-                },
-                {
-                  "sequence": [
-                    { "$ref": "ENVARRAY" },
-                    {
-                      "repeat": {
-                        "$ref": "STRING"
-                      },
-                      "min": 0
-                    },
-                    { "$ref": "OUTPAR" }
-                  ]
-                },
-                { "$ref": "redir" }
-              ]
+                }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 456,
+                "context": "Alternate Forms For Complex Commands"
+              }
             },
-            "min": 0
-          }
-        ]
-      },
-      "wordlist": {
-        "description": "{ STRING }",
-        "repeat": {
-          "$ref": "STRING"
-        },
-        "min": 0
-      },
-      "nl_wordlist": {
-        "description": "{ STRING | SEPER }",
-        "repeat": {
-          "union": [{ "$ref": "STRING" }, { "$ref": "SEPER" }]
-        },
-        "min": 0
-      },
-      "if": {
-        "description": "{ ( IF | ELIF ) { SEPER } ( INPAR list OUTPAR | list ) { SEPER } ( THEN list | INBRACE list OUTBRACE | list1 ) } [ FI | ELSE list FI | ELSE { SEPER } INBRACE list OUTBRACE ]",
-        "sequence": [
-          {
-            "repeat": {
+            {
+              "description": "Another short form of for loop: for name ... [ in word ... ] term sublist",
               "sequence": [
+                { "$token": "FOR" },
+                { "$token": "BLANK" },
                 {
-                  "union": [{ "$ref": "IF" }, { "$ref": "ELIF" }]
+                  "repeat": { "$rule": "variable" },
+                  "min": 1
                 },
                 {
-                  "repeat": {
-                    "$ref": "SEPER"
-                  },
-                  "min": 0
-                },
-                {
-                  "union": [
-                    {
-                      "sequence": [
-                        { "$ref": "INPAR" },
-                        { "$ref": "list" },
-                        { "$ref": "OUTPAR" }
-                      ]
-                    },
-                    { "$ref": "list" }
-                  ]
-                },
-                {
-                  "repeat": {
-                    "$ref": "SEPER"
-                  },
-                  "min": 0
-                },
-                {
-                  "union": [
-                    {
-                      "sequence": [{ "$ref": "THEN" }, { "$ref": "list" }]
-                    },
-                    {
-                      "sequence": [
-                        { "$ref": "INBRACE" },
-                        { "$ref": "list" },
-                        { "$ref": "OUTBRACE" }
-                      ]
-                    },
-                    { "$ref": "list1" }
-                  ]
-                }
-              ]
-            },
-            "min": 1
-          },
-          {
-            "optional": {
-              "union": [
-                { "$ref": "FI" },
-                {
-                  "sequence": [
-                    { "$ref": "ELSE" },
-                    { "$ref": "list" },
-                    { "$ref": "FI" }
-                  ]
-                },
-                {
-                  "sequence": [
-                    { "$ref": "ELSE" },
-                    {
-                      "repeat": {
-                        "$ref": "SEPER"
-                      },
-                      "min": 0
-                    },
-                    { "$ref": "INBRACE" },
-                    { "$ref": "list" },
-                    { "$ref": "OUTBRACE" }
-                  ]
-                }
-              ]
-            }
-          }
-        ]
-      },
-      "while": {
-        "description": "( WHILE | UNTIL ) ( INPAR list OUTPAR | list ) { SEPER } ( DO list DONE | INBRACE list OUTBRACE | list ZEND )",
-        "sequence": [
-          {
-            "union": [{ "$ref": "WHILE" }, { "$ref": "UNTIL" }]
-          },
-          {
-            "union": [
-              {
-                "sequence": [
-                  { "$ref": "INPAR" },
-                  { "$ref": "list" },
-                  { "$ref": "OUTPAR" }
-                ]
-              },
-              { "$ref": "list" }
-            ]
-          },
-          {
-            "repeat": {
-              "$ref": "SEPER"
-            },
-            "min": 0
-          },
-          {
-            "union": [
-              {
-                "sequence": [
-                  { "$ref": "DO" },
-                  { "$ref": "list" },
-                  { "$ref": "DONE" }
-                ]
-              },
-              {
-                "sequence": [
-                  { "$ref": "INBRACE" },
-                  { "$ref": "list" },
-                  { "$ref": "OUTBRACE" }
-                ]
-              },
-              {
-                "sequence": [{ "$ref": "list" }, { "$ref": "ZEND" }]
-              }
-            ]
-          }
-        ]
-      },
-      "repeat": {
-        "description": "REPEAT STRING { SEPER } ( DO list DONE | INBRACE list OUTBRACE | list ZEND )",
-        "sequence": [
-          { "$ref": "REPEAT" },
-          { "$ref": "STRING" },
-          {
-            "repeat": {
-              "$ref": "SEPER"
-            },
-            "min": 0
-          },
-          {
-            "union": [
-              {
-                "sequence": [
-                  { "$ref": "DO" },
-                  { "$ref": "list" },
-                  { "$ref": "DONE" }
-                ]
-              },
-              {
-                "sequence": [
-                  { "$ref": "INBRACE" },
-                  { "$ref": "list" },
-                  { "$ref": "OUTBRACE" }
-                ]
-              },
-              {
-                "sequence": [{ "$ref": "list" }, { "$ref": "ZEND" }]
-              }
-            ]
-          }
-        ]
-      },
-      "for": {
-        "description": "( FOR DINPAR expr SEMI expr SEMI expr DOUTPAR | ( FOR[EACH] | SELECT ) name ( in wordlist | INPAR wordlist OUTPAR ) ) { SEPER } ( DO list DONE | INBRACE list OUTBRACE | list ZEND | list1 )",
-        "union": [
-          {
-            "sequence": [
-              { "$ref": "FOR" },
-              { "$ref": "DINPAR" },
-              { "$ref": "STRING" },
-              { "$ref": "SEMI" },
-              { "$ref": "STRING" },
-              { "$ref": "SEMI" },
-              { "$ref": "STRING" },
-              { "pattern": ")" }
-            ]
-          },
-          {
-            "sequence": [
-              {
-                "union": [
-                  { "$ref": "FOR" },
-                  { "$ref": "FOREACH" },
-                  { "$ref": "SELECT" }
-                ]
-              },
-              { "$ref": "STRING" },
-              {
-                "union": [
-                  {
-                    "sequence": [{ "pattern": "in" }, { "$ref": "wordlist" }]
-                  },
-                  {
+                  "optional": {
                     "sequence": [
-                      { "$ref": "INPAR" },
-                      { "$ref": "wordlist" },
-                      { "$ref": "OUTPAR" }
+                      { "$token": "BLANK" },
+                      { "$rule": "in_wordlist" }
                     ]
                   }
-                ]
-              }
-            ]
-          }
-        ]
-      },
-      "case": {
-        "description": "CASE STRING ( INBRACE | in ) { pattern } ( ESAC | OUTBRACE )",
-        "sequence": [
-          { "$ref": "CASE" },
-          { "$ref": "STRING" },
-          {
-            "union": [{ "$ref": "INBRACE" }, { "pattern": "in" }]
-          },
-          {
-            "repeat": {
-              "sequence": [
-                { "$ref": "STRING" },
-                {
-                  "union": [{ "$ref": "OUTPAR" }, { "$ref": "BAR" }]
                 },
-                { "$ref": "list" }
-              ]
+                { "$token": "BLANK" },
+                { "$rule": "term" },
+                { "$token": "BLANK" },
+                {
+                  "union": [
+                    {
+                      "sequence": [
+                        { "$token": "INBRACE" },
+                        { "$token": "BLANK" },
+                        { "$rule": "list" },
+                        { "$token": "BLANK" },
+                        { "$token": "OUTBRACE" }
+                      ]
+                    },
+                    {
+                      "variant": { "$rule": "sublist" },
+                      "condition": {
+                        "option": "SHORT_LOOPS"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 459,
+                "context": "Alternate Forms For Complex Commands"
+              }
             },
-            "min": 0
-          },
-          {
-            "union": [{ "$ref": "ESAC" }, { "$ref": "OUTBRACE" }]
+            {
+              "sequence": [
+                { "$token": "FOR" },
+                { "$token": "BLANK" },
+                { "$token": "DINPAR" },
+                {
+                  "optional": { "$token": "BLANK" }
+                },
+                { "$rule": "arith_for_expression" },
+                {
+                  "optional": { "$token": "BLANK" }
+                },
+                { "$token": "DOUTPAR" },
+                { "$token": "BLANK" },
+                {
+                  "union": [
+                    {
+                      "sequence": [
+                        { "$token": "INBRACE" },
+                        { "$token": "BLANK" },
+                        { "$rule": "list" },
+                        { "$token": "BLANK" },
+                        { "$token": "OUTBRACE" }
+                      ]
+                    },
+                    {
+                      "variant": { "$rule": "sublist" },
+                      "condition": {
+                        "option": "SHORT_LOOPS"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "description": "C-style arithmetic for loop short form: for (( expr1 ; expr2 ; expr3 )) { list } | sublist",
+              "source": {
+                "file": "grammar.yo",
+                "line": 463,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            },
+            {
+              "sequence": [
+                { "$token": "FOREACH" },
+                { "$token": "BLANK" },
+                {
+                  "repeat": { "$rule": "variable" },
+                  "min": 1
+                },
+                { "$token": "BLANK" },
+                { "$token": "INPAR" },
+                {
+                  "optional": { "$token": "BLANK" }
+                },
+                { "$rule": "nl_wordlist" },
+                {
+                  "optional": { "$token": "BLANK" }
+                },
+                { "$token": "OUTPAR" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "END" }
+              ],
+              "description": "Foreach loop (C-shell style): foreach name ... ( word ... ) list end",
+              "source": {
+                "file": "grammar.yo",
+                "line": 467,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 185,
+            "context": "Complex Commands"
           }
-        ]
-      },
-      "subsh": {
-        "description": "INPAR list OUTPAR | INBRACE list OUTBRACE",
-        "union": [
-          {
-            "sequence": [
-              { "$ref": "INPAR" },
-              { "$ref": "list" },
-              { "$ref": "OUTPAR" }
-            ]
-          },
-          {
-            "sequence": [
-              { "$ref": "INBRACE" },
-              { "$ref": "list" },
-              { "$ref": "OUTBRACE" }
-            ]
+        },
+        "while_loop": {
+          "description": "while list do list done",
+          "union": [
+            {
+              "description": "Standard while loop: while list do list done",
+              "sequence": [
+                { "$token": "WHILE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DO" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DONE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 215,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Alternative form: while list { list }",
+              "sequence": [
+                { "$token": "WHILE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "OUTBRACE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 278,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 215,
+            "context": "Complex Commands"
           }
-        ]
-      },
-      "funcdef": {
-        "description": "STRING INOUTPAR ( list | INBRACE list OUTBRACE )",
-        "sequence": [
-          { "$ref": "STRING" },
-          { "$ref": "INOUTPAR" },
-          {
+        },
+        "until_loop": {
+          "description": "until list do list done",
+          "union": [
+            {
+              "description": "Standard until loop: until list do list done",
+              "sequence": [
+                { "$token": "UNTIL" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DO" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DONE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 222,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Alternative form: until list { list }",
+              "sequence": [
+                { "$token": "UNTIL" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "OUTBRACE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 282,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 222,
+            "context": "Complex Commands"
+          }
+        },
+        "repeat_loop": {
+          "description": "repeat word do list done",
+          "variant": {
             "union": [
-              { "$ref": "list" },
               {
+                "description": "Standard repeat loop: repeat word do list done",
                 "sequence": [
-                  { "$ref": "INBRACE" },
-                  { "$ref": "list" },
-                  { "$ref": "OUTBRACE" }
-                ]
+                  { "$token": "REPEAT" },
+                  { "$token": "BLANK" },
+                  { "$rule": "word" },
+                  { "$token": "BLANK" },
+                  { "$token": "DO" },
+                  { "$token": "BLANK" },
+                  { "$rule": "list" },
+                  { "$token": "BLANK" },
+                  { "$token": "DONE" }
+                ],
+                "source": {
+                  "file": "grammar.yo",
+                  "line": 229,
+                  "context": "Complex Commands"
+                }
+              },
+              {
+                "description": "Short form: repeat word sublist",
+                "sequence": [
+                  { "$token": "REPEAT" },
+                  { "$token": "BLANK" },
+                  { "$rule": "word" },
+                  { "$token": "BLANK" },
+                  { "$rule": "sublist" }
+                ],
+                "source": {
+                  "file": "grammar.yo",
+                  "line": 286,
+                  "context": "Alternate Forms For Complex Commands"
+                }
               }
             ]
+          },
+          "condition": {
+            "or": [
+              {
+                "not": {
+                  "and": [{ "option": "ksh_mode" }, { "option": "posix_mode" }]
+                }
+              },
+              { "option": "repeat" }
+            ]
+          },
+          "source": {
+            "file": "grammar.yo",
+            "line": 229,
+            "context": "Complex Commands"
           }
-        ]
-      },
-      "time": {
-        "description": "TIME [ pline ]",
-        "sequence": [
-          { "$ref": "TIME" },
-          {
-            "optional": {
-              "$ref": "pline"
+        },
+        "case_pattern": {
+          "description": "Pattern for case statement matching (placeholder for now)",
+          "union": [
+            { "pattern": "[a-zA-Z0-9_*?\\[\\]]+" },
+            { "$rule": "quoted_string" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 244,
+            "context": "Complex Commands"
+          }
+        },
+        "case_statement": {
+          "description": "case word in [pattern ... ) list (;;|;&|;|) ] ... esac",
+          "union": [
+            {
+              "description": "Standard case statement: case word in [pattern ... ) list (;;|;&|;|) ] ... esac",
+              "sequence": [
+                { "$token": "CASE" },
+                { "$token": "BLANK" },
+                { "$rule": "word" },
+                { "$token": "BLANK" },
+                { "pattern": "in" },
+                {
+                  "repeat": {
+                    "sequence": [
+                      {
+                        "optional": { "$token": "INPAR" }
+                      },
+                      { "$rule": "case_pattern" },
+                      {
+                        "repeat": {
+                          "sequence": [
+                            { "$token": "PIPE" },
+                            { "$rule": "case_pattern" }
+                          ]
+                        },
+                        "min": 0
+                      },
+                      {
+                        "optional": { "$token": "OUTPAR" }
+                      },
+                      { "$rule": "list" },
+                      {
+                        "union": [
+                          { "$token": "DSEMI" },
+                          { "$token": "SEMIAMP" },
+                          { "$token": "SEMIBAR" }
+                        ]
+                      }
+                    ]
+                  },
+                  "min": 0
+                },
+                { "$token": "ESAC" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 241,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Alternative brace form: case word { [pattern ... ) list (;;|;&|;|) ] ... }",
+              "sequence": [
+                { "$token": "CASE" },
+                { "$token": "BLANK" },
+                { "$rule": "word" },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                {
+                  "repeat": {
+                    "sequence": [
+                      {
+                        "optional": { "$token": "INPAR" }
+                      },
+                      { "$rule": "case_pattern" },
+                      {
+                        "repeat": {
+                          "sequence": [
+                            { "$token": "PIPE" },
+                            { "$rule": "case_pattern" }
+                          ]
+                        },
+                        "min": 0
+                      },
+                      {
+                        "optional": { "$token": "OUTPAR" }
+                      },
+                      { "$rule": "list" },
+                      {
+                        "union": [
+                          { "$token": "DSEMI" },
+                          { "$token": "SEMIAMP" },
+                          { "$token": "SEMIBAR" }
+                        ]
+                      }
+                    ]
+                  },
+                  "min": 0
+                },
+                { "$token": "OUTBRACE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 289,
+                "context": "Alternate Forms For Complex Commands"
+              }
             }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 241,
+            "context": "Complex Commands"
           }
-        ]
+        },
+        "select_statement": {
+          "description": "select name [in word ... term] do list done",
+          "union": [
+            {
+              "description": "Standard select statement: select name [in word ... term] do list done",
+              "sequence": [
+                { "$token": "SELECT" },
+                { "$token": "BLANK" },
+                { "$rule": "variable" },
+                {
+                  "optional": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "pattern": "in" },
+                      { "$token": "BLANK" },
+                      { "$rule": "nl_wordlist" },
+                      { "$token": "BLANK" },
+                      { "$rule": "term" }
+                    ]
+                  }
+                },
+                { "$token": "BLANK" },
+                { "$token": "DO" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "DONE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 272,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Brace form: select name [in word ... term] { list }",
+              "sequence": [
+                { "$token": "SELECT" },
+                { "$token": "BLANK" },
+                { "$rule": "variable" },
+                {
+                  "optional": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "pattern": "in" },
+                      { "$token": "BLANK" },
+                      { "$rule": "nl_wordlist" },
+                      { "$token": "BLANK" },
+                      { "$rule": "term" }
+                    ]
+                  }
+                },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "OUTBRACE" }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 424,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            },
+            {
+              "description": "Short form: select name [in word ... term] sublist",
+              "variant": {
+                "sequence": [
+                  { "$token": "SELECT" },
+                  { "$token": "BLANK" },
+                  { "$rule": "variable" },
+                  {
+                    "optional": {
+                      "sequence": [
+                        { "$token": "BLANK" },
+                        { "pattern": "in" },
+                        { "$token": "BLANK" },
+                        { "$rule": "nl_wordlist" },
+                        { "$token": "BLANK" },
+                        { "$rule": "term" }
+                      ]
+                    }
+                  },
+                  { "$token": "BLANK" },
+                  { "$rule": "sublist" }
+                ]
+              },
+              "condition": {
+                "option": "SHORT_LOOPS"
+              },
+              "source": {
+                "file": "grammar.yo",
+                "line": 484,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 272,
+            "context": "Complex Commands"
+          }
+        },
+        "subshell": {
+          "description": "Subshell: ( list )",
+          "sequence": [
+            { "$token": "INPAR" },
+            { "$token": "BLANK" },
+            { "$rule": "list" },
+            { "$token": "BLANK" },
+            { "$token": "OUTPAR" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 289,
+            "context": "Complex Commands"
+          }
+        },
+        "exec_list": {
+          "description": "Execute list: { list }",
+          "sequence": [
+            { "$token": "INBRACE" },
+            { "$token": "BLANK" },
+            { "$rule": "list" },
+            { "$token": "BLANK" },
+            { "$token": "OUTBRACE" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 295,
+            "context": "Complex Commands"
+          }
+        },
+        "try_always": {
+          "description": "Try-always block: { try-list } always { always-list }",
+          "sequence": [
+            { "$token": "INBRACE" },
+            { "$token": "BLANK" },
+            { "$rule": "list" },
+            { "$token": "BLANK" },
+            { "$token": "OUTBRACE" },
+            { "$token": "BLANK" },
+            { "pattern": "always" },
+            { "$token": "BLANK" },
+            { "$token": "INBRACE" },
+            { "$token": "BLANK" },
+            { "$rule": "list" },
+            { "$token": "BLANK" },
+            { "$token": "OUTBRACE" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 301,
+            "context": "Complex Commands"
+          }
+        },
+        "function_def": {
+          "description": "Function definition: function [options] word ... [()] [term] { list }",
+          "union": [
+            {
+              "description": "Long form: function [ -T ] word ... [ () ] [ term ] { list }",
+              "sequence": [
+                { "$token": "FUNCTION" },
+                {
+                  "optional": {
+                    "sequence": [{ "$token": "BLANK" }, { "pattern": "-T" }]
+                  }
+                },
+                { "$token": "BLANK" },
+                {
+                  "repeat": { "$rule": "word" },
+                  "min": 1
+                },
+                {
+                  "optional": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "$token": "INPAR" },
+                      { "$token": "OUTPAR" }
+                    ]
+                  }
+                },
+                {
+                  "optional": {
+                    "sequence": [{ "$token": "BLANK" }, { "$rule": "term" }]
+                  }
+                },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "OUTBRACE" },
+                {
+                  "optional": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "$rule": "redirection" }
+                    ]
+                  }
+                }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 362,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Alternative long form: word ... () [ term ] { list }",
+              "sequence": [
+                {
+                  "repeat": { "$rule": "word" },
+                  "min": 1
+                },
+                { "$token": "BLANK" },
+                { "$token": "INPAR" },
+                { "$token": "OUTPAR" },
+                {
+                  "optional": {
+                    "sequence": [{ "$token": "BLANK" }, { "$rule": "term" }]
+                  }
+                },
+                { "$token": "BLANK" },
+                { "$token": "INBRACE" },
+                { "$token": "BLANK" },
+                { "$rule": "list" },
+                { "$token": "BLANK" },
+                { "$token": "OUTBRACE" },
+                {
+                  "optional": {
+                    "sequence": [
+                      { "$token": "BLANK" },
+                      { "$rule": "redirection" }
+                    ]
+                  }
+                }
+              ],
+              "source": {
+                "file": "grammar.yo",
+                "line": 363,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "description": "Short form: function word ... [ () ] [ term ] sublist",
+              "variant": {
+                "sequence": [
+                  { "$token": "FUNCTION" },
+                  { "$token": "BLANK" },
+                  {
+                    "repeat": { "$rule": "word" },
+                    "min": 1
+                  },
+                  {
+                    "optional": {
+                      "sequence": [
+                        { "$token": "BLANK" },
+                        { "$token": "INPAR" },
+                        { "$token": "OUTPAR" }
+                      ]
+                    }
+                  },
+                  {
+                    "optional": {
+                      "sequence": [{ "$token": "BLANK" }, { "$rule": "term" }]
+                    }
+                  },
+                  { "$token": "BLANK" },
+                  { "$rule": "sublist" },
+                  {
+                    "optional": {
+                      "sequence": [
+                        { "$token": "BLANK" },
+                        { "$rule": "redirection" }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "condition": {
+                "option": "SHORT_LOOPS"
+              },
+              "source": {
+                "file": "grammar.yo",
+                "line": 488,
+                "context": "Alternate Forms For Complex Commands"
+              }
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 362,
+            "context": "Complex Commands"
+          }
+        },
+        "time_command": {
+          "description": "Time a pipeline or print timing statistics: time [pipeline]",
+          "union": [
+            {
+              "sequence": [
+                { "$token": "TIME" },
+                { "$token": "BLANK" },
+                { "$rule": "pipeline" }
+              ],
+              "description": "Time a pipeline: time pipeline",
+              "source": {
+                "file": "grammar.yo",
+                "line": 399,
+                "context": "Complex Commands"
+              }
+            },
+            {
+              "$token": "TIME",
+              "description": "Print timing statistics for shell and children: time",
+              "source": {
+                "file": "grammar.yo",
+                "line": 403,
+                "context": "Complex Commands"
+              }
+            }
+          ]
+        },
+        "conditional_command": {
+          "description": "Conditional expression: [[ expr ]]",
+          "sequence": [
+            { "$token": "DINBRACK" },
+            { "$rule": "placeholder", "$lang": "conditional_expressions" },
+            { "$token": "DOUTBRACK" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 251,
+            "context": "Alternate Forms For Complex Commands"
+          }
+        },
+        "arithmetic_command": {
+          "description": "Arithmetic expression: (( expr ))",
+          "sequence": [
+            { "$token": "DINPAR" },
+            { "$rule": "placeholder", "$lang": "arithmetic_expressions" },
+            { "$token": "DOUTPAR" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 251,
+            "context": "Alternate Forms For Complex Commands"
+          }
+        }
+      }
+    },
+    "conditional_expressions": {
+      "tokens": {
+        "PLACEHOLDER": { "matches": "1" }
       },
-      "dinbrack": {
-        "description": "[[ expression ]]",
-        "sequence": [
-          { "$ref": "DINBRACK" },
-          { "$ref": "STRING" },
-          { "pattern": "]]" }
-        ]
+      "rules": {
+        "placeholder": { "empty": true }
+      }
+    },
+    "arithmetic_expressions": {
+      "tokens": {
+        "PLACEHOLDER": { "matches": "1" }
       },
-      "dinpar": {
-        "description": "(( STRING ))",
-        "sequence": [
-          { "$ref": "DINPAR" },
-          { "$ref": "STRING" },
-          { "pattern": "))" }
-        ]
-      },
-      "redir": {
-        "description": "Redirection operator",
-        "sequence": [
-          { "pattern": ">|[0-9]*>|>>|<|<>|<<|<<<|&>|&>>|2>|2>>" },
-          { "$ref": "STRING" }
-        ]
-      },
-      "list1": {
-        "description": "sublist",
-        "$ref": "sublist"
-      },
-      "STRING": {
-        "token": "STRING",
-        "matches": "<word>"
-      },
-      "COPROC": {
-        "token": "COPROC",
-        "matches": "coproc"
-      },
-      "BANG": {
-        "token": "BANG",
-        "matches": "!"
-      },
-      "INPAR": {
-        "token": "INPAR",
-        "matches": "("
-      },
-      "OUTPAR": {
-        "token": "OUTPAR",
-        "matches": ")"
-      },
-      "INBRACE": {
-        "token": "INBRACE",
-        "matches": "{"
-      },
-      "OUTBRACE": {
-        "token": "OUTBRACE",
-        "matches": "}"
-      },
-      "FOR": {
-        "token": "FOR",
-        "matches": "for"
-      },
-      "FOREACH": {
-        "token": "FOREACH",
-        "matches": "foreach"
-      },
-      "SELECT": {
-        "token": "SELECT",
-        "matches": "select"
-      },
-      "CASE": {
-        "token": "CASE",
-        "matches": "case"
-      },
-      "ESAC": {
-        "token": "ESAC",
-        "matches": "esac"
-      },
-      "IF": {
-        "token": "IF",
-        "matches": "if"
-      },
-      "ELIF": {
-        "token": "ELIF",
-        "matches": "elif"
-      },
-      "ELSE": {
-        "token": "ELSE",
-        "matches": "else"
-      },
-      "FI": {
-        "token": "FI",
-        "matches": "fi"
-      },
-      "WHILE": {
-        "token": "WHILE",
-        "matches": "while"
-      },
-      "UNTIL": {
-        "token": "UNTIL",
-        "matches": "until"
-      },
-      "DO": {
-        "token": "DO",
-        "matches": "do"
-      },
-      "DONE": {
-        "token": "DONE",
-        "matches": "done"
-      },
-      "REPEAT": {
-        "token": "REPEAT",
-        "matches": "repeat"
-      },
-      "TIME": {
-        "token": "TIME",
-        "matches": "time"
-      },
-      "DINBRACK": {
-        "token": "DINBRACK",
-        "matches": "[["
-      },
-      "DINPAR": {
-        "token": "DINPAR",
-        "matches": "(("
-      },
-      "COMMAND": {
-        "token": "COMMAND",
-        "matches": "command"
-      },
-      "EXEC": {
-        "token": "EXEC",
-        "matches": "exec"
-      },
-      "NOGLOB": {
-        "token": "NOGLOB",
-        "matches": "noglob"
-      },
-      "NOCORRECT": {
-        "token": "NOCORRECT",
-        "matches": "nocorrect"
-      },
-      "DASH": {
-        "token": "DASH",
-        "matches": "-"
-      },
-      "THEN": {
-        "token": "THEN",
-        "matches": "then"
-      },
-      "ZEND": {
-        "token": "ZEND",
-        "matches": ""
-      },
-      "INOUTPAR": {
-        "token": "INOUTPAR",
-        "matches": "()"
-      },
-      "ENVSTRING": {
-        "token": "ENVSTRING",
-        "matches": "<env_string>"
-      },
-      "ENVARRAY": {
-        "token": "ENVARRAY",
-        "matches": "<env_array>"
+      "rules": {
+        "placeholder": { "empty": true }
       }
     }
   }

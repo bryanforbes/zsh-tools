@@ -85,14 +85,14 @@ def find_cursor(cursor: Cursor, name: str, /) -> Cursor | None:
     return None
 
 
-def _find_child_cursors(cursor: Cursor, name: str, /) -> Iterator[Cursor]:  # pyright: ignore[reportUnusedFunction]
+def find_child_cursors(cursor: Cursor, name: str, /) -> Iterator[Cursor]:
     """Find all direct child cursors with given name."""
     for child in cursor.get_children():
         if child.spelling == name:
             yield child
 
 
-def _find_all_cursors(  # pyright: ignore[reportUnusedFunction]
+def find_all_cursors(
     cursor: Cursor, predicate: Callable[[Cursor], bool], /
 ) -> Iterator[Cursor]:
     """Find all cursors matching predicate via preorder walk."""
