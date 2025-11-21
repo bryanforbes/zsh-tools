@@ -33,7 +33,7 @@ if TYPE_CHECKING:
 def grammar_path() -> Path:
     """Get path to amp-grammar.json."""
     # Navigate from tests directory to project root
-    return Path(__file__).parent.parent / 'canonical-grammar-manual.json'
+    return Path(__file__).parent.parent / 'canonical-grammar.json'
 
 
 @pytest.fixture(scope='session')

@@ -54,4 +54,3 @@ mise/*.local.toml
 /zsh-grammar/*.json
 !/zsh-grammar/canonical-grammar.schema.json
 !/zsh-grammar/canonical-grammar.json
-!/zsh-grammar/canonical-grammar-manual.json
