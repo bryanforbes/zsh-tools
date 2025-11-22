@@ -9,6 +9,9 @@
         "BLANK": {
           "pattern": "[ \t]+"
         },
+        "SEPER": {
+          "matches": ["\n", ";"]
+        },
         "NEWLINE": {
           "matches": "\n"
         },
@@ -18,35 +21,164 @@
         "DSEMI": {
           "matches": ";;"
         },
+        "AMPER": {
+          "matches": "&"
+        },
+        "INPAR": {
+          "matches": "("
+        },
+        "OUTPAR": {
+          "matches": ")"
+        },
+        "DBAR": {
+          "matches": "||"
+        },
+        "DAMPER": {
+          "matches": "&&"
+        },
+        "OUTANG": {
+          "matches": ">",
+          "source": {
+            "file": "redirect.yo",
+            "line": 35,
+            "context": "Output redirection"
+          }
+        },
+        "OUTANGBANG": {
+          "matches": [">|", ">!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 42,
+            "context": "Output clobber"
+          }
+        },
+        "DOUTANG": {
+          "matches": ">>",
+          "source": {
+            "file": "redirect.yo",
+            "line": 47,
+            "context": "Output append"
+          }
+        },
+        "DOUTANGBANG": {
+          "matches": [">>|", ">>!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 53,
+            "context": "Output append clobber"
+          }
+        },
+        "INANG": {
+          "matches": "<",
+          "source": {
+            "file": "redirect.yo",
+            "line": 27,
+            "context": "Input redirection"
+          }
+        },
+        "INOUTANG": {
+          "matches": "<>",
+          "source": {
+            "file": "redirect.yo",
+            "line": 31,
+            "context": "Input/output redirection"
+          }
+        },
+        "DINANG": {
+          "matches": "<<",
+          "source": {
+            "file": "redirect.yo",
+            "line": 58,
+            "context": "Here-document"
+          }
+        },
+        "DINANGDASH": {
+          "matches": "<<-",
+          "source": {
+            "file": "redirect.yo",
+            "line": 58,
+            "context": "Here-document"
+          }
+        },
+        "INANGAMP": {
+          "matches": "<&",
+          "source": {
+            "file": "redirect.yo",
+            "line": 92,
+            "context": "File descriptor duplication input"
+          }
+        },
+        "OUTANGAMP": {
+          "matches": ">&",
+          "source": {
+            "file": "redirect.yo",
+            "line": 93,
+            "context": "File descriptor duplication output"
+          }
+        },
+        "AMPOUTANG": {
+          "matches": "&>",
+          "source": {
+            "file": "redirect.yo",
+            "line": 105,
+            "context": "Redirect both stdout and stderr"
+          }
+        },
+        "OUTANGAMPBANG": {
+          "matches": ["&>|", "&>!", ">&|", ">&!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 114,
+            "context": "Redirect both stdout and stderr with clobber"
+          }
+        },
+        "DOUTANGAMP": {
+          "matches": ["&>>", ">>&"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 121,
+            "context": "Redirect both stdout and stderr with append"
+          }
+        },
+        "DOUTANGAMPBANG": {
+          "matches": ["&>>|", "&>>!", ">>&|", ">>&!"],
+          "source": {
+            "file": "redirect.yo",
+            "line": 126,
+            "context": "Redirect both stdout and stderr with append and clobber"
+          }
+        },
+        "TRINANG": {
+          "matches": "<<<",
+          "source": {
+            "file": "redirect.yo",
+            "line": 85,
+            "context": "Here-string"
+          }
+        },
+        "BAR": {
+          "matches": "|"
+        },
+        "BARAMP": {
+          "matches": "|&"
+        },
+        "INOUTPAR": {
+          "matches": "()"
+        },
+        "DINPAR": {
+          "matches": "(("
+        },
+        "DOUTPAR": {
+          "matches": "))"
+        },
+        "AMPERBANG": {
+          "matches": ["&|", "&!"]
+        },
         "SEMIAMP": {
           "matches": ";&"
         },
         "SEMIBAR": {
           "matches": ";|"
-        },
-        "SEPER": {
-          "matches": ["\n", ";"]
-        },
-        "PIPE": {
-          "matches": "|"
-        },
-        "PIPE_AMP": {
-          "matches": "|&"
-        },
-        "LOGICAL_AND": {
-          "matches": "&&"
-        },
-        "LOGICAL_OR": {
-          "matches": "||"
-        },
-        "AMPER": {
-          "matches": "&"
-        },
-        "AMPERPIPE": {
-          "matches": "&|"
-        },
-        "AMPERBANG": {
-          "matches": "&!"
         },
         "DO": {
           "matches": "do",
@@ -305,130 +437,6 @@
             "context": "Reserved Words"
           }
         },
-        "INPAR": {
-          "matches": "("
-        },
-        "OUTPAR": {
-          "matches": ")"
-        },
-        "REDIR_INPUT": {
-          "matches": "<",
-          "source": {
-            "file": "redirect.yo",
-            "line": 27,
-            "context": "Input redirection"
-          }
-        },
-        "REDIR_INOUT": {
-          "matches": "<>",
-          "source": {
-            "file": "redirect.yo",
-            "line": 31,
-            "context": "Input/output redirection"
-          }
-        },
-        "REDIR_OUTPUT": {
-          "matches": ">",
-          "source": {
-            "file": "redirect.yo",
-            "line": 35,
-            "context": "Output redirection"
-          }
-        },
-        "REDIR_CLOBBER": {
-          "matches": [">|", ">!"],
-          "source": {
-            "file": "redirect.yo",
-            "line": 42,
-            "context": "Output clobber"
-          }
-        },
-        "REDIR_APPEND": {
-          "matches": ">>",
-          "source": {
-            "file": "redirect.yo",
-            "line": 47,
-            "context": "Output append"
-          }
-        },
-        "REDIR_APPEND_CLOBBER": {
-          "matches": [">>|", ">>!"],
-          "source": {
-            "file": "redirect.yo",
-            "line": 53,
-            "context": "Output append clobber"
-          }
-        },
-        "REDIR_HEREDOC": {
-          "matches": ["<<", "<<-"],
-          "source": {
-            "file": "redirect.yo",
-            "line": 58,
-            "context": "Here-document"
-          }
-        },
-        "REDIR_HERESTRING": {
-          "matches": "<<<",
-          "source": {
-            "file": "redirect.yo",
-            "line": 85,
-            "context": "Here-string"
-          }
-        },
-        "REDIR_DUP_INPUT": {
-          "matches": "<&",
-          "source": {
-            "file": "redirect.yo",
-            "line": 92,
-            "context": "File descriptor duplication input"
-          }
-        },
-        "REDIR_DUP_OUTPUT": {
-          "matches": ">&",
-          "source": {
-            "file": "redirect.yo",
-            "line": 93,
-            "context": "File descriptor duplication output"
-          }
-        },
-        "REDIR_OUTERR": {
-          "matches": "&>",
-          "source": {
-            "file": "redirect.yo",
-            "line": 105,
-            "context": "Redirect both stdout and stderr"
-          }
-        },
-        "REDIR_OUTERR_CLOBBER": {
-          "matches": ["&>|", "&>!", ">&|", ">&!"],
-          "source": {
-            "file": "redirect.yo",
-            "line": 114,
-            "context": "Redirect both stdout and stderr with clobber"
-          }
-        },
-        "REDIR_OUTERR_APPEND": {
-          "matches": ["&>>", ">>&"],
-          "source": {
-            "file": "redirect.yo",
-            "line": 121,
-            "context": "Redirect both stdout and stderr with append"
-          }
-        },
-        "REDIR_OUTERR_APPEND_CLOBBER": {
-          "matches": ["&>>|", "&>>!", ">>&|", ">>&!"],
-          "source": {
-            "file": "redirect.yo",
-            "line": 126,
-            "context": "Redirect both stdout and stderr with append and clobber"
-          }
-        },
-        "DINPAR": {
-          "matches": "(("
-        },
-        "DOUTPAR": {
-          "matches": "))"
-        },
         "SPECIAL_STAR": {
           "matches": "*"
         },
@@ -574,7 +582,7 @@
                     "optional": { "$token": "BLANK" }
                   },
                   {
-                    "union": [{ "$token": "PIPE" }, { "$token": "PIPE_AMP" }]
+                    "union": [{ "$token": "BAR" }, { "$token": "BARAMP" }]
                   },
                   {
                     "optional": { "$token": "BLANK" }
@@ -602,10 +610,7 @@
                     "optional": { "$token": "BLANK" }
                   },
                   {
-                    "union": [
-                      { "$token": "LOGICAL_AND" },
-                      { "$token": "LOGICAL_OR" }
-                    ]
+                    "union": [{ "$token": "DAMPER" }, { "$token": "DBAR" }]
                   },
                   {
                     "optional": { "$token": "BLANK" }
@@ -625,7 +630,6 @@
         "sublist_terminator_no_semi": {
           "union": [
             { "$token": "AMPER" },
-            { "$token": "AMPERPIPE" },
             { "$token": "AMPERBANG" },
             { "$token": "NEWLINE" }
           ]
@@ -699,7 +703,7 @@
             "context": "Simple Commands & Pipelines"
           }
         },
-        "reserved_words": {
+        "reserved_word": {
           "description": "Reserved words recognized by the shell",
           "union": [
             { "$token": "DO" },
@@ -740,27 +744,133 @@
             "context": "Reserved Words"
           }
         },
+        "plain_string": {
+          "description": "Unquoted string: non-whitespace characters excluding shell metacharacters and quotes",
+          "pattern": "(?:\\\\.|[^\\s'\"$`|&;<>()\\[\\]{}])+",
+          "source": {
+            "file": "grammar.yo",
+            "line": 589,
+            "context": "Aliasing - plain string or glob pattern"
+          }
+        },
+        "glob_pattern": {
+          "description": "Glob pattern: plain string containing *, ?, or [...]",
+          "pattern": "(?:\\\\.|[^\\s'\"$`|&;<>()\\[\\]{}])*[*?\\[](?:\\\\.|[^\\s'\"$`|&;<>()\\[\\]{}])*",
+          "source": {
+            "file": "grammar.yo",
+            "line": 589,
+            "context": "Aliasing - plain string or glob pattern"
+          }
+        },
+        "single_quoted_string": {
+          "description": "Single-quoted string: literal characters, no escapes unless RC_QUOTES",
+          "pattern": "'[^']*'",
+          "source": {
+            "file": "grammar.yo",
+            "line": 680,
+            "context": "Quoting"
+          }
+        },
+        "double_quoted_string": {
+          "description": "Double-quoted string: escapes allowed for special chars",
+          "pattern": "\"(?:[^\"\\\\]|\\\\.)*\"",
+          "source": {
+            "file": "grammar.yo",
+            "line": 690,
+            "context": "Quoting"
+          }
+        },
+        "ansi_c_quoted_string": {
+          "description": "$'...' quoted string: ANSI-C escape sequences",
+          "pattern": "\\$'(?:[^'\\\\]|\\\\.)*'",
+          "source": {
+            "file": "grammar.yo",
+            "line": 673,
+            "context": "Quoting"
+          }
+        },
+        "quoted_string": {
+          "description": "Any quoted string: single, double, or $'...'",
+          "union": [
+            { "$rule": "single_quoted_string" },
+            { "$rule": "double_quoted_string" },
+            { "$rule": "ansi_c_quoted_string" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 673,
+            "context": "Quoting"
+          }
+        },
+        "simple_parameter": {
+          "description": "Simple parameter reference: $name",
+          "pattern": "\\$[a-zA-Z_][a-zA-Z0-9_]*"
+        },
+        "braced_parameter": {
+          "description": "Braced parameter reference: ${...}",
+          "pattern": "\\$\\{[^}]*\\}"
+        },
+        "indexed_parameter": {
+          "description": "Indexed parameter: $1, $2, etc.",
+          "pattern": "\\$[0-9]+"
+        },
+        "special_parameter_ref": {
+          "description": "Special parameter reference: $*, $@, $#, $?, $-, $$, $!",
+          "pattern": "\\$[*@#?\\-$!]"
+        },
+        "parameter_reference": {
+          "description": "Parameter reference: $name, ${...}, or $digit",
+          "union": [
+            { "$rule": "simple_parameter" },
+            { "$rule": "braced_parameter" },
+            { "$rule": "indexed_parameter" },
+            { "$rule": "special_parameter_ref" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 592,
+            "context": "Aliasing - parameter reference"
+          }
+        },
+        "command_substitution": {
+          "description": "Command substitution: $(...), `...`, or $[...]",
+          "union": [
+            {
+              "pattern": "\\$\\([^)]*\\)",
+              "description": "Modern form: $()"
+            },
+            {
+              "pattern": "`[^`]*`",
+              "description": "Backtick form"
+            },
+            {
+              "pattern": "\\$\\[[^\\]]*\\]",
+              "description": "Arithmetic: $[...]"
+            }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 592,
+            "context": "Aliasing - command substitution"
+          }
+        },
         "word": {
           "description": "A blank-separated word",
           "union": [
-            { "$rule": "plain_string" },
-            { "$rule": "plain_glob_pattern" },
-            { "$rule": "quoted_string" },
-            { "$rule": "parameter_reference" },
-            { "$rule": "command_substitution" },
             {
               "repeat": {
+                "description": "Component of a word: plain string, glob pattern, quoted string, parameter, or command substitution",
                 "union": [
+                  { "$rule": "glob_pattern" },
                   { "$rule": "plain_string" },
-                  { "$rule": "plain_glob_pattern" },
                   { "$rule": "quoted_string" },
                   { "$rule": "parameter_reference" },
                   { "$rule": "command_substitution" }
                 ]
               },
-              "min": 2
+              "min": 1
             },
-            { "$rule": "reserved_words" },
+            { "$rule": "reserved_word" },
             {
               "variant": {
                 "union": [
@@ -792,20 +902,21 @@
         "redirection_operator": {
           "description": "Redirection operators",
           "union": [
-            { "$token": "REDIR_INPUT" },
-            { "$token": "REDIR_INOUT" },
-            { "$token": "REDIR_OUTPUT" },
-            { "$token": "REDIR_CLOBBER" },
-            { "$token": "REDIR_APPEND" },
-            { "$token": "REDIR_APPEND_CLOBBER" },
-            { "$token": "REDIR_HEREDOC" },
-            { "$token": "REDIR_HERESTRING" },
-            { "$token": "REDIR_DUP_INPUT" },
-            { "$token": "REDIR_DUP_OUTPUT" },
-            { "$token": "REDIR_OUTERR" },
-            { "$token": "REDIR_OUTERR_CLOBBER" },
-            { "$token": "REDIR_OUTERR_APPEND" },
-            { "$token": "REDIR_OUTERR_APPEND_CLOBBER" }
+            { "$token": "OUTANG" },
+            { "$token": "OUTANGBANG" },
+            { "$token": "DOUTANG" },
+            { "$token": "DOUTANGBANG" },
+            { "$token": "INANG" },
+            { "$token": "INOUTANG" },
+            { "$token": "DINANG" },
+            { "$token": "DINANGDASH" },
+            { "$token": "INANGAMP" },
+            { "$token": "OUTANGAMP" },
+            { "$token": "AMPOUTANG" },
+            { "$token": "OUTANGAMPBANG" },
+            { "$token": "DOUTANGAMP" },
+            { "$token": "DOUTANGAMPBANG" },
+            { "$token": "TRINANG" }
           ],
           "source": {
             "file": "redirect.yo",
@@ -813,32 +924,48 @@
             "context": "Redirection operators"
           }
         },
-        "redirection": {
-          "description": "Optional redirection operators",
-          "pattern": "[<>](&|\\||\\|&)?.*",
-          "source": {
-            "file": "grammar.yo",
-            "line": 22,
-            "context": "Simple Commands & Pipelines"
-          }
-        },
-        "quoted_string": {
-          "description": "Single-quoted, double-quoted, or $'...' strings",
+        "command_separator": {
+          "description": "Command separator: ;, &, |, ||, &&, |&, ;&, ;|, &|, or newline",
           "union": [
-            {
-              "pattern": "'([^']*|'')*'"
-            },
-            {
-              "pattern": "\"([^\"\\\\]|\\\\.)*\""
-            },
-            {
-              "pattern": "\\$'([^'\\\\]|\\\\.)*'"
-            }
+            { "$rule": "sublist_terminator" },
+            { "$token": "BAR" },
+            { "$token": "DBAR" },
+            { "$token": "DAMPER" },
+            { "$token": "BARAMP" },
+            { "$token": "SEMIAMP" },
+            { "$token": "SEMIBAR" }
           ],
           "source": {
             "file": "grammar.yo",
-            "line": 481,
-            "context": "Quoting"
+            "line": 86,
+            "context": "Simple Commands & Pipelines - list separators"
+          }
+        },
+        "redirection": {
+          "description": "Redirection with optional file descriptor prefix: [fd] or {var} operator [blank] target",
+          "sequence": [
+            {
+              "optional": {
+                "union": [
+                  { "pattern": "[0-9]" },
+                  {
+                    "sequence": [
+                      { "pattern": "\\{" },
+                      { "$rule": "variable" },
+                      { "pattern": "\\}" }
+                    ]
+                  }
+                ]
+              }
+            },
+            { "$rule": "redirection_operator" },
+            { "optional": { "$token": "BLANK" } },
+            { "$rule": "word" }
+          ],
+          "source": {
+            "file": "grammar.yo",
+            "line": 135,
+            "context": "Redirection"
           }
         },
         "command_pcm": {
@@ -912,10 +1039,12 @@
             { "$rule": "repeat_loop" },
             { "$rule": "case_statement" },
             { "$rule": "select_statement" },
-            { "$rule": "brace_group" },
-            { "$rule": "arithmetic_command" },
-            { "$rule": "conditional_command" },
-            { "$rule": "time_command" }
+            { "$rule": "subshell" },
+            { "$rule": "exec_list" },
+            { "$rule": "try_always" },
+            { "$rule": "function_def" },
+            { "$rule": "time_command" },
+            { "$rule": "conditional_command" }
           ],
           "source": {
             "file": "grammar.yo",
@@ -1491,7 +1620,7 @@
                 {
                   "repeat": {
                     "sequence": [
-                      { "$token": "PIPE" },
+                      { "$token": "BAR" },
                       { "$rule": "case_pattern" }
                     ]
                   },
@@ -1512,7 +1641,7 @@
                 {
                   "repeat": {
                     "sequence": [
-                      { "$token": "PIPE" },
+                      { "$token": "BAR" },
                       { "$rule": "case_pattern" }
                     ]
                   },
@@ -1780,8 +1909,7 @@
                   "optional": {
                     "sequence": [
                       { "$token": "BLANK" },
-                      { "$token": "INPAR" },
-                      { "$token": "OUTPAR" }
+                      { "$token": "INOUTPAR" }
                     ]
                   }
                 },
@@ -1952,6 +2080,59 @@
             "file": "grammar.yo",
             "line": 251,
             "context": "Alternate Forms For Complex Commands"
+          }
+        },
+        "comment": {
+          "description": "Comment: # character (third char of histchars, default #) to end of line, not including newline",
+          "variant": {
+            "sequence": [{ "pattern": "#" }, { "pattern": "[^\\n]*" }]
+          },
+          "condition": {
+            "or": [
+              { "not": { "option": "interactive" } },
+              { "option": "INTERACTIVE_COMMENTS" }
+            ]
+          },
+          "source": {
+            "file": "grammar.yo",
+            "line": 561,
+            "context": "Comments"
+          }
+        },
+        "alias_command": {
+          "description": "alias builtin: define or list aliases",
+          "sequence": [
+            { "pattern": "alias" },
+            {
+              "repeat": {
+                "sequence": [
+                  { "$token": "BLANK" },
+                  {
+                    "pattern": "[+\\-]([gmrsL]+)?"
+                  }
+                ]
+              },
+              "min": 0
+            },
+            {
+              "repeat": {
+                "sequence": [
+                  { "$token": "BLANK" },
+                  { "$rule": "variable" },
+                  {
+                    "optional": {
+                      "sequence": [{ "pattern": "=" }, { "$rule": "word" }]
+                    }
+                  }
+                ]
+              },
+              "min": 0
+            }
+          ],
+          "source": {
+            "file": "builtins.yo",
+            "line": 103,
+            "context": "alias builtin"
           }
         }
       }

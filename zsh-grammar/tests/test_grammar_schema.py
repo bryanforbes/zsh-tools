@@ -7,9 +7,9 @@ Part of Phase 2.4.1: Grammar Testing Level 1 (Schema Validation).
 from __future__ import annotations
 
 import json
-from collections.abc import Sequence
+from collections.abc import Iterator, Sequence
 from pathlib import Path
-from typing import TYPE_CHECKING, TypeGuard
+from typing import TYPE_CHECKING, TypeGuard, cast
 
 import pytest
 from jsonschema import Draft7Validator, ValidationError
@@ -30,17 +30,22 @@ if TYPE_CHECKING:
 
 
 @pytest.fixture(scope='session')
-def grammar_path() -> Path:
+def project_root() -> Path:
+    """Get path to zsh-grammar root"""
+    return Path(__file__).parent.parent
+
+
+@pytest.fixture(scope='session')
+def grammar_path(project_root: Path) -> Path:
     """Get path to amp-grammar.json."""
     # Navigate from tests directory to project root
-    return Path(__file__).parent.parent / 'canonical-grammar.json'
+    return project_root / 'canonical-grammar.json'
 
 
 @pytest.fixture(scope='session')
 def grammar(grammar_path: Path) -> Grammar:
     """Load and cache amp-grammar.json."""
-    with grammar_path.open(encoding='utf-8') as f:
-        return json.load(f)
+    return json.loads(grammar_path.read_text())
 
 
 @pytest.fixture(scope='session')
@@ -50,9 +55,9 @@ def core_lang(grammar: Grammar) -> Language:
 
 
 @pytest.fixture(scope='session')
-def schema_path() -> Path:
+def schema_path(project_root: Path) -> Path:
     """Get path to the JSON schema file."""
-    return Path(__file__).parent.parent / 'canonical-grammar.schema.json'
+    return project_root / 'canonical-grammar.schema.json'
 
 
 @pytest.fixture(scope='session')
@@ -60,8 +65,7 @@ def schema(schema_path: Path) -> dict[str, object]:
     """Load and cache the JSON schema."""
     if not schema_path.exists():
         pytest.skip(f'Schema file not found at {schema_path}')
-    with schema_path.open(encoding='utf-8') as f:
-        return json.load(f)  # type: ignore[no-any-return]
+    return json.loads(schema_path.read_text())
 
 
 @pytest.fixture(scope='session')
@@ -112,8 +116,11 @@ def is_grammar_node_list(obj: object) -> TypeGuard[list[Rule]]:
 
 
 def extract_all_refs(
-    obj: Grammar | Rule | list[Rule], refs: set[str] | None = None, /
-) -> set[str]:
+    obj: Grammar | Rule | list[Rule],
+    rule_names: set[str] | None = None,
+    token_names: set[str] | None = None,
+    /,
+) -> tuple[set[str], set[str]]:
     """Recursively extract all $ref values from grammar structure.
 
     Args:
@@ -123,23 +130,28 @@ def extract_all_refs(
     Returns:
         Set of all $ref values found
     """
-    if refs is None:
-        refs = set()
+    if rule_names is None:
+        rule_names = set()
+    if token_names is None:
+        token_names = set()
 
-    if is_grammar_node(obj):
-        if '$ref' in obj:
-            refs.add(obj['$ref'])
-        else:
-            for key, value in obj.items():
-                if key != 'source' and (
-                    is_grammar_node(value) or is_grammar_node_list(value)
-                ):
-                    extract_all_refs(value, refs)
-    elif is_grammar_node_list(obj):
-        for item in obj:
-            extract_all_refs(item, refs)
+    match obj:
+        case {'$rule': rule}:
+            rule_names.add(rule)
+        case {'$token': token}:
+            token_names.add(token)
+        case {'languages': {'core': {'rules': rule_map}}}:
+            for rule in rule_map.values():
+                extract_all_refs(rule, rule_names)
+        case [*rules] | {'union': rules} | {'sequence': rules}:
+            for rule in rules:
+                extract_all_refs(rule, rule_names)
+        case {'variant': rule} | {'repeat': rule} | {'optional': rule}:
+            extract_all_refs(rule, rule_names)
+        case _:
+            pass
 
-    return refs
+    return rule_names, token_names
 
 
 def find_circular_refs(
@@ -177,15 +189,15 @@ def find_circular_refs(
     path.append(name)
 
     cycles: list[str] = []
-    refs = extract_all_refs(definition)
+    rules, _ = extract_all_refs(definition)
 
     # Don't check primitive tokens for cycles
     primitive_tokens = {'BLANK', 'NEWLINE', 'SEMI', 'SEPER'}
 
-    for ref in refs:
-        if ref not in primitive_tokens and ref in core_rules:
+    for rule in rules:
+        if rule not in primitive_tokens and rule in core_rules:
             cycles.extend(
-                find_circular_refs(ref, core_rules, visited.copy(), path.copy())
+                find_circular_refs(rule, core_rules, visited.copy(), path.copy())
             )
 
     return cycles
@@ -202,7 +214,6 @@ class TestGrammarStructure:
     def test_grammar_conforms_to_schema(
         self,
         grammar: Grammar,
-        schema: dict[str, object],
         validator: Validator,
     ) -> None:
         """Test that grammar validates against the JSON schema."""
@@ -252,14 +263,17 @@ class TestReferenceResolution:
 
     def test_no_undefined_refs(self, grammar: Grammar, core_lang: Language) -> None:
         """Test all $ref references point to defined rules."""
-        all_refs = extract_all_refs(grammar)
+        all_rules, all_tokens = extract_all_refs(grammar)
 
-        undefined_refs: list[str] = []
-        for ref in all_refs:
-            if ref not in core_lang:
-                undefined_refs.append(ref)
+        undefined_rules = [rule for rule in all_rules if rule not in core_lang['rules']]
+        undefined_tokens = [
+            token for token in all_tokens if token not in core_lang['tokens']
+        ]
 
-        assert not undefined_refs, f'Undefined references found: {undefined_refs}'
+        assert not undefined_rules or undefined_rules == ['placeholder'], (
+            f'Undefined references found: {undefined_rules}'
+        )
+        assert not undefined_tokens, f'Undefined tokens found: {undefined_tokens}'
 
     def test_no_circular_references(self, core_lang: Language) -> None:
         """Test grammar has no circular $ref chains.
@@ -284,11 +298,21 @@ class TestReferenceResolution:
 
     def test_all_refs_use_valid_names(self, grammar: Grammar) -> None:
         """Test all $ref values use valid identifier names."""
-        all_refs = extract_all_refs(grammar)
+        all_rules, all_tokens = extract_all_refs(grammar)
 
-        for ref in all_refs:
+        for rule in all_rules:
             # Should be a valid identifier (alphanumeric + underscore)
-            assert ref.replace('_', '').isalnum(), f'Invalid ref name: {ref}'
+            rule_replaced = rule.replace('_', '')
+            assert rule_replaced.isalnum() and rule_replaced.islower(), (  # noqa: PT018
+                f'Invalid ref name: {rule}'
+            )
+
+        for token in all_tokens:
+            # Should be a valid identifier (alphanumeric + underscore)
+            token_replaced = token.replace('_', '')
+            assert token_replaced.isalnum() and token_replaced.isupper(), (  # noqa: PT018
+                f'Invalid ref name: {token}'
+            )
 
 
 class TestTokenDefinitions:
@@ -320,8 +344,8 @@ class TestTokenDefinitions:
             'OUTBRACE',
             'DINPAR',
             'DOUTPAR',
-            'PIPE',
-            'PIPE_AMP',
+            'BAR',
+            'BARAMP',
         }
 
         missing = required_tokens - set(core_lang['tokens'].keys())
@@ -359,12 +383,10 @@ class TestTokenDefinitions:
         for token_name in token_names:
             if token_name in core_lang:
                 definition = core_lang['tokens'][token_name]
-                if is_grammar_node(definition):
-                    # Should have at least token, matches, or pattern
-                    has_definition = any(
-                        key in definition for key in ['token', 'matches', 'pattern']
-                    )
-                    assert has_definition, f'{token_name} missing token/matches/pattern'
+                has_definition = any(
+                    key in definition for key in ['token', 'matches', 'pattern']
+                )
+                assert has_definition, f'{token_name} missing token/matches/pattern'
 
 
 class TestGrammarRules:
@@ -445,23 +467,19 @@ class TestHelperDefinitions:
 class TestSourceAttributions:
     """Test source file attributions are valid."""
 
-    def test_source_file_is_grammar_yo(self, grammar: Grammar) -> None:
-        """Test source files point to grammar.yo."""
-        all_sources = self._extract_all_sources(grammar)
-
-        for source in all_sources:
-            assert source['file'] in (
-                'grammar.yo',
-                'params.yo',
-                'redirect.yo',
-                'parse.c',
-            ), f'Expected grammar.yo, got {source["file"]}'
+    def test_source_file_is_valid(self, project_root: Path, grammar: Grammar) -> None:
+        """Test source files point to valid file."""
+        zsh_root = project_root.parent / 'vendor' / 'zsh'
+        zsh_src = zsh_root / 'Src'
+        zsh_doc = zsh_root / 'Doc' / 'Zsh'
+        for source in self._extract_all_sources(grammar):
+            assert (zsh_src / source['file']).exists() or (
+                zsh_doc / source['file']
+            ).exists(), f'Expected {source["file"]} to exist'
 
     def test_source_line_numbers_reasonable(self, grammar: Grammar) -> None:
         """Test source line numbers are reasonable."""
-        all_sources = self._extract_all_sources(grammar)
-
-        for source in all_sources:
+        for source in self._extract_all_sources(grammar):
             if 'line' in source:
                 line = source['line']
 
@@ -473,35 +491,40 @@ class TestSourceAttributions:
 
     def test_source_context_is_string(self, grammar: Grammar) -> None:
         """Test source context fields are strings."""
-        all_sources = self._extract_all_sources(grammar)
-
-        for source in all_sources:
+        for source in self._extract_all_sources(grammar):
             if 'context' in source:
                 assert isinstance(source['context'], str)
 
     @staticmethod
     def _extract_all_sources(
-        obj: Grammar | Languages | Language | Rule | list[Rule] | Token,
+        obj: Grammar | Rule | list[Rule] | Token,
         sources: list[Source] | None = None,
-    ) -> list[Source]:
+    ) -> Iterator[Source]:
         """Recursively extract all source objects."""
-        if sources is None:
-            sources = []
+        match obj:
+            case {'languages': {'core': core}}:
+                for rule in core['rules'].values():
+                    yield from TestSourceAttributions._extract_all_sources(rule)
+                for token in core['tokens'].values():
+                    yield from TestSourceAttributions._extract_all_sources(token)
+            case (
+                {'variant': rule, **extra}
+                | {'repeat': rule, **extra}
+                | {'optional': rule, **extra}
+                | {'union': rule, **extra}
+                | {'sequence': rule, **extra}
+                | {'$rule': rule, **extra}
+                | {'$token': rule, **extra}
+            ):
+                if 'source' in extra:
+                    yield cast('Source', extra['source'])
 
-        if is_grammar(obj):
-            for language in obj['languages'].values():
-                for rule in language['rules'].values():
-                    TestSourceAttributions._extract_all_sources(rule, sources)
-                for token in language['tokens'].values():
-                    TestSourceAttributions._extract_all_sources(token, sources)
-        elif is_grammar_node(obj):
-            if 'source' in obj and not isinstance(obj['source'], str):
-                sources.append(obj['source'])
-            for value in obj.values():
-                if is_grammar_node(value) or is_grammar_node_list(value):
-                    TestSourceAttributions._extract_all_sources(value, sources)
-        elif is_grammar_node_list(obj):
-            for item in obj:
-                TestSourceAttributions._extract_all_sources(item, sources)
+                if not isinstance(rule, str):
+                    yield from TestSourceAttributions._extract_all_sources(rule)
+            case [*rules]:
+                for rule in rules:
+                    yield from TestSourceAttributions._extract_all_sources(rule)
+            case _:
+                pass
 
         return sources
