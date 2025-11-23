@@ -12,16 +12,20 @@ from pathlib import Path
 from typing import TYPE_CHECKING, TypeGuard, cast
 
 import pytest
-from jsonschema import Draft7Validator, ValidationError
-from referencing import Registry, Resource
-from referencing.exceptions import NoSuchResource
+from jsonschema.exceptions import ValidationError
+from jsonschema.validators import validate as validate_json
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-    from jsonschema.protocols import Validator
-
-    from zsh_grammar._types import Grammar, Language, Languages, Rule, Source, Token
+    from zsh_grammar._types import (
+        GrammarDict,
+        LanguageDict,
+        LanguagesDict,
+        RuleDict,
+        SourceDict,
+        TokenDict,
+    )
 
 
 # ============================================================================
@@ -43,13 +47,13 @@ def grammar_path(project_root: Path) -> Path:
 
 
 @pytest.fixture(scope='session')
-def grammar(grammar_path: Path) -> Grammar:
+def grammar(grammar_path: Path) -> GrammarDict:
     """Load and cache amp-grammar.json."""
     return json.loads(grammar_path.read_text())
 
 
 @pytest.fixture(scope='session')
-def core_lang(grammar: Grammar) -> Language:
+def core_lang(grammar: GrammarDict) -> LanguageDict:
     """Get core language rules from grammar."""
     return grammar.get('languages', {}).get('core', {})
 
@@ -68,28 +72,12 @@ def schema(schema_path: Path) -> dict[str, object]:
     return json.loads(schema_path.read_text())
 
 
-@pytest.fixture(scope='session')
-def registry(schema: dict[str, object]) -> Registry:
-    def retrieve_schema(uri: str) -> Resource:
-        if uri != './canonical-grammar.schema.json':
-            raise NoSuchResource(f'Cannot resolve schema URI: {uri}')
-
-        return Resource.from_contents(schema)
-
-    return Registry(retrieve=retrieve_schema)
-
-
-@pytest.fixture(scope='session')
-def validator(registry: Registry, schema: dict[str, object]) -> Validator:
-    return Draft7Validator(schema=schema, registry=registry)
-
-
 # ============================================================================
 # Helper Functions
 # ============================================================================
 
 
-def is_grammar_node(obj: object) -> TypeGuard[Rule]:
+def is_grammar_node(obj: object) -> TypeGuard[RuleDict]:
     return isinstance(obj, dict) and (
         'empty' in obj
         or 'optional' in obj
@@ -103,20 +91,20 @@ def is_grammar_node(obj: object) -> TypeGuard[Rule]:
     )
 
 
-def is_grammar(obj: object) -> TypeGuard[Grammar]:
+def is_grammar(obj: object) -> TypeGuard[GrammarDict]:
     return isinstance(obj, dict) and 'languages' in obj
 
 
-def is_languages(obj: object) -> TypeGuard[Languages]:
+def is_languages(obj: object) -> TypeGuard[LanguagesDict]:
     return isinstance(obj, dict) and 'core' in obj
 
 
-def is_grammar_node_list(obj: object) -> TypeGuard[list[Rule]]:
+def is_grammar_node_list(obj: object) -> TypeGuard[list[RuleDict]]:
     return isinstance(obj, list)
 
 
 def extract_all_refs(
-    obj: Grammar | Rule | list[Rule],
+    obj: GrammarDict | RuleDict | list[RuleDict],
     rule_names: set[str] | None = None,
     token_names: set[str] | None = None,
     /,
@@ -156,7 +144,7 @@ def extract_all_refs(
 
 def find_circular_refs(
     name: str,
-    core_rules: Mapping[str, Rule],
+    core_rules: Mapping[str, RuleDict],
     visited: set[str] | None = None,
     path: list[str] | None = None,
 ) -> list[str]:
@@ -213,12 +201,12 @@ class TestGrammarStructure:
 
     def test_grammar_conforms_to_schema(
         self,
-        grammar: Grammar,
-        validator: Validator,
+        grammar: GrammarDict,
+        schema: dict[str, object],
     ) -> None:
         """Test that grammar validates against the JSON schema."""
         try:
-            validator.validate(grammar)  #   # pyright: ignore[reportArgumentType]
+            validate_json(grammar, schema)
         except ValidationError as e:
             pytest.fail(
                 f'Grammar does not conform to schema: {e.message}\n'
@@ -227,7 +215,7 @@ class TestGrammarStructure:
             )
 
     def test_grammar_has_required_structure(
-        self, grammar: Grammar, core_lang: Language
+        self, grammar: GrammarDict, core_lang: LanguageDict
     ) -> None:
         """Test grammar has required top-level fields and core rules."""
         assert isinstance(grammar, dict)
@@ -240,7 +228,7 @@ class TestGrammarStructure:
         assert len(core_lang['rules']) > 20  # Should have many rules
         assert len(core_lang['tokens']) > 20  # Should have many rules
 
-    def test_grammar_version_is_valid(self, grammar: Grammar) -> None:
+    def test_grammar_version_is_valid(self, grammar: GrammarDict) -> None:
         """Test grammar has valid version information."""
         assert 'version' in grammar
         assert isinstance(grammar['version'], str)
@@ -249,7 +237,7 @@ class TestGrammarStructure:
         assert 'zsh_version' in grammar
         assert isinstance(grammar['zsh_version'], str)
 
-    def test_grammar_has_generated_at_timestamp(self, grammar: Grammar) -> None:
+    def test_grammar_has_generated_at_timestamp(self, grammar: GrammarDict) -> None:
         """Test grammar has generation timestamp in ISO 8601 format."""
         assert 'generated_at' in grammar
         timestamp = grammar['generated_at']
@@ -261,7 +249,9 @@ class TestGrammarStructure:
 class TestReferenceResolution:
     """Test that $ref references are valid and resolvable."""
 
-    def test_no_undefined_refs(self, grammar: Grammar, core_lang: Language) -> None:
+    def test_no_undefined_refs(
+        self, grammar: GrammarDict, core_lang: LanguageDict
+    ) -> None:
         """Test all $ref references point to defined rules."""
         all_rules, all_tokens = extract_all_refs(grammar)
 
@@ -275,7 +265,7 @@ class TestReferenceResolution:
         )
         assert not undefined_tokens, f'Undefined tokens found: {undefined_tokens}'
 
-    def test_no_circular_references(self, core_lang: Language) -> None:
+    def test_no_circular_references(self, core_lang: LanguageDict) -> None:
         """Test grammar has no circular $ref chains.
 
         Checks a sampling of important rules to ensure no infinite loops.
@@ -296,7 +286,7 @@ class TestReferenceResolution:
             cycles = find_circular_refs(rule_name, core_lang['rules'])
             assert not cycles, f'Circular reference found in {rule_name}: {cycles}'
 
-    def test_all_refs_use_valid_names(self, grammar: Grammar) -> None:
+    def test_all_refs_use_valid_names(self, grammar: GrammarDict) -> None:
         """Test all $ref values use valid identifier names."""
         all_rules, all_tokens = extract_all_refs(grammar)
 
@@ -318,7 +308,7 @@ class TestReferenceResolution:
 class TestTokenDefinitions:
     """Test token definitions are properly structured."""
 
-    def test_required_tokens_exist(self, core_lang: Language) -> None:
+    def test_required_tokens_exist(self, core_lang: LanguageDict) -> None:
         """Test all required tokens are defined."""
         required_tokens = {
             'BLANK',
@@ -351,7 +341,7 @@ class TestTokenDefinitions:
         missing = required_tokens - set(core_lang['tokens'].keys())
         assert not missing, f'Missing required tokens: {missing}'
 
-    def test_reserved_word_tokens_have_matches(self, core_lang: Language) -> None:
+    def test_reserved_word_tokens_have_matches(self, core_lang: LanguageDict) -> None:
         """Test reserved words have 'matches' field."""
         reserved_words = {
             'FOR': 'for',
@@ -375,7 +365,7 @@ class TestTokenDefinitions:
             assert 'matches' in token_def, f'{token_name} missing matches'
             assert token_def['matches'] == expected_match
 
-    def test_token_definitions_have_token_field(self, core_lang: Language) -> None:
+    def test_token_definitions_have_token_field(self, core_lang: LanguageDict) -> None:
         """Test token definitions include 'token' field or pattern."""
         # Sample a few tokens - they should have either 'token' field or 'pattern'
         token_names = ['BLANK', 'SEMI', 'FOR', 'DO']
@@ -392,7 +382,7 @@ class TestTokenDefinitions:
 class TestGrammarRules:
     """Test specific grammar rules exist and have correct structure."""
 
-    def test_required_rules_exist(self, core_lang: Language) -> None:
+    def test_required_rules_exist(self, core_lang: LanguageDict) -> None:
         """Test all required top-level grammar rules are defined."""
         required_rules = {
             'for_loop',
@@ -408,7 +398,7 @@ class TestGrammarRules:
         missing = required_rules - set(core_lang['rules'].keys())
         assert not missing, f'Missing required rules: {missing}'
 
-    def test_for_loop_structure(self, core_lang: Language) -> None:
+    def test_for_loop_structure(self, core_lang: LanguageDict) -> None:
         """Test for_loop has correct structure with 6 variants."""
         assert 'for_loop' in core_lang['rules']
         for_loop = core_lang['rules']['for_loop']
@@ -422,7 +412,7 @@ class TestGrammarRules:
         assert isinstance(for_loop['union'], list)
         assert len(for_loop['union']) == 6
 
-    def test_for_loop_variants_have_metadata(self, core_lang: Language) -> None:
+    def test_for_loop_variants_have_metadata(self, core_lang: LanguageDict) -> None:
         """Test all for_loop variants have descriptions and sources."""
         assert 'for_loop' in core_lang['rules']
         for_loop = core_lang['rules']['for_loop']
@@ -445,7 +435,7 @@ class TestGrammarRules:
 class TestHelperDefinitions:
     """Test helper rule definitions used across grammar."""
 
-    def test_required_helpers_defined(self, core_lang: Language) -> None:
+    def test_required_helpers_defined(self, core_lang: LanguageDict) -> None:
         """Test all required helper rules are defined."""
         required_helpers = {
             'wordlist',
@@ -457,7 +447,7 @@ class TestHelperDefinitions:
         missing = required_helpers - set(core_lang['rules'].keys())
         assert not missing, f'Missing required helpers: {missing}'
 
-    def test_optional_word_structure(self, core_lang: Language) -> None:
+    def test_optional_word_structure(self, core_lang: LanguageDict) -> None:
         """Test optional_word helper has correct structure."""
         optional_word = core_lang['rules']['optional_word']
         assert isinstance(optional_word, dict)
@@ -467,7 +457,9 @@ class TestHelperDefinitions:
 class TestSourceAttributions:
     """Test source file attributions are valid."""
 
-    def test_source_file_is_valid(self, project_root: Path, grammar: Grammar) -> None:
+    def test_source_file_is_valid(
+        self, project_root: Path, grammar: GrammarDict
+    ) -> None:
         """Test source files point to valid file."""
         zsh_root = project_root.parent / 'vendor' / 'zsh'
         zsh_src = zsh_root / 'Src'
@@ -477,7 +469,7 @@ class TestSourceAttributions:
                 zsh_doc / source['file']
             ).exists(), f'Expected {source["file"]} to exist'
 
-    def test_source_line_numbers_reasonable(self, grammar: Grammar) -> None:
+    def test_source_line_numbers_reasonable(self, grammar: GrammarDict) -> None:
         """Test source line numbers are reasonable."""
         for source in self._extract_all_sources(grammar):
             if 'line' in source:
@@ -489,7 +481,7 @@ class TestSourceAttributions:
                 # grammar.yo has ~500 lines, but allow some margin
                 assert 0 < line < 2000, f'Suspicious line number: {line}'
 
-    def test_source_context_is_string(self, grammar: Grammar) -> None:
+    def test_source_context_is_string(self, grammar: GrammarDict) -> None:
         """Test source context fields are strings."""
         for source in self._extract_all_sources(grammar):
             if 'context' in source:
@@ -497,9 +489,9 @@ class TestSourceAttributions:
 
     @staticmethod
     def _extract_all_sources(
-        obj: Grammar | Rule | list[Rule] | Token,
-        sources: list[Source] | None = None,
-    ) -> Iterator[Source]:
+        obj: GrammarDict | RuleDict | list[RuleDict] | TokenDict,
+        sources: list[SourceDict] | None = None,
+    ) -> Iterator[SourceDict]:
         """Recursively extract all source objects."""
         match obj:
             case {'languages': {'core': core}}:
@@ -517,7 +509,7 @@ class TestSourceAttributions:
                 | {'$token': rule, **extra}
             ):
                 if 'source' in extra:
-                    yield cast('Source', extra['source'])
+                    yield cast('SourceDict', extra['source'])
 
                 if not isinstance(rule, str):
                     yield from TestSourceAttributions._extract_all_sources(rule)

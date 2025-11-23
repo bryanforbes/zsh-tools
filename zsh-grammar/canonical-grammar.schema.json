@@ -1,5 +1,6 @@
 {
-  "$schema": "https://json-schema.org/draft-07/schema",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "./canonical-grammar.schema.json",
   "title": "ZshGrammar",
   "definitions": {
     "Metadata": {
@@ -225,7 +226,7 @@
         },
         {
           "type": "object",
-          "description": "Rule reference looked up in a language's \"rules\" key",
+          "description": "Rule reference looked up in a language's \"rules\" key by default",
           "required": ["$rule"],
           "properties": {
             "$rule": {

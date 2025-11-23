@@ -22,6 +22,12 @@ local linters = new Mapping<String, Step> {
       stomp = true
     }
 
+    ["validate-json"] {
+      glob = List("zsh-grammar/*.json")
+      check = "python -m zsh_grammar.validate {{ files }}"
+      depends = "prettier"
+    }
+
     ["newlines"] = Builtins.newlines
 
     ["pkl"] {

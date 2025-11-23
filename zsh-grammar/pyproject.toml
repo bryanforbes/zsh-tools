@@ -12,7 +12,8 @@ classifiers = [
 ]
 dependencies = [
   "clang>=20.0.0",
-  "jsonschema>=4.0.0",
+  "jsonschema>=4.25.1",
+  "typer>=0.20.0",
   "typing-extensions>=4.15.0",
 ]
 
@@ -27,6 +28,7 @@ dev = [
 
 [project.scripts]
 construct-zsh-grammar = 'zsh_grammar.construct_grammar:main'
+validate-json = 'zsh_grammar.validate:main'
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]

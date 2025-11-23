@@ -4,27 +4,27 @@ from typing import Literal, NotRequired
 from typing_extensions import TypedDict
 
 
-class Source(TypedDict):
+class SourceDict(TypedDict):
     file: str
     line: int | tuple[int, int]
     function: NotRequired[str]
     context: NotRequired[str]
 
 
-class _WithMetadata(TypedDict):
+class _WithMetadataDict(TypedDict):
     description: NotRequired[str]
-    source: NotRequired[Source]
+    source: NotRequired[SourceDict]
 
 
-class Empty(_WithMetadata):
+class EmptyDict(_WithMetadataDict):
     empty: Literal[True]
 
 
-class Optional(_WithMetadata):
-    optional: Rule
+class OptionalDict(_WithMetadataDict):
+    optional: RuleDict
 
 
-class OptionCondition(TypedDict):
+class OptionConditionDict(TypedDict):
     option: str
 
 
@@ -40,7 +40,7 @@ type ParseFlag = Literal[
 ]
 
 
-class ParseFlagCondition(TypedDict):
+class ParseFlagConditionDict(TypedDict):
     parseflag: ParseFlag
 
 
@@ -63,49 +63,49 @@ type LexState = Literal[
 ]
 
 
-class LexStateCondition(TypedDict):
+class LexStateConditionDict(TypedDict):
     lexstate: LexState
 
 
-class VersionCondition(TypedDict):
+class VersionConditionDict(TypedDict):
     sinceVersion: NotRequired[str]
     untilVersion: NotRequired[str]
 
 
-NotCondition = TypedDict('NotCondition', {'not': 'Condition'})
-AndCondition = TypedDict('AndCondition', {'and': 'list[Condition]'})
-OrCondition = TypedDict('OrCondition', {'or': 'list[Condition]'})
+NotConditionDict = TypedDict('NotConditionDict', {'not': 'Condition'})
+AndConditionDict = TypedDict('AndConditionDict', {'and': 'list[Condition]'})
+OrConditionDict = TypedDict('OrConditionDict', {'or': 'list[Condition]'})
 
 type Condition = (
-    OptionCondition
-    | ParseFlagCondition
-    | LexStateCondition
-    | VersionCondition
-    | NotCondition
-    | AndCondition
-    | OrCondition
+    OptionConditionDict
+    | ParseFlagConditionDict
+    | LexStateConditionDict
+    | VersionConditionDict
+    | NotConditionDict
+    | AndConditionDict
+    | OrConditionDict
 )
 
 
-class Variant(_WithMetadata):
-    variant: Rule
+class VariantDict(_WithMetadataDict):
+    variant: RuleDict
     condition: Condition
 
 
-class Terminal(_WithMetadata):
+class TerminalDict(_WithMetadataDict):
     pattern: str
 
 
-class Union(_WithMetadata):
-    union: list[Rule]
+class UnionDict(_WithMetadataDict):
+    union: list[RuleDict]
 
 
-class Sequence(_WithMetadata):
-    sequence: list[Rule]
+class SequenceDict(_WithMetadataDict):
+    sequence: list[RuleDict]
 
 
-class Repeat(_WithMetadata):
-    repeat: Rule
+class RepeatDict(_WithMetadataDict):
+    repeat: RuleDict
     min: NotRequired[int]
     max: NotRequired[int]
 
@@ -114,38 +114,45 @@ _RuleRefBase = TypedDict('_RuleRefBase', {'$rule': str, '$lang': NotRequired[str
 _TokenRefBase = TypedDict('_TokenRefBase', {'$token': str})
 
 
-class RuleRef(_WithMetadata, _RuleRefBase): ...
+class RuleRefDict(_WithMetadataDict, _RuleRefBase): ...
 
 
-class TokenRef(_WithMetadata, _TokenRefBase): ...
+class TokenRefDict(_WithMetadataDict, _TokenRefBase): ...
 
 
-type Reference = RuleRef | TokenRef
+type Reference = RuleRefDict | TokenRefDict
 
 
-type Rule = (
-    Empty | Optional | Reference | Repeat | Sequence | Terminal | Union | Variant
+type RuleDict = (
+    EmptyDict
+    | OptionalDict
+    | Reference
+    | RepeatDict
+    | SequenceDict
+    | TerminalDict
+    | UnionDict
+    | VariantDict
 )
 
 
-class TokenMatch(_WithMetadata):
+class TokenMatchDict(_WithMetadataDict):
     matches: str | list[str]
 
 
-type Token = Terminal | TokenMatch
+type TokenDict = TerminalDict | TokenMatchDict
 
 
-class Language(TypedDict):
-    tokens: dict[str, Token]
-    rules: dict[str, Rule]
+class LanguageDict(TypedDict):
+    tokens: dict[str, TokenDict]
+    rules: dict[str, RuleDict]
 
 
-class Languages(TypedDict, extra_items=Language):
-    core: Language
+class LanguagesDict(TypedDict, extra_items=LanguageDict):
+    core: LanguageDict
 
 
-class Grammar(TypedDict, extra_items=str):
-    languages: Languages
+class GrammarDict(TypedDict, extra_items=str):
+    languages: LanguagesDict
     version: NotRequired[str]
     zsh_version: NotRequired[str]
     zsh_revision: NotRequired[str]
