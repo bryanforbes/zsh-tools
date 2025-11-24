@@ -29,6 +29,7 @@ dev = [
 [project.scripts]
 construct-zsh-grammar = 'zsh_grammar.construct_grammar:main'
 validate-json = 'zsh_grammar.validate:main'
+generate-tree-sitter = 'zsh_grammar.generate_tree_sitter:main'
 
 [build-system]
 requires = ["uv_build>=0.9.5,<0.10.0"]

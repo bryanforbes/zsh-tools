@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Self, TypedDict, cast, override
 
 from jsonschema import validate
 
+from zsh_grammar.common import GRAMMAR_SCHEMA_PATH
+
 if TYPE_CHECKING:
     from _typeshed import StrPath
 
@@ -387,11 +389,7 @@ class Grammar:
     def load(cls, path: StrPath, /) -> Self:
         path = Path(path)
         grammar_data = json.loads(path.read_text())
-        schema = json.loads(
-            (
-                Path(__file__).parent.parent.parent / 'canonical-grammar.schema.json'
-            ).read_text(encoding='utf-8')
-        )
+        schema = json.loads(GRAMMAR_SCHEMA_PATH.read_text(encoding='utf-8'))
 
         validate(grammar_data, schema)
 

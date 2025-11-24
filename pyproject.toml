@@ -11,7 +11,8 @@ classifiers = [
   "Private :: Do Not Upload",
 ]
 dependencies = [
-  'zsh-grammar'
+  'zsh-grammar',
+  'tree-sitter-zsh[core]',
 ]
 
 [tool.uv]
@@ -19,9 +20,10 @@ package = false
 
 [tool.uv.sources]
 zsh-grammar = { workspace = true }
+tree-sitter-zsh = { workspace = true }
 
 [tool.uv.workspace]
-members = ["zsh-grammar"]
+members = ["zsh-grammar", "tree-sitter-zsh"]
 
 [tool.basedpyright]
 stubPath = './typings'
@@ -29,8 +31,8 @@ exclude = [
   "**/node_modules",
   "**/__pycache__",
   "**/.*",
-  "tree-sitter-zsh/bindings/python/**",
-  "tree-sitter-zsh/setup.py"
+  "tree-sitter-zsh/bindings/python/tree_sitter_zsh",
+  "tree-sitter-zsh/setup.py",
 ]
 
 pythonVersion = "3.14"
@@ -59,13 +61,12 @@ reportInvalidAbstractMethod = "error"
 
 executionEnvironments = [
   { root = "typings", reportImplicitOverride = "none", reportIncompatibleVariableOverride = "none" },
+  { root = "tree-sitter-zsh", pythonVersion = "3.10" },
 ]
 
 [tool.ruff]
 extend-exclude = [
   ".venv*",
-  "tree-sitter-zsh/bindings/python/**",
-  "tree-sitter-zsh/setup.py"
 ]
 line-length = 88
 target-version = "py314"

@@ -3,17 +3,17 @@ from __future__ import annotations
 import json
 import re
 import subprocess
-from pathlib import Path
-from typing import TYPE_CHECKING, Annotated, Final, cast
+from typing import TYPE_CHECKING, Annotated, cast
 
 import typer
 
+from zsh_grammar.common import PROJECT_ROOT
 from zsh_grammar.source_parser import ZshParser
 
 if TYPE_CHECKING:
-    from zsh_grammar._types import GrammarDict
+    from pathlib import Path
 
-PROJECT_ROOT: Final = Path(__file__).resolve().parents[3]
+    from zsh_grammar._types import GrammarDict
 
 
 def _construct_grammar(

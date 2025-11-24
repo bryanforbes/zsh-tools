@@ -1,0 +1,45 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "zsh",
+      "camelcase": "Zsh",
+      "title": "Zsh",
+      "scope": "source.zsh",
+      "file-types": [
+        "zsh",
+        ".zlogin",
+        ".zshenv",
+        ".zshrc",
+        ".zlogout",
+        ".zprofile"
+      ],
+      "injection-regex": "^zsh$",
+      "class-name": "TreeSitterZsh"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "BSD-3-Clause",
+    "description": "Zsh grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Bryan Forbes",
+        "email": "bryan@reigndropsfall.net",
+        "url": "https://www.reigndropsfall.net/"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/bryanforbes/zsh-tools"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": true,
+    "zig": false
+  }
+}

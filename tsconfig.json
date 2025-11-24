@@ -4,6 +4,9 @@
     "preserveSymlinks": false,
     "allowJs": true,
     "checkJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "module": "esnext",
+    "target": "esnext",
+    "moduleResolution": "bundler"
   }
 }

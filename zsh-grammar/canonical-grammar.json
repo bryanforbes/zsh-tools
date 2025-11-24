@@ -7,13 +7,16 @@
     "core": {
       "tokens": {
         "BLANK": {
-          "pattern": "[ \t]+"
+          "pattern": "[ \\t]+"
         },
         "SEPER": {
-          "matches": ["\n", ";"]
+          "matches": ["\\n", ";"]
         },
         "NEWLINE": {
-          "matches": "\n"
+          "matches": "\\n"
+        },
+        "DASH": {
+          "matches": "-"
         },
         "SEMI": {
           "matches": ";"
@@ -449,9 +452,6 @@
         "SPECIAL_QUESTION": {
           "matches": "?"
         },
-        "SPECIAL_DASH": {
-          "matches": "-"
-        },
         "SPECIAL_DOLLAR": {
           "matches": "$"
         }
@@ -464,7 +464,7 @@
             { "$token": "SPECIAL_AT" },
             { "$token": "SPECIAL_HASH" },
             { "$token": "SPECIAL_QUESTION" },
-            { "$token": "SPECIAL_DASH" },
+            { "$token": "DASH" },
             { "$token": "SPECIAL_DOLLAR" },
             { "$token": "BANG" }
           ],
@@ -764,7 +764,17 @@
         },
         "single_quoted_string": {
           "description": "Single-quoted string: literal characters, no escapes unless RC_QUOTES",
-          "pattern": "'[^']*'",
+          "union": [
+            {
+              "pattern": "'[^']*'"
+            },
+            {
+              "variant": { "pattern": "'(?:[^']|'{2})+'" },
+              "condition": {
+                "option": "RC_QUOTES"
+              }
+            }
+          ],
           "source": {
             "file": "grammar.yo",
             "line": 680,

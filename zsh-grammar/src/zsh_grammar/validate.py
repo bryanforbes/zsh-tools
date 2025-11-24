@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
+from pathlib import Path  # noqa: TC003
 from typing import Final
 
 import typer
@@ -9,9 +9,9 @@ from jsonschema import validators
 from jsonschema.exceptions import SchemaError, ValidationError
 from rich import print
 
-_SCHEMA: Final = json.loads(
-    (Path(__file__).parent.parent.parent / 'canonical-grammar.schema.json').read_text()
-)
+from zsh_grammar.common import GRAMMAR_SCHEMA_PATH
+
+_SCHEMA: Final = json.loads(GRAMMAR_SCHEMA_PATH.read_text())
 
 
 def validate(files: list[Path]) -> None:

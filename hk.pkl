@@ -1,25 +1,35 @@
-amends "package://github.com/jdx/hk/releases/download/v1.21.0/hk@1.21.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.21.0/hk@1.21.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.24.1/hk@1.24.1#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.24.1/hk@1.24.1#/Builtins.pkl"
 
 local linters = new Mapping<String, Step> {
     ["prettier"] = (Builtins.prettier) {
       prefix = "pnpm exec"
+      depends = "eslint"
+      check = "prettier --ignore-unknown --check {{ files }}"
+      check_list_files = "prettier --ignore-unknown --list-different {{ files }}"
+      fix = "prettier --ignore-unknown --write {{ files }}"
     }
     ["eslint"] = (Builtins.eslint) {
       prefix = "pnpm exec"
+      check = "eslint --max-warnings=0 --no-warn-ignored {{ files }}"
+      fix = "eslint --no-warn-ignored --fix {{ files }}"
     }
 
     ["ruff"] = (Builtins.ruff) {
       batch = true
+      depends = "ruff_format"
+      check = "ruff check --force-exclude {{ files }}"
     }
-    ["ruff_format"] = (Builtins.ruff_format) {
-      depends = "ruff"
-    }
+    ["ruff_format"] = Builtins.ruff_format
     ["basedpyright"] {
       glob = List("**/*.py", "**/*.pyi")
       check = "basedpyright {{ files }}"
       depends = "ruff_format"
       stomp = true
+      exclude = List(
+        "tree-sitter-zsh/bindings/python/tree_sitter_zsh/**",
+        "tree-sitter-zsh/setup.py",
+      )
     }
 
     ["validate-json"] {
@@ -36,6 +46,21 @@ local linters = new Mapping<String, Step> {
     }
 }
 
+exclude = List(
+  "**/node_modules/**",
+  "**/.venv/**",
+  "**/__pycache__/**",
+  "**/*.pyc",
+  "**/*.egg-info",
+  "**/*.whl",
+  "**/dist/**",
+  "**/build/**",
+  "**/htmlcov/**",
+  "**/.ruff_cache/**",
+  "**/.pytest_cache/**",
+  "vendor/zsh",
+)
+
 hooks {
     ["pre-commit"] {
         fix = true
@@ -47,9 +72,11 @@ hooks {
     // "fix" and "check" are special steps for `hk fix` and `hk check` commands
     ["fix"] {
         fix = true
+        stage = false
         steps = linters
     }
     ["check"] {
+        stage = false
         steps = linters
     }
 }

@@ -1,0 +1,32 @@
+[tasks.generate-parser]
+description = "Generate the Tree-sitter parser"
+depends = '//zsh-grammar:generate-tree-sitter'
+sources = ['grammar.js']
+outputs = ['src/parser.c']
+run = 'pnpm exec tree-sitter generate'
+
+[tasks.build-parser]
+description = "Build the Tree-sitter parser"
+depends = ':generate-parser'
+sources = ['src/parser.c']
+outputs = ['zsh.dylib']
+run = 'pnpm exec tree-sitter build'
+
+[tasks."test:node"]
+description = "Run the Node.js test suite"
+depends = ':build-parser'
+run = 'pnpm run test'
+
+[tasks."test:python"]
+description = "Run the Python test suite"
+depends = ':build-parser'
+run = 'uv run pytest'
+
+[tasks."test:grammar"]
+description = "Test the grammar against corpus"
+depends = ':build-parser'
+run = 'pnpm exec tree-sitter test'
+
+[tasks.test]
+description = "Run all test suites"
+depends = ':test:*'
