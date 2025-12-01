@@ -4,11 +4,20 @@ simple echo command
 echo hello
 ---
 
+(program
+  (list
+    (sublist
+      (pipeline
+        (simple_command
+          (variable) (variable))))))
+
 ==================
 command with multiple arguments
 ==================
 ls -la /tmp
 ---
+
+
 
 ==================
 command with quoted string
@@ -16,11 +25,15 @@ command with quoted string
 echo "hello world"
 ---
 
+
+
 ==================
 command with single quotes
 ==================
 echo 'hello world'
 ---
+
+
 
 ==================
 command with variable expansion
@@ -28,11 +41,15 @@ command with variable expansion
 echo $HOME
 ---
 
+
+
 ==================
 command with braced variable
 ==================
 echo ${PATH}
 ---
+
+
 
 ==================
 command with special parameter
@@ -40,11 +57,15 @@ command with special parameter
 echo $@
 ---
 
+
+
 ==================
 command with command substitution
 ==================
 echo $(date)
 ---
+
+
 
 ==================
 command with backtick substitution
@@ -52,11 +73,15 @@ command with backtick substitution
 echo `date`
 ---
 
+
+
 ==================
 command with output redirection
 ==================
 echo hello > file.txt
 ---
+
+
 
 ==================
 command with append redirection
@@ -64,11 +89,15 @@ command with append redirection
 echo hello >> file.txt
 ---
 
+
+
 ==================
 command with input redirection
 ==================
 cat < input.txt
 ---
+
+
 
 ==================
 command with parameter assignment prefix
@@ -76,11 +105,15 @@ command with parameter assignment prefix
 FOO=bar echo hello
 ---
 
+
+
 ==================
 command with multiple assignments
 ==================
 FOO=bar BAZ=qux echo hello
 ---
+
+
 
 ==================
 command with noglob modifier
@@ -88,11 +121,15 @@ command with noglob modifier
 noglob echo *.txt
 ---
 
+
+
 ==================
 command with nocorrect modifier
 ==================
 nocorrect ls
 ---
+
+
 
 ==================
 command with glob pattern
@@ -100,11 +137,15 @@ command with glob pattern
 ls *.txt
 ---
 
+
+
 ==================
 command with double glob pattern
 ==================
 rm **/*.bak
 ---
+
+
 
 ==================
 simple pipeline
@@ -112,11 +153,15 @@ simple pipeline
 cat file.txt | grep pattern
 ---
 
+
+
 ==================
 three-command pipeline
 ==================
 cat file.txt | grep pattern | wc -l
 ---
+
+
 
 ==================
 pipeline with pipe ampersand
@@ -124,11 +169,15 @@ pipeline with pipe ampersand
 command1 |& command2
 ---
 
+
+
 ==================
 pipeline with logical and
 ==================
 command1 && command2
 ---
+
+
 
 ==================
 pipeline with logical or
@@ -136,14 +185,20 @@ pipeline with logical or
 command1 || command2
 ---
 
+
+
 ==================
 pipeline with background
 ==================
 cmd &
 ---
 
+
+
 ==================
 complex operator chain
 ==================
 cmd1 | cmd2 && cmd3 | cmd4 || cmd5
 ---
+
+

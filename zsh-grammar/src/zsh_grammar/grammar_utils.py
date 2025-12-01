@@ -22,8 +22,8 @@ if TYPE_CHECKING:
         RuleRefDict,
         SequenceDict,
         SourceDict,
-        TerminalDict,
         TokenMatchDict,
+        TokenPatternDict,
         TokenRefDict,
         UnionDict,
         VariantDict,
@@ -126,7 +126,7 @@ def create_variant(
 
 def create_terminal(
     pattern: str, /, **kwargs: Unpack[_WithMetadataDict]
-) -> TerminalDict:
+) -> TokenPatternDict:
     return _annotate_node({'pattern': pattern}, **kwargs)
 
 

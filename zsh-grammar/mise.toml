@@ -6,10 +6,10 @@ run = 'uv run construct-zsh-grammar'
 description = "Generate Tree-sitter parser files from grammar"
 sources = ['canonical-grammar.json', 'canonocal-grammar.schema.json', 'src/zsh_grammar/generate_tree_sitter.py']
 outputs = ['../tree-sitter-zsh/grammar.js']
-run = '''
-uv run generate-tree-sitter ../tree-sitter-zsh/grammar.js
-pnpm exec prettier --write ../tree-sitter-zsh/grammar.js
-'''
+run = [
+  'uv run generate-tree-sitter ../tree-sitter-zsh/grammar.js',
+  'hk fix tree-sitter-zsh/grammar.js',
+]
 
 [tasks.test]
 description = "Run the test suite"

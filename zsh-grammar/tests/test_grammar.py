@@ -24,8 +24,8 @@ from zsh_grammar.grammar import (
     RuleReference,
     Sequence,
     Source,
-    Terminal,
     TokenMatch,
+    TokenPattern,
     TokenReference,
     Union,
     Variant,
@@ -44,8 +44,8 @@ if TYPE_CHECKING:
         RuleRefDict,
         SequenceDict,
         SourceDict,
-        TerminalDict,
         TokenMatchDict,
+        TokenPatternDict,
         TokenRefDict,
         UnionDict,
         VariantDict,
@@ -89,9 +89,9 @@ def sample_source_line_range() -> Source:
 
 
 @pytest.fixture
-def sample_terminal() -> Terminal:
+def sample_terminal() -> TokenPattern:
     """Create a sample Terminal rule."""
-    return Terminal(
+    return TokenPattern(
         pattern=r'\w+',
         description='A word character sequence',
         source=Source(file='parse.c', line=1),
@@ -111,7 +111,7 @@ def sample_empty() -> Empty:
 def sample_optional() -> Optional:
     """Create a sample Optional rule."""
     return Optional(
-        rule=Terminal(pattern=r'\w+'),
+        rule=TokenPattern(pattern=r'\w+'),
         description='Optional word',
     )
 
@@ -120,7 +120,7 @@ def sample_optional() -> Optional:
 def sample_repeat() -> Repeat:
     """Create a sample Repeat rule."""
     return Repeat(
-        rule=Terminal(pattern=r'\w+'),
+        rule=TokenPattern(pattern=r'\w+'),
         min=1,
         max=5,
         description='One to five words',
@@ -132,8 +132,8 @@ def sample_sequence() -> Sequence:
     """Create a sample Sequence rule."""
     return Sequence(
         rules=[
-            Terminal(pattern=r'for'),
-            Terminal(pattern=r'\w+'),
+            TokenPattern(pattern=r'for'),
+            TokenPattern(pattern=r'\w+'),
         ],
         description='For loop start',
     )
@@ -144,8 +144,8 @@ def sample_union() -> Union:
     """Create a sample Union rule."""
     return Union(
         rules=[
-            Terminal(pattern=r'if'),
-            Terminal(pattern=r'case'),
+            TokenPattern(pattern=r'if'),
+            TokenPattern(pattern=r'case'),
         ],
         description='Conditional statement',
     )
@@ -174,7 +174,7 @@ def sample_token_reference() -> TokenReference:
 def sample_variant() -> Variant:
     """Create a sample Variant rule."""
     return Variant(
-        rule=Terminal(pattern=r'\w+'),
+        rule=TokenPattern(pattern=r'\w+'),
         condition={'option': 'zsh'},
         description='Zsh variant',
     )
@@ -205,11 +205,11 @@ def sample_language() -> Language:
         tokens={
             'FOR': TokenMatch(matches='for'),
             'DO': TokenMatch(matches='do'),
-            'WORD': Terminal(pattern=r'\w+'),
+            'WORD': TokenPattern(pattern=r'\w+'),
         },
         rules={
             'for_loop': RuleReference(rule='simple_command'),
-            'word': Terminal(pattern=r'\w+'),
+            'word': TokenPattern(pattern=r'\w+'),
         },
     )
 
@@ -326,12 +326,12 @@ class TestSource:
 class TestTerminal:
     """Tests for Terminal rule."""
 
-    def test_terminal_creation(self, sample_terminal: Terminal) -> None:
+    def test_terminal_creation(self, sample_terminal: TokenPattern) -> None:
         """Test Terminal creation."""
         assert sample_terminal.pattern == r'\w+'
         assert sample_terminal.description == 'A word character sequence'
 
-    def test_terminal_to_json(self, sample_terminal: Terminal) -> None:
+    def test_terminal_to_json(self, sample_terminal: TokenPattern) -> None:
         """Test Terminal serialization."""
         result = sample_terminal.to_json()
         assert result['pattern'] == r'\w+'
@@ -340,16 +340,16 @@ class TestTerminal:
 
     def test_terminal_from_json(self) -> None:
         """Test Terminal deserialization."""
-        data: TerminalDict = {'pattern': r'\d+'}
-        terminal = Terminal.from_json(data)
+        data: TokenPatternDict = {'pattern': r'\d+'}
+        terminal = TokenPattern.from_json(data)
         assert terminal.pattern == r'\d+'
         assert terminal.description is None
         assert terminal.source is None
 
-    def test_terminal_roundtrip(self, sample_terminal: Terminal) -> None:
+    def test_terminal_roundtrip(self, sample_terminal: TokenPattern) -> None:
         """Test Terminal serialization/deserialization roundtrip."""
         json_data = sample_terminal.to_json()
-        restored = Terminal.from_json(json_data)
+        restored = TokenPattern.from_json(json_data)
         assert restored.pattern == sample_terminal.pattern
         assert restored.description == sample_terminal.description
 
@@ -396,7 +396,7 @@ class TestOptional:
 
     def test_optional_creation(self, sample_optional: Optional) -> None:
         """Test Optional creation."""
-        assert isinstance(sample_optional.rule, Terminal)
+        assert isinstance(sample_optional.rule, TokenPattern)
         assert sample_optional.rule.pattern == r'\w+'
 
     def test_optional_to_json(self, sample_optional: Optional) -> None:
@@ -413,15 +413,15 @@ class TestOptional:
             'optional': {'pattern': r'\d+'},
         }
         optional = Optional.from_json(data)
-        assert isinstance(optional.rule, Terminal)
+        assert isinstance(optional.rule, TokenPattern)
         assert optional.rule.pattern == r'\d+'
 
     def test_optional_roundtrip(self, sample_optional: Optional) -> None:
         """Test Optional serialization/deserialization roundtrip."""
         json_data = sample_optional.to_json()
         restored = Optional.from_json(json_data)
-        assert isinstance(sample_optional.rule, Terminal)
-        assert isinstance(restored.rule, Terminal)
+        assert isinstance(sample_optional.rule, TokenPattern)
+        assert isinstance(restored.rule, TokenPattern)
         assert restored.rule.pattern == sample_optional.rule.pattern
 
 
@@ -435,7 +435,7 @@ class TestRepeat:
 
     def test_repeat_creation(self, sample_repeat: Repeat) -> None:
         """Test Repeat creation."""
-        assert isinstance(sample_repeat.rule, Terminal)
+        assert isinstance(sample_repeat.rule, TokenPattern)
         assert sample_repeat.min == 1
         assert sample_repeat.max == 5
 
@@ -450,7 +450,7 @@ class TestRepeat:
 
     def test_repeat_to_json_no_bounds(self) -> None:
         """Test Repeat serialization without bounds."""
-        repeat = Repeat(rule=Terminal(pattern=r'\w+'))
+        repeat = Repeat(rule=TokenPattern(pattern=r'\w+'))
         result = repeat.to_json()
         assert 'repeat' in result
         assert 'min' in result
@@ -464,7 +464,7 @@ class TestRepeat:
             'max': 10,
         }
         repeat = Repeat.from_json(data)
-        assert isinstance(repeat.rule, Terminal)
+        assert isinstance(repeat.rule, TokenPattern)
         assert repeat.min == 0
         assert repeat.max == 10
 
@@ -472,7 +472,7 @@ class TestRepeat:
         """Test Repeat serialization/deserialization roundtrip."""
         json_data = sample_repeat.to_json()
         restored = Repeat.from_json(json_data)
-        assert isinstance(restored.rule, Terminal)
+        assert isinstance(restored.rule, TokenPattern)
         assert restored.min == sample_repeat.min
         assert restored.max == sample_repeat.max
 
@@ -488,7 +488,7 @@ class TestSequence:
     def test_sequence_creation(self, sample_sequence: Sequence) -> None:
         """Test Sequence creation."""
         assert len(sample_sequence.rules) == 2
-        assert all(isinstance(r, Terminal) for r in sample_sequence.rules)
+        assert all(isinstance(r, TokenPattern) for r in sample_sequence.rules)
 
     def test_sequence_to_json(self, sample_sequence: Sequence) -> None:
         """Test Sequence serialization."""
@@ -531,7 +531,7 @@ class TestUnion:
     def test_union_creation(self, sample_union: Union) -> None:
         """Test Union creation."""
         assert len(sample_union.rules) == 2
-        assert all(isinstance(r, Terminal) for r in sample_union.rules)
+        assert all(isinstance(r, TokenPattern) for r in sample_union.rules)
 
     def test_union_to_json(self, sample_union: Union) -> None:
         """Test Union serialization."""
@@ -648,7 +648,7 @@ class TestVariant:
 
     def test_variant_creation(self, sample_variant: Variant) -> None:
         """Test Variant creation."""
-        assert isinstance(sample_variant.rule, Terminal)
+        assert isinstance(sample_variant.rule, TokenPattern)
         assert sample_variant.condition == {'option': 'zsh'}
 
     def test_variant_to_json(self, sample_variant: Variant) -> None:
@@ -664,7 +664,7 @@ class TestVariant:
             'condition': {'option': 'zsh'},
         }
         variant = Variant.from_json(data)
-        assert isinstance(variant.rule, Terminal)
+        assert isinstance(variant.rule, TokenPattern)
         assert variant.condition == {'option': 'zsh'}
 
     def test_variant_roundtrip(self, sample_variant: Variant) -> None:
@@ -746,9 +746,9 @@ class TestFromRuleHelper:
 
     def test_from_rule_terminal(self) -> None:
         """Test _from_rule creates Terminal."""
-        data: TerminalDict = {'pattern': r'\d+'}
+        data: TokenPatternDict = {'pattern': r'\d+'}
         rule = _from_rule(data)
-        assert isinstance(rule, Terminal)
+        assert isinstance(rule, TokenPattern)
 
     def test_from_rule_rule_reference(self) -> None:
         """Test _from_rule creates RuleReference."""
@@ -806,7 +806,7 @@ class TestFromTokenHelper:
     def test_from_token_terminal(self) -> None:
         """Test _from_token creates Terminal."""
         token = _from_token({'pattern': r'\d+'})
-        assert isinstance(token, Terminal)
+        assert isinstance(token, TokenPattern)
 
     def test_from_token_match(self) -> None:
         """Test _from_token creates TokenMatch."""
@@ -1152,7 +1152,9 @@ class TestComplexGrammarStructure:
                                         TokenReference(token='FOR'),  # noqa: S106
                                     ],
                                 ),
-                                Optional(rule=Repeat(rule=Terminal(pattern=r'\w+'))),
+                                Optional(
+                                    rule=Repeat(rule=TokenPattern(pattern=r'\w+'))
+                                ),
                             ],
                         ),
                     },
@@ -1194,11 +1196,11 @@ class TestComplexGrammarStructure:
                         'mixed': Sequence(
                             rules=[
                                 Empty(),
-                                Terminal(pattern=r'test'),
+                                TokenPattern(pattern=r'test'),
                                 RuleReference(rule='nested'),
                                 TokenReference(token='FOR'),  # noqa: S106
                                 Variant(
-                                    rule=Optional(rule=Terminal(pattern=r'\w+')),
+                                    rule=Optional(rule=TokenPattern(pattern=r'\w+')),
                                     condition={'option': 'zsh'},
                                 ),
                             ],
@@ -1238,35 +1240,35 @@ class TestEdgeCases:
 
     def test_special_characters_in_pattern(self) -> None:
         """Test patterns with special regex characters."""
-        terminal = Terminal(pattern=r'[\w\-\.]+')
+        terminal = TokenPattern(pattern=r'[\w\-\.]+')
         json_data = terminal.to_json()
-        restored = Terminal.from_json(json_data)
+        restored = TokenPattern.from_json(json_data)
         assert restored.pattern == r'[\w\-\.]+'
 
     def test_empty_description(self) -> None:
         """Test handling empty string descriptions."""
-        terminal = Terminal(pattern=r'\w+', description='')
+        terminal = TokenPattern(pattern=r'\w+', description='')
         json_data = terminal.to_json()
         assert json_data.get('description') == ''
 
     def test_long_description(self) -> None:
         """Test handling long descriptions."""
         long_desc = 'x' * 1000
-        terminal = Terminal(pattern=r'\w+', description=long_desc)
+        terminal = TokenPattern(pattern=r'\w+', description=long_desc)
         json_data = terminal.to_json()
-        restored = Terminal.from_json(json_data)
+        restored = TokenPattern.from_json(json_data)
         assert restored.description == long_desc
 
     def test_repeat_with_only_min(self) -> None:
         """Test Repeat with only min bound."""
-        repeat = Repeat(rule=Terminal(pattern=r'\w+'), min=1)
+        repeat = Repeat(rule=TokenPattern(pattern=r'\w+'), min=1)
         json_data = repeat.to_json()
         assert 'min' in json_data
         assert 'max' not in json_data
 
     def test_repeat_with_only_max(self) -> None:
         """Test Repeat with only max bound."""
-        repeat = Repeat(rule=Terminal(pattern=r'\w+'), max=10)
+        repeat = Repeat(rule=TokenPattern(pattern=r'\w+'), max=10)
         json_data = repeat.to_json()
         assert 'max' in json_data
         assert 'min' in json_data
@@ -1305,7 +1307,7 @@ class TestEdgeCases:
         ]
         for cond in conditions:
             variant = Variant(
-                rule=Terminal(pattern=r'\w+'),
+                rule=TokenPattern(pattern=r'\w+'),
                 condition=cond,
             )
             json_data = variant.to_json()

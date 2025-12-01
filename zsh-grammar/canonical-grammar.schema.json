@@ -36,6 +36,15 @@
             }
           },
           "additionalProperties": false
+        },
+        "precedence": {
+          "type": "integer",
+          "description": "Precedence level for resolving ambiguities; higher numbers bind more tightly"
+        },
+        "associativity": {
+          "type": "string",
+          "enum": ["left", "right"],
+          "description": "Associativity for resolving ambiguities"
         }
       }
     },
@@ -160,17 +169,6 @@
       },
       "description": "Variant path based on options"
     },
-    "Terminal": {
-      "type": "object",
-      "required": ["pattern"],
-      "properties": {
-        "pattern": {
-          "type": "string",
-          "description": "Regex pattern for unnamed terminal (identifier, number, etc.)",
-          "format": "regex"
-        }
-      }
-    },
     "Union": {
       "type": "object",
       "required": ["union"],
@@ -243,6 +241,38 @@
         }
       ]
     },
+    "Token": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["pattern"],
+          "properties": {
+            "pattern": {
+              "type": "string",
+              "description": "Regex pattern for unnamed terminal (identifier, number, etc.)",
+              "format": "regex"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "required": ["matches"],
+          "properties": {
+            "matches": {
+              "oneOf": [
+                { "type": "string", "description": "Single string match" },
+                {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "minItems": 2,
+                  "description": "Multiple string matches (eg. declare, export, and float all produce TYPESET)"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
     "Rule": {
       "allOf": [
         {
@@ -252,7 +282,7 @@
             { "$ref": "#/definitions/Reference" },
             { "$ref": "#/definitions/Repeat" },
             { "$ref": "#/definitions/Sequence" },
-            { "$ref": "#/definitions/Terminal" },
+            { "$ref": "#/definitions/Token" },
             { "$ref": "#/definitions/Union" },
             { "$ref": "#/definitions/Variant" }
           ]
@@ -269,33 +299,6 @@
       },
       "additionalProperties": { "$ref": "#/definitions/Rule" }
     },
-    "Token": {
-      "allOf": [
-        {
-          "oneOf": [
-            {
-              "type": "object",
-              "required": ["matches"],
-              "properties": {
-                "matches": {
-                  "oneOf": [
-                    { "type": "string", "description": "Single string match" },
-                    {
-                      "type": "array",
-                      "items": { "type": "string" },
-                      "minItems": 2,
-                      "description": "Multiple string matches (eg. declare, export, and float all produce TYPESET)"
-                    }
-                  ]
-                }
-              }
-            },
-            { "$ref": "#/definitions/Terminal" }
-          ]
-        },
-        { "$ref": "#/definitions/Metadata" }
-      ]
-    },
     "TokenMap": {
       "type": "object",
       "minProperties": 1,
@@ -303,7 +306,12 @@
         "pattern": "^[A-Z][A-Z0-9_]*$",
         "description": "Token names in SCREAMING_SNAKE_CASE (e.g., FOR, WORD)"
       },
-      "additionalProperties": { "$ref": "#/definitions/Token" }
+      "additionalProperties": {
+        "allOf": [
+          { "$ref": "#/definitions/Token" },
+          { "$ref": "#/definitions/Metadata" }
+        ]
+      }
     },
     "Language": {
       "type": "object",

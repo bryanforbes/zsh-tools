@@ -1,24 +1,258 @@
 [
   {
-    "type": "special_parameter",
+    "type": "command_pcm",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "exec_pcm",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "zsh_word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "list",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "sublist",
+          "named": true
+        },
+        {
+          "type": "sublist_terminator",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "parameter_assignment",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "variable",
+          "named": true
+        },
+        {
+          "type": "zsh_word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "pipeline",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "simple_command",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "precommand_modifier",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": false,
+      "types": [
+        {
+          "type": "command_pcm",
+          "named": true
+        },
+        {
+          "type": "exec_pcm",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "program",
     "named": true,
     "root": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "list",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "quoted_string",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "ansi_c_quoted_string",
+          "named": true
+        },
+        {
+          "type": "double_quoted_string",
+          "named": true
+        },
+        {
+          "type": "single_quoted_string",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "redirection",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "redirection_operator",
+          "named": true
+        },
+        {
+          "type": "variable",
+          "named": true
+        },
+        {
+          "type": "zsh_word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "redirection_operator",
+    "named": true,
     "fields": {}
+  },
+  {
+    "type": "simple_command",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "parameter_assignment",
+          "named": true
+        },
+        {
+          "type": "precommand_modifier",
+          "named": true
+        },
+        {
+          "type": "redirection",
+          "named": true
+        },
+        {
+          "type": "zsh_word",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "sublist",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "pipeline",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "zsh_word",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "plain_string",
+          "named": true
+        },
+        {
+          "type": "quoted_string",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "!",
     "named": false
   },
   {
-    "type": "#",
+    "type": "&&",
     "named": false
   },
   {
-    "type": "$",
+    "type": "&>",
     "named": false
   },
   {
-    "type": "*",
+    "type": "&>!",
+    "named": false
+  },
+  {
+    "type": "&>>",
+    "named": false
+  },
+  {
+    "type": "&>>!",
+    "named": false
+  },
+  {
+    "type": "&>>|",
+    "named": false
+  },
+  {
+    "type": "&>|",
+    "named": false
+  },
+  {
+    "type": "+=",
     "named": false
   },
   {
@@ -26,11 +260,140 @@
     "named": false
   },
   {
-    "type": "?",
+    "type": "<",
     "named": false
   },
   {
-    "type": "@",
+    "type": "<&",
+    "named": false
+  },
+  {
+    "type": "<<",
+    "named": false
+  },
+  {
+    "type": "<<-",
+    "named": false
+  },
+  {
+    "type": "<<<",
+    "named": false
+  },
+  {
+    "type": "<>",
+    "named": false
+  },
+  {
+    "type": "=",
+    "named": false
+  },
+  {
+    "type": ">",
+    "named": false
+  },
+  {
+    "type": ">!",
+    "named": false
+  },
+  {
+    "type": ">&",
+    "named": false
+  },
+  {
+    "type": ">&!",
+    "named": false
+  },
+  {
+    "type": ">&|",
+    "named": false
+  },
+  {
+    "type": ">>",
+    "named": false
+  },
+  {
+    "type": ">>!",
+    "named": false
+  },
+  {
+    "type": ">>&",
+    "named": false
+  },
+  {
+    "type": ">>&!",
+    "named": false
+  },
+  {
+    "type": ">>&|",
+    "named": false
+  },
+  {
+    "type": ">>|",
+    "named": false
+  },
+  {
+    "type": ">|",
+    "named": false
+  },
+  {
+    "type": "ansi_c_quoted_string",
+    "named": true
+  },
+  {
+    "type": "builtin",
+    "named": false
+  },
+  {
+    "type": "command",
+    "named": false
+  },
+  {
+    "type": "comment",
+    "named": true,
+    "extra": true
+  },
+  {
+    "type": "coproc",
+    "named": false
+  },
+  {
+    "type": "double_quoted_string",
+    "named": true
+  },
+  {
+    "type": "nocorrect",
+    "named": false
+  },
+  {
+    "type": "noglob",
+    "named": false
+  },
+  {
+    "type": "plain_string",
+    "named": true
+  },
+  {
+    "type": "single_quoted_string",
+    "named": true
+  },
+  {
+    "type": "sublist_terminator",
+    "named": true
+  },
+  {
+    "type": "variable",
+    "named": true
+  },
+  {
+    "type": "|",
+    "named": false
+  },
+  {
+    "type": "|&",
+    "named": false
+  },
+  {
+    "type": "||",
     "named": false
   }
 ]

@@ -18,6 +18,7 @@ node = '24'
 uv = 'latest'
 'pipx:basedpyright' = 'latest'
 ruff = 'latest'
+clang-format = "latest"
 hk = "latest"
 pkl = "latest"
 

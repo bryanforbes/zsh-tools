@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from _typeshed import StrPath
 
     from zsh_grammar._types import (
+        Associativity,
         Condition,
         EmptyDict,
         GrammarDict,
@@ -25,9 +26,9 @@ if TYPE_CHECKING:
         RuleRefDict,
         SequenceDict,
         SourceDict,
-        TerminalDict,
         TokenDict,
         TokenMatchDict,
+        TokenPatternDict,
         TokenRefDict,
         UnionDict,
         VariantDict,
@@ -71,12 +72,16 @@ class Source:
 class _FromJsonWithMetadataDict(TypedDict):
     description: str | None
     source: Source | None
+    precedence: int | None
+    associativity: Associativity | None
 
 
 @dataclass(slots=True, kw_only=True)
 class _WithMetadata:
     description: str | None = None
     source: Source | None = None
+    precedence: int | None = None
+    associativity: Associativity | None = None
 
     def to_json(self) -> _WithMetadataDict:
         data: _WithMetadataDict = {}
@@ -96,6 +101,8 @@ class _WithMetadata:
         return {
             'description': data.get('description'),
             'source': Source.from_json(data['source']) if 'source' in data else None,
+            'precedence': data.get('precedence'),
+            'associativity': data.get('associativity'),
         }
 
 
@@ -141,19 +148,6 @@ class Variant(_WithMetadata):
         return cls(
             _from_rule(data['variant']), data['condition'], **cls._from_json(data)
         )
-
-
-@dataclass(slots=True)
-class Terminal(_WithMetadata):
-    pattern: str
-
-    @override
-    def to_json(self) -> TerminalDict:
-        return {'pattern': self.pattern, **super().to_json()}
-
-    @classmethod
-    def from_json(cls, data: TerminalDict) -> Self:
-        return cls(data['pattern'], **cls._from_json(data))
 
 
 @dataclass(slots=True)
@@ -261,37 +255,17 @@ class TokenReference(_WithMetadata):
 type Reference = RuleReference | TokenReference
 
 
-type Rule = (
-    Empty | Optional | Reference | Repeat | Sequence | Terminal | Union | Variant
-)
+@dataclass(slots=True)
+class TokenPattern(_WithMetadata):
+    pattern: str
 
+    @override
+    def to_json(self) -> TokenPatternDict:
+        return {'pattern': self.pattern, **super().to_json()}
 
-def _from_rule(data: RuleDict, /) -> Rule:
-    rule: Rule
-
-    match data:
-        case {'empty': True}:
-            rule = Empty.from_json(data)
-        case {'optional': _}:
-            rule = Optional.from_json(data)
-        case {'$rule': _}:
-            rule = RuleReference.from_json(data)
-        case {'$token': _}:
-            rule = TokenReference.from_json(data)
-        case {'repeat': _}:
-            rule = Repeat.from_json(data)
-        case {'sequence': _}:
-            rule = Sequence.from_json(data)
-        case {'pattern': _}:
-            rule = Terminal.from_json(data)
-        case {'union': _}:
-            rule = Union.from_json(data)
-        case {'variant': _}:
-            rule = Variant.from_json(data)
-        case _:
-            raise ValueError(f'Invalid rule data: {data}')
-
-    return rule
+    @classmethod
+    def from_json(cls, data: TokenPatternDict) -> Self:
+        return cls(data['pattern'], **cls._from_json(data))
 
 
 @dataclass(slots=True)
@@ -310,7 +284,10 @@ class TokenMatch(_WithMetadata):
         )
 
 
-type Token = Terminal | TokenMatch
+type Token = TokenPattern | TokenMatch
+
+
+type Rule = Empty | Optional | Reference | Repeat | Sequence | Token | Union | Variant
 
 
 def _from_token(data: TokenDict, /) -> Token:
@@ -318,9 +295,37 @@ def _from_token(data: TokenDict, /) -> Token:
         case {'matches': _}:
             return TokenMatch.from_json(data)
         case {'pattern': _}:
-            return Terminal.from_json(data)
+            return TokenPattern.from_json(data)
         case _:
             raise ValueError(f'Invalid token data: {data}')
+
+
+def _from_rule(data: RuleDict, /) -> Rule:
+    rule: Rule
+
+    match data:
+        case {'empty': True}:
+            rule = Empty.from_json(data)
+        case {'optional': _}:
+            rule = Optional.from_json(data)
+        case {'$rule': _}:
+            rule = RuleReference.from_json(data)
+        case {'$token': _}:
+            rule = TokenReference.from_json(data)
+        case {'repeat': _}:
+            rule = Repeat.from_json(data)
+        case {'sequence': _}:
+            rule = Sequence.from_json(data)
+        case {'pattern': _} | {'matches': _}:
+            rule = _from_token(data)
+        case {'union': _}:
+            rule = Union.from_json(data)
+        case {'variant': _}:
+            rule = Variant.from_json(data)
+        case _:
+            raise ValueError(f'Invalid rule data: {data}')
+
+    return rule
 
 
 @dataclass(slots=True)

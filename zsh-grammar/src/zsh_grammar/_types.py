@@ -11,9 +11,14 @@ class SourceDict(TypedDict):
     context: NotRequired[str]
 
 
+type Associativity = Literal['left', 'right']
+
+
 class _WithMetadataDict(TypedDict):
     description: NotRequired[str]
     source: NotRequired[SourceDict]
+    precedence: NotRequired[int]
+    associativity: NotRequired[Associativity]
 
 
 class EmptyDict(_WithMetadataDict):
@@ -92,10 +97,6 @@ class VariantDict(_WithMetadataDict):
     condition: Condition
 
 
-class TerminalDict(_WithMetadataDict):
-    pattern: str
-
-
 class UnionDict(_WithMetadataDict):
     union: list[RuleDict]
 
@@ -123,23 +124,27 @@ class TokenRefDict(_WithMetadataDict, _TokenRefBase): ...
 type Reference = RuleRefDict | TokenRefDict
 
 
-type RuleDict = (
-    EmptyDict
-    | OptionalDict
-    | Reference
-    | RepeatDict
-    | SequenceDict
-    | TerminalDict
-    | UnionDict
-    | VariantDict
-)
+class TokenPatternDict(_WithMetadataDict):
+    pattern: str
 
 
 class TokenMatchDict(_WithMetadataDict):
     matches: str | list[str]
 
 
-type TokenDict = TerminalDict | TokenMatchDict
+type TokenDict = TokenPatternDict | TokenMatchDict
+
+
+type RuleDict = (
+    EmptyDict
+    | OptionalDict
+    | Reference
+    | RepeatDict
+    | SequenceDict
+    | TokenDict
+    | UnionDict
+    | VariantDict
+)
 
 
 class LanguageDict(TypedDict):

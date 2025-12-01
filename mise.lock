@@ -1,11 +1,15 @@
+[[tools.clang-format]]
+version = "21.1.6"
+backend = "asdf:clang-format"
+
 [[tools.hk]]
-version = "1.24.1"
+version = "1.25.0"
 backend = "aqua:jdx/hk"
 
 [tools.hk.platforms.macos-arm64]
-checksum = "sha256:83a4432d948fb56d0420077cec0205f0a7396e3a0b79c93baf26cef6211b1635"
-size = 6287577
-url = "https://github.com/jdx/hk/releases/download/v1.24.1/hk-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:3fa6f149e20443042d2812e3682c8080168d55d737903849c76cb7e651023b1b"
+size = 6282349
+url = "https://github.com/jdx/hk/releases/download/v1.25.0/hk-aarch64-apple-darwin.tar.gz"
 
 [[tools.node]]
 version = "24.11.1"
@@ -25,19 +29,19 @@ version = "0.30.0"
 backend = "aqua:apple/pkl"
 
 [[tools.ruff]]
-version = "0.14.6"
+version = "0.14.7"
 backend = "aqua:astral-sh/ruff"
 
 [tools.ruff.platforms.macos-arm64]
-checksum = "sha256:b2ace677f51d0f2b91ca27d312ac8b069658502049015f4891c16f8864136282"
-size = 12135363
-url = "https://github.com/astral-sh/ruff/releases/download/0.14.6/ruff-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:24631da81fe9ce5f4112e8caeb71957e81682e752a563f0a50715735f923e3c4"
+size = 12219111
+url = "https://github.com/astral-sh/ruff/releases/download/0.14.7/ruff-aarch64-apple-darwin.tar.gz"
 
 [[tools.uv]]
-version = "0.9.11"
+version = "0.9.13"
 backend = "aqua:astral-sh/uv"
 
 [tools.uv.platforms.macos-arm64]
-checksum = "sha256:594d9f4cfbd21d5a2f34b0352bf423066a9dab1733c90b5d40e3e227506deb03"
-size = 18409829
-url = "https://github.com/astral-sh/uv/releases/download/0.9.11/uv-aarch64-apple-darwin.tar.gz"
+checksum = "sha256:9c594dce1c237e11680be2b6d1331448eeb6f8a1453fb851a66a40291bb624de"
+size = 18455072
+url = "https://github.com/astral-sh/uv/releases/download/0.9.13/uv-aarch64-apple-darwin.tar.gz"

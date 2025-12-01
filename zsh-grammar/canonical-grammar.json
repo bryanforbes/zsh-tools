@@ -505,9 +505,183 @@
             "context": "A parameter has a name, a value, and a number of attributes"
           }
         },
+        "bitwise_arithmetic_operators": {
+          "union": [{ "matches": "&" }, { "matches": "^" }, { "matches": "|" }]
+        },
+        "shift_arithmetic_operators": { "matches": ["<<", ">>"] },
+        "c_arithmetic_expression": {
+          "union": [
+            {
+              "sequence": [
+                { "matches": ["+", "-", "!", "~", "++", "--"] },
+                { "$rule": "c_arithmetic_expression" }
+              ],
+              "precedence": 18
+            },
+            {
+              "sequence": [
+                { "$rule": "c_arithmetic_expression" },
+                { "matches": ["++", "--"] }
+              ],
+              "precedence": 17
+            },
+            {
+              "sequence": [
+                { "$rule": "c_arithmetic_expression" },
+                {
+                  "union": [
+                    { "matches": "**" },
+                    { "matches": ["*", "/", "%"] },
+                    { "matches": ["+", "-"] },
+                    { "$rule": "shift_arithmetic_operators" },
+                    { "matches": ["<", ">", "<=", ">="] },
+                    { "matches": ["==", "!="] },
+                    { "$rule": "bitwise_arithmetic_operators" },
+                    { "matches": "&&" }
+                  ]
+                },
+                { "$rule": "c_arithmetic_expression" }
+              ]
+            },
+            {
+              "sequence": [
+                { "$rule": "c_arithmetic_expression" },
+                { "matches": "?" },
+                { "$rule": "c_arithmetic_expression" },
+                { "matches": ":" },
+                { "$rule": "c_arithmetic_expression" }
+              ]
+            },
+            {
+              "sequence": [
+                { "$rule": "c_arithmetic_expression" },
+                {
+                  "union": [
+                    {
+                      "matches": [
+                        "=",
+                        "+=",
+                        "-=",
+                        "*=",
+                        "/=",
+                        "%=",
+                        "&=",
+                        "^=",
+                        "|=",
+                        "<<=",
+                        ">>=",
+                        "&&=",
+                        "||=",
+                        "^^=",
+                        "**="
+                      ]
+                    },
+                    { "matches": "," }
+                  ]
+                },
+                { "$rule": "c_arithmetic_expression" }
+              ]
+            }
+          ]
+        },
+        "arithmetic_expression": {
+          "union": [
+            {
+              "sequence": [
+                { "matches": ["+", "-", "!", "~", "++", "--"] },
+                { "$rule": "arithmetic_expression" }
+              ]
+            },
+            {
+              "sequence": [
+                { "$rule": "arithmetic_expression" },
+                { "matches": ["++", "--"] }
+              ]
+            },
+            {
+              "sequence": [
+                { "$rule": "arithmetic_expression" },
+                {
+                  "union": [
+                    {
+                      "union": [
+                        { "$rule": "shift_arithmetic_operators" },
+                        { "$rule": "bitwise_arithmetic_operators" }
+                      ]
+                    },
+                    { "matches": "**" },
+                    { "matches": ["*", "/", "%"] },
+                    { "matches": ["+", "-"] },
+                    { "matches": ["<", ">", "<=", ">="] },
+                    { "matches": ["==", "!="] },
+                    { "matches": "&&" },
+                    { "matches": ["||", "^^"] },
+                    {
+                      "union": [{ "matches": "^^" }, { "matches": "||" }]
+                    }
+                  ]
+                },
+                { "$rule": "arithmetic_expression" }
+              ]
+            },
+            {
+              "sequence": [
+                { "$rule": "arithmetic_expression" },
+                { "matches": "?" },
+                { "$rule": "arithmetic_expression" },
+                { "matches": ":" },
+                { "$rule": "arithmetic_expression" }
+              ]
+            },
+            {
+              "sequence": [
+                { "$rule": "arithmetic_expression" },
+                {
+                  "union": [
+                    {
+                      "matches": [
+                        "=",
+                        "+=",
+                        "-=",
+                        "*=",
+                        "/=",
+                        "%=",
+                        "&=",
+                        "^=",
+                        "|=",
+                        "<<=",
+                        ">>=",
+                        "&&=",
+                        "||=",
+                        "^^=",
+                        "**="
+                      ]
+                    },
+                    { "matches": "," }
+                  ]
+                },
+                { "$rule": "arithmetic_expression" }
+              ]
+            }
+          ]
+        },
+        "array_subscript": {
+          "sequence": [
+            { "$rule": "variable" },
+            { "matches": "[" },
+            { "pattern": "[^\\]]" },
+            { "matches": "]" }
+          ]
+        },
         "parameter_assignment": {
-          "description": "A parameter assignment in the form NAME[subscript]=[+=]value, where NAME begins with alphanumeric or underscore. Subscripts are optional and may be nested.",
-          "pattern": "[a-zA-Z_][a-zA-Z0-9_]*(\\[[^\\]]*\\])*(\\+)?=.*",
+          "description": "A parameter assignment in the form NAME[subscript][+]=value, where NAME begins with alphanumeric or underscore. Subscripts are optional and may be nested.",
+          "sequence": [
+            {
+              "union": [{ "$rule": "variable" }, { "$rule": "array_subscript" }]
+            },
+            { "matches": ["+=", "="] },
+            { "$rule": "word" }
+          ],
           "source": {
             "file": "params.yo",
             "line": 50,
@@ -545,9 +719,9 @@
                   { "$token": "BLANK" },
                   {
                     "union": [
-                      { "$rule": "word" },
                       { "$rule": "redirection" },
-                      { "$rule": "parameter_assignment" }
+                      { "$rule": "parameter_assignment" },
+                      { "$rule": "word" }
                     ]
                   }
                 ]
@@ -589,15 +763,15 @@
                   },
                   { "$rule": "simple_command" }
                 ]
-              },
-              "min": 1
+              }
             }
           ],
           "source": {
             "file": "grammar.yo",
             "line": 40,
             "context": "Simple Commands & Pipelines"
-          }
+          },
+          "associativity": "right"
         },
         "sublist": {
           "description": "A single pipeline or sequence of pipelines separated by && or ||",
@@ -656,7 +830,7 @@
                   }
                 ]
               },
-              "min": 0
+              "min": 1
             },
             {
               "variant": {
@@ -677,18 +851,16 @@
                     "min": 0
                   },
                   {
-                    "optional": {
-                      "sequence": [
-                        { "$rule": "sublist" },
-                        {
-                          "optional": { "$token": "BLANK" }
-                        },
-                        { "$rule": "sublist_terminator_no_semi" },
-                        {
-                          "optional": { "$token": "BLANK" }
-                        }
-                      ]
-                    }
+                    "sequence": [
+                      { "$rule": "sublist" },
+                      {
+                        "optional": { "$token": "BLANK" }
+                      },
+                      { "$rule": "sublist_terminator_no_semi" },
+                      {
+                        "optional": { "$token": "BLANK" }
+                      }
+                    ]
                   }
                 ]
               },
@@ -746,7 +918,28 @@
         },
         "plain_string": {
           "description": "Unquoted string: non-whitespace characters excluding shell metacharacters and quotes",
-          "pattern": "(?:\\\\.|[^\\s'\"$`|&;<>()\\[\\]{}])+",
+          "sequence": [
+            {
+              "union": [
+                { "pattern": "[^#:\\s'\"$`|&;<>()\\[\\]{}\\\\]" },
+                {
+                  "sequence": [{ "matches": "\\\\" }, { "pattern": "[ \\n]" }]
+                }
+              ]
+            },
+            {
+              "repeat": {
+                "union": [
+                  { "pattern": "[^\\s'\"$`|&;<>()\\[\\]{}\\\\]" },
+                  {
+                    "sequence": [{ "matches": "\\\\" }, { "pattern": "[ \\n]" }]
+                  },
+                  { "pattern": "#[^\\s]" }
+                ]
+              },
+              "min": 0
+            }
+          ],
           "source": {
             "file": "grammar.yo",
             "line": 589,
@@ -872,15 +1065,14 @@
                 "description": "Component of a word: plain string, glob pattern, quoted string, parameter, or command substitution",
                 "union": [
                   { "$rule": "glob_pattern" },
-                  { "$rule": "plain_string" },
                   { "$rule": "quoted_string" },
+                  { "$rule": "plain_string" },
                   { "$rule": "parameter_reference" },
                   { "$rule": "command_substitution" }
                 ]
               },
               "min": 1
             },
-            { "$rule": "reserved_word" },
             {
               "variant": {
                 "union": [
@@ -903,6 +1095,7 @@
               }
             }
           ],
+          "associativity": "left",
           "source": {
             "file": "grammar.yo",
             "line": 586,
@@ -980,7 +1173,7 @@
         },
         "command_pcm": {
           "sequence": [
-            { "pattern": "command" },
+            { "matches": "command" },
             {
               "repeat": {
                 "sequence": [
@@ -1046,7 +1239,22 @@
             { "$rule": "for_loop" },
             { "$rule": "while_loop" },
             { "$rule": "until_loop" },
-            { "$rule": "repeat_loop" },
+            {
+              "variant": { "$rule": "repeat_loop" },
+              "condition": {
+                "or": [
+                  {
+                    "not": {
+                      "and": [
+                        { "option": "ksh_mode" },
+                        { "option": "posix_mode" }
+                      ]
+                    }
+                  },
+                  { "option": "repeat" }
+                ]
+              }
+            },
             { "$rule": "case_statement" },
             { "$rule": "select_statement" },
             { "$rule": "subshell" },
@@ -2095,7 +2303,12 @@
         "comment": {
           "description": "Comment: # character (third char of histchars, default #) to end of line, not including newline",
           "variant": {
-            "sequence": [{ "pattern": "#" }, { "pattern": "[^\\n]*" }]
+            "sequence": [
+              { "pattern": "[ \\t]+" },
+              { "matches": "#" },
+              { "pattern": ".*" }
+            ],
+            "precedence": -20
           },
           "condition": {
             "or": [
