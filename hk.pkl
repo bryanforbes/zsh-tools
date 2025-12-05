@@ -1,84 +1,89 @@
-amends "package://github.com/jdx/hk/releases/download/v1.25.0/hk@1.25.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.25.0/hk@1.25.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.26.0/hk@1.26.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.26.0/hk@1.26.0#/Builtins.pkl"
 
 local linters = new Mapping<String, Step> {
-    ["prettier"] = (Builtins.prettier) {
-      prefix = "pnpm exec"
-      depends = "eslint"
-      check = "prettier --ignore-unknown --check {{ files }}"
-      check_list_files = "prettier --ignore-unknown --list-different {{ files }}"
-      fix = "prettier --ignore-unknown --write {{ files }}"
-    }
-    ["eslint"] = (Builtins.eslint) {
-      prefix = "pnpm exec"
-      check = "eslint --max-warnings=0 --no-warn-ignored {{ files }}"
-      fix = "eslint --no-warn-ignored --fix {{ files }}"
-    }
+  ["prettier"] = (Builtins.prettier) {
+    prefix = "pnpm exec"
+    depends = "eslint"
+    check = "prettier --ignore-unknown --check {{ files }}"
+    check_list_files = "prettier --ignore-unknown --list-different {{ files }}"
+    fix = "prettier --ignore-unknown --write {{ files }}"
+  }
+  ["eslint"] = (Builtins.eslint) {
+    prefix = "pnpm exec"
+    check = "eslint --max-warnings=0 --no-warn-ignored {{ files }}"
+    fix = "eslint --no-warn-ignored --fix {{ files }}"
+  }
 
-    ["ruff"] = (Builtins.ruff) {
-      batch = true
-      depends = "ruff_format"
-      check = "ruff check --force-exclude {{ files }}"
-    }
-    ["ruff_format"] = Builtins.ruff_format
-    ["basedpyright"] {
-      glob = List("**/*.py", "**/*.pyi")
-      check = "basedpyright {{ files }}"
-      depends = "ruff_format"
-      stomp = true
-      exclude = List(
+  ["ruff"] = (Builtins.ruff) {
+    batch = true
+    depends = "ruff_format"
+    check = "ruff check --force-exclude {{ files }}"
+  }
+  ["ruff_format"] = Builtins.ruff_format
+  ["basedpyright"] {
+    glob = List("**/*.py", "**/*.pyi")
+    check = "basedpyright {{ files }}"
+    depends = "ruff_format"
+    stomp = true
+    exclude =
+      List(
         "tree-sitter-zsh/bindings/python/tree_sitter_zsh/**",
         "tree-sitter-zsh/setup.py",
       )
-    }
+  }
 
-    ["clang-format"] = (Builtins.clang_format) {
-      glob = List("tree-sitter-zsh/src/scanner.c")
-    }
+  ["clang-format"] = (Builtins.clang_format) {
+    glob = List("tree-sitter-zsh/src/scanner.c")
+  }
 
-    ["validate-json"] {
-      glob = List("zsh-grammar/*.json")
-      check = "python -m zsh_grammar.validate {{ files }}"
-      depends = "prettier"
-    }
+  ["validate-json"] {
+    glob = List("zsh-grammar/*.json")
+    check = "python -m zsh_grammar.validate {{ files }}"
+    depends = "prettier"
+  }
 
-    ["pkl"] = (Builtins.pkl) {
-        glob = "*.pkl"
-    }
+  ["pkl"] = (Builtins.pkl) {
+    glob = "*.pkl"
+  }
+  ["pkl_format"] = (Builtins.pkl_format) {
+    glob = "*.pkl"
+  }
 }
 
-exclude = List(
-  "**/node_modules/**",
-  "**/.venv/**",
-  "**/__pycache__/**",
-  "**/*.pyc",
-  "**/*.egg-info",
-  "**/*.whl",
-  "**/dist/**",
-  "**/build/**",
-  "**/htmlcov/**",
-  "**/.ruff_cache/**",
-  "**/.pytest_cache/**",
-  "vendor/zsh",
-)
+exclude =
+  List(
+    "**/node_modules/**",
+    "**/.venv/**",
+    "**/__pycache__/**",
+    "**/*.pyc",
+    "**/*.egg-info",
+    "**/*.whl",
+    "**/dist/**",
+    "**/build/**",
+    "**/htmlcov/**",
+    "**/.ruff_cache/**",
+    "**/.pytest_cache/**",
+    "vendor/zsh",
+  )
 
 hooks {
-    ["pre-commit"] {
-        fix = true
-        stash = "git"
-        stage = true
-        steps {
-            ...linters
-        }
+  ["pre-commit"] {
+    fix = true
+    stash = "git"
+    stage = true
+    steps {
+      ...linters
     }
-    // "fix" and "check" are special steps for `hk fix` and `hk check` commands
-    ["fix"] {
-        fix = true
-        stage = false
-        steps = linters
-    }
-    ["check"] {
-        stage = false
-        steps = linters
-    }
+  }
+  // "fix" and "check" are special steps for `hk fix` and `hk check` commands
+  ["fix"] {
+    fix = true
+    stage = false
+    steps = linters
+  }
+  ["check"] {
+    stage = false
+    steps = linters
+  }
 }

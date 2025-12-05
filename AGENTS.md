@@ -16,6 +16,7 @@
 - **Format** (**NOTE:** run the language-specific formatter after editing a file and before linting to avoid unnecessary lint errors):
     - **Python**: `mise //:ruff-format [--check] [<file1> <file2>]`
     - **JS/TS/Markdown**: `mise //:prettier [--check] [<file1> <file2>]`
+    - **C/C++**: `mise //:clang-format [--check] [<file1> <file2>]`
     - **All files**: `mise //:format`
 - **Lint**:
     - **Python**:

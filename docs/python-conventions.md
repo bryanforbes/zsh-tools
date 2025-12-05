@@ -36,7 +36,12 @@ All Python code must fully comply with these rules. Deviations are allowed only 
     - Avoid bare `except:` clauses; always catch specific exceptions.
     - When catching multiple exceptions, use a tuple (e.g., `except (ValueError, TypeError):`).
     - Always provide informative error messages when raising exceptions.
-7. **Type hints:**
+7. **Classes:**
+    - Use `@dataclass(slots=True)` for simple data containers.
+    - Prefer composition over inheritance unless there is a clear "is-a" relationship.
+    - Use properties for computed attributes instead of methods when appropriate.
+    - Keep classes focused on a single responsibility.
+8. **Type hints:**
     - For consistency, all non-empty modules must include `from __future__ import annotations`.
     - Add type hints for all function parameters and return values.
     - Never quote type hints except in `typing.cast()` calls or if it is unavoidable.
@@ -51,7 +56,7 @@ All Python code must fully comply with these rules. Deviations are allowed only 
         def bar(x: str | None) -> int | None: ...
         ```
 
-8. **Generics:**
+9. **Generics:**
     - Always use built-in generics (`list[str]`, `dict[str, int]`). Never use `typing.List`, `Dict`, `Iterable`, etc..
     - Example:
 
@@ -62,7 +67,7 @@ All Python code must fully comply with these rules. Deviations are allowed only 
         def bar(x: Iterable[str]) -> None: ...
         ```
 
-9. **TypedDict:**
+10. **TypedDict:**
     - Declare `TypedDict` subclasses where appropriate (prefix with `_` for internal use).
     - Use `NotRequired` to mark optional fields.
     - Example:
@@ -78,7 +83,7 @@ All Python code must fully comply with these rules. Deviations are allowed only 
             repeat1: NotRequired[str]
         ```
 
-10. **Docstrings:**
+11. **Docstrings:**
     - Use triple double quotes for all module, class, and function docstrings
     - Follow Google docstring format for functions with parameters/returns
     - Keep docstrings concise but informative

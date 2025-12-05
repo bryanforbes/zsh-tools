@@ -99,26 +99,28 @@ arg "<files>" var=#true default="." help="Specify files or directories to type c
 wait_for = 'ruff'
 run = 'basedpyright ${usage_files?}'
 
+[tasks.clang-format]
+description = "Format with clang-format"
+usage = '''
+arg "<files>" var=#true default="." help="Specify files or directories to format"
+flag "--check" help="Check formatting without making changes"
+'''
+run = 'clang-format ${usage_check:+ --dry-run -Werror} ${usage_check:+"":--i} ${usage_files?}'
+
 [tasks.format]
 description = "Format all code"
 usage = '''
 flag "--check" help="Check formatting without making changes"
 '''
-run = [
-  { tasks = [ ":prettier", ":ruff-format" ] }
-]
+run = [{ tasks = [":prettier", ":ruff-format"] }]
 
 [tasks.lint]
 description = "Lint all code"
 usage = '''
 flag "--fix" help="Fix lint issues"
 '''
-run = [
-  { tasks = [ ":eslint", ":ruff", ":basedpyright" ] }
-]
+run = [{ tasks = [":eslint", ":ruff", ":basedpyright"] }]
 
 [tasks.format-and-fix]
 description = "Format and fix all code"
-run = [
-  { tasks = [ ":format", ":eslint --fix", ":ruff --fix" ] }
-]
+run = [{ tasks = [":format", ":eslint --fix", ":ruff --fix"] }]

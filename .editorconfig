@@ -29,3 +29,6 @@ indent_size = 8
 [Makefile]
 indent_style = tab
 indent_size = 8
+
+[*.pkl]
+insert_final_newline = false
