@@ -33,6 +33,12 @@ local linters = new Mapping<String, Step> {
       )
   }
 
+  ["rumdl"] {
+    glob = "**/*.md"
+    check = "rumdl check {{ files }}"
+    fix = "rumdl fix {{ files }}"
+  }
+
   ["clang-format"] = (Builtins.clang_format) {
     glob = List("tree-sitter-zsh/src/scanner.c")
   }

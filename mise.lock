@@ -1,3 +1,13 @@
+[[tools."aqua:rvben/rumdl"]]
+version = "0.0.189"
+backend = "aqua:rvben/rumdl"
+env = ["macos"]
+"platforms.linux-arm64" = { checksum = "sha256:845ad68fea13441cc9a6dd781872c030fcdae9e7ea17a76b9889d82be2d77079", url = "https://github.com/rvben/rumdl/releases/download/v0.0.189/rumdl-v0.0.189-aarch64-unknown-linux-musl.tar.gz"}
+"platforms.linux-x64" = { checksum = "sha256:16ce5227ed1cd8e93241e4e831024784f7b3349dad37fb6eb92fbd3e4c5f8b5c", url = "https://github.com/rvben/rumdl/releases/download/v0.0.189/rumdl-v0.0.189-x86_64-unknown-linux-musl.tar.gz"}
+"platforms.macos-arm64" = { checksum = "sha256:6a165accfb6004c6b45656f976844ae4e6c9ed16c2d1f8fbfafe9a0bec7147b1", url = "https://github.com/rvben/rumdl/releases/download/v0.0.189/rumdl-v0.0.189-aarch64-apple-darwin.tar.gz"}
+"platforms.macos-x64" = { checksum = "sha256:fa0f1cbeb9a66df64926ac3bb8d138bc295e2d47c4724dbc7dce927dbd377ebf", url = "https://github.com/rvben/rumdl/releases/download/v0.0.189/rumdl-v0.0.189-x86_64-apple-darwin.tar.gz"}
+"platforms.windows-x64" = { checksum = "sha256:f8ddeecd1f15467ae86b12eebca89d39c1674053dcf9746ca14202d88a6f7baf", url = "https://github.com/rvben/rumdl/releases/download/v0.0.189/rumdl-v0.0.189-x86_64-pc-windows-msvc.zip"}
+
 [[tools.clang-format]]
 version = "21.1.7"
 backend = "asdf:clang-format"

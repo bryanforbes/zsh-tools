@@ -21,6 +21,7 @@ ruff = 'latest'
 clang-format = "latest"
 hk = "latest"
 pkl = "latest"
+"aqua:rvben/rumdl" = "latest"
 
 [hooks]
 postinstall = '''

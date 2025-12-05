@@ -4,7 +4,9 @@ A collection of tools to help develop Zsh scripts and plugins.
 
 ## Development
 
-This project uses [mise](https://mise.jdx.dev/) to manage tools and environment variables. The environment needs to be set up a specific way on different platforms, so the `mise` configuration has been split to facilitate that. Add the following to your `.zshrc` (or equivalent file in your setup):
+This project uses [mise](https://mise.jdx.dev/) to manage tools and environment variables. The environment needs to be
+set up a specific way on different platforms, so the `mise` configuration has been split to facilitate that. Add the
+following to your `.zshrc` (or equivalent file in your setup):
 
 ```sh
 if (( ${+commands[mise]} )); then
